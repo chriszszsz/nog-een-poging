@@ -22,7 +22,7 @@ app.use(express.json());
 ========================= */
 
 app.get("/", (req, res) => {
-  res.send("API draait ✅");
+  res.send("API draait v2 ✅");
 });
 
 app.get("/health", (req, res) => {
