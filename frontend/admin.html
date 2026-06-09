@@ -54,6 +54,13 @@
   Uitloggen
 </button>
           <div class="flex gap-3 flex-wrap">
+            <button
+  onclick="openCampaignModal()"
+  class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-lg transition hover:shadow-xl active:scale-95 bg-emerald-600"
+>
+  + Nieuwe campagne
+</button>
+
             <button onclick="switchTab('overview')" class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-lg transition hover:shadow-xl active:scale-95" style="background-color: #A20067;">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h18M3 17h18" />
@@ -148,6 +155,84 @@
 
       <div id="assessment-detail-screen" class="hidden space-y-6 mt-6"></div>
       <div id="assessment-question-view" class="hidden"></div>
+
+      <div
+  id="campaign-modal"
+  class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6"
+>
+
+  <div class="bg-white rounded-3xl p-8 w-full max-w-2xl">
+
+    <div class="flex items-center justify-between mb-6">
+
+      <h2 class="text-2xl font-semibold text-slate-900">
+        Nieuwe Campaign
+      </h2>
+
+      <button
+        onclick="closeCampaignModal()"
+        class="text-slate-500 hover:text-slate-900"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div class="space-y-6">
+
+      <div>
+
+        <label class="block text-sm font-medium text-slate-700 mb-2">
+          Titel
+        </label>
+
+        <input
+          id="campaign-title"
+          type="text"
+          placeholder="Q2 Security Assessment"
+          class="w-full rounded-xl border border-slate-300 px-4 py-3"
+        />
+
+      </div>
+
+      <div>
+
+        <label class="block text-sm font-medium text-slate-700 mb-2">
+          Bedrijf
+        </label>
+
+        <select
+          id="campaign-company"
+          class="w-full rounded-xl border border-slate-300 px-4 py-3"
+        ></select>
+
+      </div>
+
+      <div>
+
+        <label class="block text-sm font-medium text-slate-700 mb-3">
+          Participants
+        </label>
+
+        <div
+          id="participants-list"
+          class="space-y-3 max-h-64 overflow-auto"
+        ></div>
+
+      </div>
+
+      <button
+        onclick="createCampaign()"
+        class="w-full rounded-xl bg-blue-600 text-white py-4 font-semibold hover:bg-blue-700"
+      >
+        Campaign aanmaken
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
     </div>
   </div>
   <script>
@@ -766,9 +851,16 @@ if (user.role !== "admin") {
     ];
 
     async function initialize() {
-      await fetchAssessments();
-      switchTab('overview');
-    }
+
+  await fetchCompanies();
+
+  await fetchUsers();
+
+  await fetchAssessments();
+
+  switchTab('overview');
+
+}
 
     async function fetchAssessments() {
       const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
@@ -1496,6 +1588,161 @@ if (user.role !== "admin") {
         mapToEditPanelValues: (config) => new Map([['page_title', config.page_title || defaultConfig.page_title]])
       });
     }
+
+    let companies = [];
+let users = [];
+
+async function fetchCompanies() {
+
+  const response =
+    await fetch(
+      `${defaultConfig.backend_url}/api/companies`
+    );
+
+  companies = await response.json();
+
+}
+
+async function fetchUsers() {
+
+  const response =
+    await fetch(
+      `${defaultConfig.backend_url}/api/users`
+    );
+
+  users = await response.json();
+
+}
+
+function openCampaignModal() {
+
+  renderCompanies();
+  renderParticipants();
+
+  document
+    .getElementById("campaign-modal")
+    .classList
+    .remove("hidden");
+
+}
+
+function closeCampaignModal() {
+
+  document
+    .getElementById("campaign-modal")
+    .classList
+    .add("hidden");
+
+}
+
+function renderCompanies() {
+
+  const select =
+    document.getElementById(
+      "campaign-company"
+    );
+
+  select.innerHTML =
+    companies.map(company => `
+      <option value="${company.company_id}">
+        ${company.company_name}
+      </option>
+    `).join("");
+
+}
+
+function renderParticipants() {
+
+  const container =
+    document.getElementById(
+      "participants-list"
+    );
+
+  const participants =
+    users.filter(
+      user => user.role === "participant"
+    );
+
+  container.innerHTML =
+    participants.map(user => `
+      <label class="flex items-center gap-3">
+
+        <input
+          type="checkbox"
+          value="${user.user_id}"
+          class="participant-checkbox"
+        />
+
+        <span>
+          ${user.first_name}
+          ${user.last_name}
+        </span>
+
+      </label>
+    `).join("");
+
+}
+
+async function createCampaign() {
+
+  try {
+
+    const title =
+      document.getElementById(
+        "campaign-title"
+      ).value;
+
+    const company_id =
+      Number(
+        document.getElementById(
+          "campaign-company"
+        ).value
+      );
+
+    const participant_ids =
+      Array.from(
+        document.querySelectorAll(
+          ".participant-checkbox:checked"
+        )
+      ).map(el => Number(el.value));
+
+    const response =
+      await fetch(
+        `${defaultConfig.backend_url}/api/campaigns`,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            title,
+            company_id,
+            participant_ids
+          })
+        }
+      );
+
+    const data =
+      await response.json();
+
+    console.log(data);
+
+    alert("Campaign aangemaakt ✅");
+
+    closeCampaignModal();
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Fout bij aanmaken");
+
+  }
+
+}
 
     initialize();
 
