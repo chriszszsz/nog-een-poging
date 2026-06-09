@@ -457,6 +457,19 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
 const token =
   localStorage.getItem("token");
 
+const user =
+  JSON.parse(
+    localStorage.getItem("user")
+  );
+
+if (user.role !== "participant") {
+
+  window.location.href =
+    "./admin.html";
+
+}
+
+
 if (!token) {
 
   window.location.href =
@@ -466,6 +479,47 @@ if (!token) {
 
 const backend =
 'https://maturity-assessment-api-avh2h6cuf8acg5fk.westeurope-01.azurewebsites.net';
+let myCampaigns = [];
+
+let activeCampaign = null;
+
+async function loadMyCampaigns() {
+
+  try {
+
+    const response =
+      await fetch(
+        `${backend}/api/my-campaigns`,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
+
+    myCampaigns =
+      await response.json();
+
+    console.log(
+      "Mijn campaigns:",
+      myCampaigns
+    );
+
+    if (myCampaigns.length > 0) {
+
+      activeCampaign =
+        myCampaigns[0];
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+}
 
 /* =========================================
    QUESTIONS + ANSWERS
@@ -607,6 +661,16 @@ function showPage(name, navEl) {
 ========================================= */
 
 async function showVraag() {
+
+  if (!activeCampaign) {
+
+    alert(
+      "Geen actieve campaign"
+    );
+
+    return;
+
+  }
 
   if (vragen.length === 0) {
 
@@ -934,8 +998,11 @@ async function saveAssessment() {
 
     const payload = {
 
+      campaign_id:
+        activeCampaign.campaign_id,
+
       company_name:
-        'Demo klant',
+        activeCampaign.company_name,
 
       maturity_level:
         Math.round(average),
@@ -949,7 +1016,7 @@ async function saveAssessment() {
         new Date().toISOString(),
 
       status:
-        'Afgerond',
+        'WAITING_FOR_REPORT',
 
       report_suggestion:
         'Automatisch gegenereerd AI-voorstel op basis van maturity assessment.',
