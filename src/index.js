@@ -29,7 +29,7 @@ app.get(
           SELECT
             c.campaign_id,
             c.title,
-            c.status,
+            cp.status,
             c.created_at,
             co.company_name
 
@@ -62,6 +62,7 @@ app.get(
 
   }
 );
+
 /* =========================
    MIDDLEWARE
 ========================= */
