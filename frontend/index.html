@@ -454,6 +454,9 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
 </div><!-- /content-row -->
 
 <script>
+const backend =
+'https://maturity-assessment-api-avh2h6cuf8acg5fk.westeurope-01.azurewebsites.net';
+
 var vragen = [
   {meta:"Vraag 1 van 51",domain:"Governance – Strategie",type:"gesloten",label:"Inrichting",q:"In hoeverre beschikt de organisatie over een formeel vastgestelde IT- en informatiebeveiligingsstrategie?",opties:["A — Er is geen samenhangende strategie. Besluitvorming vindt ad hoc en reactief plaats zonder duidelijke richting.","B — Er zijn losse initiatieven of concepten, maar deze zijn niet formeel vastgesteld of breed gedragen.","C — Er is een formeel vastgestelde strategie die richting geeft aan IT- en securityactiviteiten.","D — De strategie wordt actief beheerd, periodiek geëvalueerd en aangepast op basis van ontwikkelingen.","E — De strategie is volledig geïntegreerd in de organisatie en stuurt aantoonbaar besluitvorming en investeringen."]},
   {meta:"Vraag 2 van 51",domain:"Governance – Strategie",type:"gesloten",label:"Werking",q:"In hoeverre wordt de strategie daadwerkelijk toegepast en nageleefd binnen de organisatie?",opties:["A — De strategie wordt niet toegepast in de praktijk.","B — De strategie wordt beperkt en inconsistent toegepast.","C — De strategie wordt toegepast binnen de organisatie en vormt een basis voor besluitvorming.","D — De toepassing wordt actief gemonitord en bijgestuurd waar nodig.","E — De strategie wordt continu geoptimaliseerd op basis van prestaties, risico’s en data."]},
@@ -578,26 +581,53 @@ function selectNiveau(n) {
   document.getElementById('error-gesloten').style.display = 'none';
 }
 
-function volgendeVraag() {
+async function volgendeVraag() {
+
   var v = vragen[currentVraag];
+
   if (v.type === 'gesloten') {
+
     if (!antwoorden[currentVraag]) {
       document.getElementById('error-gesloten').style.display = 'block';
       return;
     }
+
   } else {
+
     var val = document.getElementById('open-antwoord').value.trim();
+
     if (!val) {
       document.getElementById('error-open').style.display = 'block';
       return;
     }
-    var was = antwoorden[currentVraag] !== null && antwoorden[currentVraag] !== '';
+
+    var was = antwoorden[currentVraag] !== null &&
+              antwoorden[currentVraag] !== '';
+
     antwoorden[currentVraag] = val;
+
     if (!was) answered++;
-    document.getElementById('footer-center').textContent = answered + ' van 51 vragen beantwoord';
+
+    document.getElementById('footer-center').textContent =
+      answered + ' van 51 vragen beantwoord';
   }
-  if (currentVraag < 51 - 1) { currentVraag++; renderVraag(); }
-  else { showPage('resultaten'); initRadar(); }
+
+  if (currentVraag < 51 - 1) {
+
+    currentVraag++;
+
+    renderVraag();
+
+  } else {
+
+    await saveAssessment();
+
+    showPage('resultaten');
+
+    initRadar();
+
+  }
+
 }
 
 
@@ -624,6 +654,102 @@ function initRadar() {
   var ctx = document.getElementById('radarChart').getContext('2d');
   var labels = ['Strategie','Beleid','Planning','Architectuur','Risicobeheer','Eigenaarschap','Functiescheiding','Training','Afhankelijkheid','Super Users','SLA','SLB','Risico lev.','Int. beheersing','BCP','DR testen','Crisisbeheer'];
   new Chart(ctx, {type:'radar',data:{labels:labels,datasets:[{label:'Score',data:[3,2,4,3,2,2,3,3,2,2,3,3,2,2,3,3,2],borderColor:'#e91e8c',backgroundColor:'rgba(233,30,140,0.15)',pointBackgroundColor:'#e91e8c',pointRadius:3,borderWidth:2},{label:'Benchmark',data:[3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],borderColor:'rgba(77,122,255,0.4)',backgroundColor:'rgba(77,122,255,0.06)',pointRadius:0,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:5,ticks:{stepSize:1,color:'rgba(140,150,180,0.5)',backdropColor:'transparent',font:{size:10}},grid:{color:'rgba(255,255,255,0.08)'},angleLines:{color:'rgba(255,255,255,0.08)'},pointLabels:{color:'#8891b0',font:{size:10,family:'Inter'}}}}}});
+}
+
+async function saveAssessment() {
+
+  try {
+
+    const numericAnswers = antwoorden.filter(a =>
+      typeof a === 'number'
+    );
+
+    const average =
+      numericAnswers.reduce((a, b) => a + b, 0) /
+      numericAnswers.length;
+
+    const spiderScores = {
+      "Strategie": antwoorden[0] || 0,
+      "Beleid": antwoorden[3] || 0,
+      "Planning / Roadmap": antwoorden[6] || 0,
+      "Architectuur": antwoorden[9] || 0,
+      "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": antwoorden[12] || 0,
+      "Eigenaarschap, rollen, verantwoording en verantwoordelijkheid": antwoorden[15] || 0,
+      "Functiescheiding": antwoorden[18] || 0,
+      "Certificering, training en scholing": antwoorden[21] || 0,
+      "Afhankelijkheid van individuen": antwoorden[24] || 0,
+      "Super Users": antwoorden[27] || 0,
+      "Service level overeenkomst": antwoorden[30] || 0,
+      "Service level beheer": antwoorden[33] || 0,
+      "Risicobeheer van leveranciers": antwoorden[36] || 0,
+      "Interne beheersing bij derden": antwoorden[39] || 0,
+      "Bedrijfscontinuïteits-planning": antwoorden[42] || 0,
+      "Testen van Disaster recovery": antwoorden[45] || 0,
+      "Crisisbeheer": antwoorden[48] || 0
+    };
+
+    const payload = {
+
+      company_name: 'Demo klant',
+
+      maturity_level: Math.round(average),
+
+      average_score: Number(average.toFixed(1)),
+
+      assessment_date: new Date().toISOString(),
+
+      status: 'Afgerond',
+
+      report_suggestion:
+        'Automatisch gegenereerd AI-voorstel op basis van maturity assessment.',
+
+      spider_scores: spiderScores,
+
+      details:
+        'Assessment ingevuld via frontend maturity assessment portal.',
+
+      last_updated: new Date().toISOString(),
+
+      answers: antwoorden
+
+    };
+
+    console.log('Sending assessment:', payload);
+
+    const response = await fetch(`${backend}/api/assessments`, {
+
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify(payload)
+
+    });
+
+    if (!response.ok) {
+
+      const errorText = await response.text();
+
+      console.error(errorText);
+
+      throw new Error('Opslaan mislukt');
+
+    }
+
+    const result = await response.json();
+
+    console.log('Assessment opgeslagen:', result);
+
+  } catch (error) {
+
+    console.error('Save error:', error);
+
+    alert('Opslaan van assessment mislukt');
+
+  }
+
 }
 </script>
 </body>
