@@ -67,7 +67,7 @@ app.get(
    MIDDLEWARE
 ========================= */
 
-const app = express();
+app.use(cors());
 
 app.use((req, res, next) => {
 
@@ -86,15 +86,9 @@ app.use((req, res, next) => {
     "GET, POST, PUT, DELETE, OPTIONS"
   );
 
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
   next();
 
 });
-
-app.use(cors());
 
 app.use(helmet());
 
