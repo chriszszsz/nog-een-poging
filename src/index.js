@@ -5,11 +5,63 @@ import helmet from "helmet";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { pool } from "./config/db.js";
+import { authMiddleware }
+from "./middleware/auth.js";
 
 dotenv.config();
 
 const app = express();
+/* =========================
+   MY CAMPAIGNS
+========================= */
 
+app.get(
+  "/api/my-campaigns",
+  authMiddleware,
+
+  async (req, res) => {
+
+    try {
+
+      const result =
+        await pool.query(
+          `
+          SELECT
+            c.campaign_id,
+            c.title,
+            c.status,
+            c.created_at,
+            co.company_name
+
+          FROM campaign_participants cp
+
+          JOIN assessment_campaigns c
+          ON cp.campaign_id = c.campaign_id
+
+          JOIN companies co
+          ON c.company_id = co.company_id
+
+          WHERE cp.user_id = $1
+
+          ORDER BY c.created_at DESC
+          `,
+          [req.user.user_id]
+        );
+
+      res.json(result.rows);
+
+    } catch (err) {
+
+      console.error(err);
+
+      res.status(500).json({
+        error: err.message,
+      });
+
+    }
+
+  }
+);
 /* =========================
    MIDDLEWARE
 ========================= */
