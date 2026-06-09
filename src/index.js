@@ -1,3 +1,92 @@
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import helmet from "helmet";
+
+import { pool } from "./config/db.js";
+
+dotenv.config();
+
+const app = express();
+
+/* =========================
+   MIDDLEWARE
+========================= */
+
+app.use(cors());
+app.use(helmet());
+app.use(express.json());
+
+/* =========================
+   HEALTH CHECKS
+========================= */
+
+app.get("/", (req, res) => {
+  res.send("API draait v1.0.0 ✅");
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+  });
+});
+
+/* =========================
+   DATABASE TEST
+========================= */
+
+app.get("/api/test-db", async (req, res) => {
+
+  try {
+
+    const result =
+      await pool.query("SELECT NOW()");
+
+    res.json({
+      message: "Database werkt ✅",
+      time: result.rows[0],
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message,
+    });
+
+  }
+
+});
+
+/* =========================
+   GET ALLE ASSESSMENTS
+========================= */
+
+app.get("/api/assessments", async (req, res) => {
+
+  try {
+
+    const result = await pool.query(`
+      SELECT *
+      FROM assessment_sessions
+      ORDER BY assessment_session_id DESC
+    `);
+
+    res.json(result.rows);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message,
+    });
+
+  }
+
+});
+
 /* =========================
    NIEUWE ASSESSMENT
 ========================= */
@@ -19,7 +108,6 @@ app.post("/api/assessments", async (req, res) => {
       answers
     } = req.body;
 
-    // assessment session opslaan
     const result = await pool.query(
       `
       INSERT INTO assessment_sessions
@@ -55,9 +143,6 @@ app.post("/api/assessments", async (req, res) => {
 
     const assessment = result.rows[0];
 
-    console.log("Assessment opgeslagen:", assessment);
-
-    // antwoorden opslaan
     if (answers && Array.isArray(answers)) {
 
       for (let i = 0; i < answers.length; i++) {
@@ -78,8 +163,12 @@ app.post("/api/assessments", async (req, res) => {
           [
             assessment.assessment_session_id,
             i + 1,
-            typeof answer === "number" ? answer : null,
-            typeof answer === "string" ? answer : null
+            typeof answer === "number"
+              ? answer
+              : null,
+            typeof answer === "string"
+              ? answer
+              : null
           ]
         );
 
@@ -94,7 +183,6 @@ app.post("/api/assessments", async (req, res) => {
 
   } catch (err) {
 
-    console.error("POST /api/assessments ERROR:");
     console.error(err);
 
     res.status(500).json({
@@ -103,4 +191,26 @@ app.post("/api/assessments", async (req, res) => {
 
   }
 
+});
+
+/* =========================
+   404 HANDLER
+========================= */
+
+app.use((req, res) => {
+
+  res.status(404).json({
+    error: "Route niet gevonden",
+  });
+
+});
+
+/* =========================
+   SERVER START
+========================= */
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server draait op poort ${PORT}`);
 });
