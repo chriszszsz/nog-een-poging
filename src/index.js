@@ -67,7 +67,12 @@ app.get(
    MIDDLEWARE
 ========================= */
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://lively-sea-0749d6103.7.azurestaticapps.net"
+  ],
+  credentials: true
+}));
 app.use(helmet());
 app.use(express.json());
 
