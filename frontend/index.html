@@ -457,129 +457,330 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
 const backend =
 'https://maturity-assessment-api-avh2h6cuf8acg5fk.westeurope-01.azurewebsites.net';
 
-var vragen = [
-  {meta:"Vraag 1 van 51",domain:"Governance – Strategie",type:"gesloten",label:"Inrichting",q:"In hoeverre beschikt de organisatie over een formeel vastgestelde IT- en informatiebeveiligingsstrategie?",opties:["A — Er is geen samenhangende strategie. Besluitvorming vindt ad hoc en reactief plaats zonder duidelijke richting.","B — Er zijn losse initiatieven of concepten, maar deze zijn niet formeel vastgesteld of breed gedragen.","C — Er is een formeel vastgestelde strategie die richting geeft aan IT- en securityactiviteiten.","D — De strategie wordt actief beheerd, periodiek geëvalueerd en aangepast op basis van ontwikkelingen.","E — De strategie is volledig geïntegreerd in de organisatie en stuurt aantoonbaar besluitvorming en investeringen."]},
-  {meta:"Vraag 2 van 51",domain:"Governance – Strategie",type:"gesloten",label:"Werking",q:"In hoeverre wordt de strategie daadwerkelijk toegepast en nageleefd binnen de organisatie?",opties:["A — De strategie wordt niet toegepast in de praktijk.","B — De strategie wordt beperkt en inconsistent toegepast.","C — De strategie wordt toegepast binnen de organisatie en vormt een basis voor besluitvorming.","D — De toepassing wordt actief gemonitord en bijgestuurd waar nodig.","E — De strategie wordt continu geoptimaliseerd op basis van prestaties, risico’s en data."]},
-  {meta:"Vraag 3 van 51",domain:"Governance – Strategie",type:"open",label:"Toelichting",q:"Beschrijf hoe de strategie in de praktijk wordt gebruikt en nageleefd binnen de organisatie."},
-  {meta:"Vraag 4 van 51",domain:"Governance – Beleid",type:"gesloten",label:"Inrichting",q:"In hoeverre beschikt de organisatie over een formeel informatiebeveiligingsbeleid?",opties:["A — Er is geen beleid; maatregelen worden ad hoc toegepast.","B — Er is een conceptbeleid, maar dit is niet formeel vastgesteld.","C — Het beleid is formeel vastgesteld en gecommuniceerd binnen de organisatie.","D — Het beleid is verankerd in processen en wordt periodiek geëvalueerd.","E — Het beleid is volledig geïntegreerd en wordt continu verbeterd op basis van risico’s en ontwikkelingen."]},
-  {meta:"Vraag 5 van 51",domain:"Governance – Beleid",type:"gesloten",label:"Werking",q:"In hoeverre wordt het beleid nageleefd en gecontroleerd binnen de organisatie?",opties:["A — Naleving wordt niet gecontroleerd.","B — Naleving wordt beperkt en ongestructureerd gecontroleerd.","C — Naleving wordt periodiek gecontroleerd en gerapporteerd.","D — Naleving wordt actief gemonitord en bijgestuurd.","E — Naleving is volledig geïntegreerd in governance en wordt continu geoptimaliseerd."]},
-  {meta:"Vraag 6 van 51",domain:"Governance – Beleid",type:"open",label:"Toelichting",q:"Beschrijf hoe het beleid in de praktijk wordt toegepast en gecontroleerd binnen de organisatie."},
-  {meta:"Vraag 7 van 51",domain:"Governance – Planning / Roadmap",type:"gesloten",label:"Inrichting",q:"In hoeverre beschikt de organisatie over een formeel IT- of securityplan / roadmap?",opties:["A — Er is geen plan; activiteiten zijn ad hoc.","B — Er is een globaal plan, maar dit is niet formeel vastgesteld.","C — Er is een formeel vastgesteld plan dat richting geeft aan activiteiten.","D — Het plan wordt periodiek geëvalueerd en aangepast.","E — Het plan is volledig geïntegreerd in de organisatie en wordt continu geoptimaliseerd."]},
-  {meta:"Vraag 8 van 51",domain:"Governance – Planning / Roadmap",type:"gesloten",label:"Werking",q:"In hoeverre wordt de roadmap actief gebruikt en opgevolgd?",opties:["A — De roadmap wordt niet gebruikt.","B — De roadmap wordt beperkt gebruikt zonder structurele opvolging.","C — De roadmap wordt gebruikt voor planning en sturing.","D — Voortgang wordt actief gemonitord en bijgestuurd.","E — De roadmap wordt continu geoptimaliseerd op basis van prestaties en ontwikkelingen."]},
-  {meta:"Vraag 9 van 51",domain:"Governance – Planning / Roadmap",type:"open",label:"Toelichting",q:"Beschrijf hoe de roadmap wordt opgesteld, gebruikt en bijgehouden binnen de organisatie."},
-  {meta:"Vraag 10 van 51",domain:"Governance – Architectuur",type:"gesloten",label:"Inrichting",q:"In hoeverre beschikt de organisatie over een formeel vastgestelde IT-architectuur?",opties:["A — Er is geen architectuur; keuzes worden ad hoc gemaakt.","B — De huidige situatie is globaal in kaart gebracht.","C — De architectuur is formeel vastgesteld (huidig en gewenst).","D — De architectuur wordt periodiek geëvalueerd en afgestemd op prioriteiten.","E — De architectuur is volledig geïntegreerd in besluitvorming en strategie."]},
-  {meta:"Vraag 11 van 51",domain:"Governance – Architectuur",type:"gesloten",label:"Werking",q:"In hoeverre wordt de architectuur toegepast binnen projecten en besluitvorming?",opties:["A — Architectuur wordt niet toegepast.","B — Architectuur wordt incidenteel toegepast.","C — Architectuur wordt toegepast binnen projecten.","D — Toepassing wordt actief bewaakt en bijgestuurd.","E — Architectuur stuurt structureel alle besluitvorming en wordt continu verbeterd."]},
-  {meta:"Vraag 12 van 51",domain:"Governance – Architectuur",type:"open",label:"Toelichting",q:"Beschrijf hoe de IT-architectuur wordt toegepast bij projecten en beslissingen binnen de organisatie."},
-  {meta:"Vraag 13 van 51",domain:"Risicomanagement – Plan voor behandeling en beperking van risico’s (inclusief risicoacceptatie)",type:"gesloten",label:"Inrichting",q:"In hoeverre is er een formeel proces voor de behandeling en beperking van risico’s?",opties:["A — Er is geen proces; risico’s worden niet behandeld of gedocumenteerd.","B — Behandeling vindt ad hoc plaats, zonder formeel vastgestelde aanpak of eigenaarschap.","C — Er is een formeel vastgesteld proces voor risicobehandeling, inclusief risicoacceptatie.","D — Risicobehandelingsplannen worden periodiek geëvalueerd en aangepast op basis van wijzigingen.","E — Risicobehandeling is volledig geïntegreerd in governance en stuurt aantoonbaar besluitvorming."]},
-  {meta:"Vraag 14 van 51",domain:"Risicomanagement – Plan voor behandeling en beperking van risico’s (inclusief risicoacceptatie)",type:"gesloten",label:"Werking",q:"In hoeverre worden risicobehandelingsplannen daadwerkelijk uitgevoerd en gemonitord?",opties:["A — Plannen worden niet uitgevoerd of gemonitord.","B — Uitvoering vindt incidenteel plaats zonder structurele opvolging.","C — Plannen worden uitgevoerd en voortgang wordt periodiek gerapporteerd.","D — Uitvoering wordt actief gemonitord en bijgestuurd op basis van risicowijzigingen.","E — Risicobehandeling is continu, datagedreven en volledig geborgd in audits en governance."]},
-  {meta:"Vraag 15 van 51",domain:"Risicomanagement – Plan voor behandeling en beperking van risico’s (inclusief risicoacceptatie)",type:"open",label:"Toelichting",q:"Beschrijf hoe risico’s worden behandeld, beperkt en geaccepteerd binnen de organisatie en hoe dit proces is ingericht."},
-  {meta:"Vraag 16 van 51",domain:"Organisatie – Eigenaarschap, rollen en verantwoordelijkheden",type:"gesloten",label:"Inrichting",q:"In hoeverre zijn rollen en verantwoordelijkheden voor IT en informatiebeveiliging formeel vastgesteld?",opties:["A — Rollen en verantwoordelijkheden zijn niet vastgelegd en worden ad hoc ingevuld.","B — Belangrijke rollen zijn deels benoemd, maar niet formeel vastgelegd of volledig duidelijk.","C — Rollen en verantwoordelijkheden zijn formeel vastgesteld en goedgekeurd door management.","D — Rollen zijn duidelijk belegd, periodiek geëvalueerd en afgestemd op organisatiedoelen.","E — Rollen en verantwoordelijkheden zijn volledig geïntegreerd in governance en sturen actief besluitvorming en processen."]},
-  {meta:"Vraag 17 van 51",domain:"Organisatie – Eigenaarschap, rollen en verantwoordelijkheden",type:"gesloten",label:"Werking",q:"In hoeverre worden rollen en verantwoordelijkheden daadwerkelijk nageleefd binnen de organisatie?",opties:["A — Rollen worden niet gevolgd in de praktijk.","B — Rollen worden inconsistent toegepast.","C — Rollen worden toegepast en zijn bekend binnen de organisatie.","D — Naleving wordt actief gemonitord en bijgestuurd.","E — Rollen en verantwoordelijkheden worden continu geoptimaliseerd en zijn volledig geïntegreerd in de organisatie."]},
-  {meta:"Vraag 18 van 51",domain:"Organisatie – Eigenaarschap, rollen en verantwoordelijkheden",type:"open",label:"Toelichting",q:"Beschrijf hoe rollen en verantwoordelijkheden in de praktijk zijn belegd en hoe hierop wordt gestuurd."},
-  {meta:"Vraag 19 van 51",domain:"Organisatie – Functiescheiding",type:"gesloten",label:"Inrichting",q:"In hoeverre is functiescheiding formeel ingericht binnen de organisatie?",opties:["A — Er is geen functiescheiding; kritieke taken kunnen door één persoon uitgevoerd worden.","B — Functiescheiding wordt deels toegepast, maar niet formeel vastgelegd.","C — Functiescheiding is formeel vastgesteld en geïmplementeerd.","D — Functiescheiding wordt periodiek gecontroleerd en geëvalueerd.","E — Functiescheiding is volledig geautomatiseerd en geïntegreerd in IAM en governance."]},
-  {meta:"Vraag 20 van 51",domain:"Organisatie – Functiescheiding",type:"gesloten",label:"Werking",q:"In hoeverre wordt functiescheiding in de praktijk gehandhaafd en gecontroleerd?",opties:["A — Functiescheiding wordt niet gecontroleerd.","B — Controle vindt beperkt en onregelmatig plaats.","C — Functiescheiding wordt periodiek gecontroleerd.","D — Afwijkingen worden actief gemonitord en gecorrigeerd.","E — Functiescheiding wordt continu bewaakt en geoptimaliseerd met geautomatiseerde controles."]},
-  {meta:"Vraag 21 van 51",domain:"Organisatie – Functiescheiding",type:"open",label:"Toelichting",q:"Beschrijf hoe functiescheiding in de praktijk is ingericht, gecontroleerd en geborgd."},
-  {meta:"Vraag 22 van 51",domain:"People – Training en certificering",type:"gesloten",label:"Inrichting",q:"In hoeverre is er een formeel programma voor training en certificering?",opties:["A — Er is geen structureel trainingsprogramma.","B — Training wordt incidenteel aangeboden zonder vaste structuur.","C — Er is een formeel trainingsprogramma voor medewerkers.","D — Trainingen worden periodiek geëvalueerd en afgestemd op rollen.","E — Training en ontwikkeling zijn volledig geïntegreerd in HR en strategische doelen."]},
-  {meta:"Vraag 23 van 51",domain:"People – Training en certificering",type:"gesloten",label:"Werking",q:"In hoeverre worden trainingen daadwerkelijk gevolgd en toegepast?",opties:["A — Trainingen worden niet gevolgd of toegepast.","B — Deelname is beperkt en niet structureel.","C — Medewerkers volgen trainingen en passen kennis toe.","D — Effectiviteit van trainingen wordt gemonitord en verbeterd.","E — Trainingen leiden aantoonbaar tot continue verbetering van kennis en prestaties."]},
-  {meta:"Vraag 24 van 51",domain:"People – Training en certificering",type:"open",label:"Toelichting",q:"Beschrijf hoe de ontwikkeling en certificering van medewerkers op het gebied van security wordt gevolgd en geborgd."},
-  {meta:"Vraag 25 van 51",domain:"People – Afhankelijkheid van individuen",type:"gesloten",label:"Inrichting",q:"In hoeverre is de organisatie ingericht om afhankelijkheid van individuen te beperken?",opties:["A — Er is sterke afhankelijkheid van individuele medewerkers.","B — Er zijn beperkte maatregelen, maar geen structurele aanpak.","C — Kritieke rollen en kennis zijn geïdentificeerd en vastgelegd.","D — Afhankelijkheden worden actief gemanaged en periodiek geëvalueerd.","E — Afhankelijkheden zijn volledig geminimaliseerd en geïntegreerd in risicobeheer."]},
-  {meta:"Vraag 26 van 51",domain:"People – Afhankelijkheid van individuen",type:"gesloten",label:"Werking",q:"In hoeverre wordt kennis daadwerkelijk gedeeld en geborgd binnen de organisatie?",opties:["A — Kennis zit voornamelijk bij individuen.","B — Kennisdeling vindt beperkt plaats.","C — Kennis wordt actief gedeeld en vastgelegd.","D — Kennisdeling wordt gemonitord en verbeterd.","E — Kennis is volledig geborgd en continu beschikbaar binnen de organisatie."]},
-  {meta:"Vraag 27 van 51",domain:"People – Afhankelijkheid van individuen",type:"open",label:"Toelichting",q:"Beschrijf hoe de organisatie voorkomt dat kennis verloren gaat bij uitval of vertrek van medewerkers."},
-  {meta:"Vraag 28 van 51",domain:"People – Super users",type:"gesloten",label:"Inrichting",q:"In hoeverre is het beheer van super-userrechten formeel ingericht?",opties:["A — Er is geen beleid voor super-userrechten.","B — Er zijn informele afspraken, maar geen formeel beleid.","C — Er is een formeel vastgesteld beleid.","D — Beleid wordt periodiek geëvalueerd en aangescherpt.","E — Beheer is volledig geïntegreerd in security governance en compliance."]},
-  {meta:"Vraag 29 van 51",domain:"People – Super users",type:"gesloten",label:"Werking",q:"In hoeverre wordt het gebruik van super-userrechten gecontroleerd?",opties:["A — Gebruik wordt niet gecontroleerd.","B — Controle vindt alleen plaats bij incidenten.","C — Gebruik wordt periodiek gecontroleerd.","D — Gebruik wordt actief gemonitord en geanalyseerd.","E — Gebruik wordt continu gemonitord met geautomatiseerde detectie."]},
-  {meta:"Vraag 30 van 51",domain:"People – Super users",type:"open",label:"Toelichting",q:"Beschrijf hoe misbruik van super-userrechten wordt voorkomen, gedetecteerd en opgevolgd binnen de organisatie."},
-  {meta:"Vraag 31 van 51",domain:"Ketenbeheer – Service Level Overeenkomsten",type:"gesloten",label:"Inrichting",q:"In hoeverre zijn SLA’s formeel vastgesteld met leveranciers?",opties:["A — Er zijn geen formele SLA’s.","B — Er zijn basisafspraken, maar niet volledig vastgelegd.","C — SLA’s zijn formeel vastgesteld en goedgekeurd.","D — SLA’s worden periodiek geëvalueerd en aangepast.","E — SLA’s zijn volledig geïntegreerd in governance en worden continu gemonitord."]},
-  {meta:"Vraag 32 van 51",domain:"Ketenbeheer – Service Level Overeenkomsten",type:"gesloten",label:"Werking",q:"In hoeverre worden SLA-afspraken daadwerkelijk gemonitord en nageleefd?",opties:["A — SLA’s worden niet gemonitord.","B — Monitoring vindt beperkt plaats.","C — SLA’s worden periodiek gemonitord.","D — Afwijkingen worden actief opgevolgd.","E — SLA-prestaties worden continu geanalyseerd en geoptimaliseerd."]},
-  {meta:"Vraag 33 van 51",domain:"Ketenbeheer – Service Level Overeenkomsten",type:"open",label:"Toelichting",q:"Beschrijf hoe de naleving van SLA’s in de praktijk wordt bewaakt en hoe afwijkingen worden opgevolgd."},
-  {meta:"Vraag 34 van 51",domain:"Ketenbeheer – Service level beheer",type:"gesloten",label:"Inrichting",q:"In hoeverre is servicelevel management ingericht?",opties:["A — Er is geen proces voor servicelevel management.","B — Er is een basisproces, maar niet volledig geïmplementeerd.","C — Er is een formeel proces ingericht.","D — Het proces wordt periodiek geëvalueerd en verbeterd.","E — Servicelevel management is volledig geïntegreerd en geoptimaliseerd."]},
-  {meta:"Vraag 35 van 51",domain:"Ketenbeheer – Service level beheer",type:"gesloten",label:"Werking",q:"In hoeverre worden prestaties actief gemonitord en bijgestuurd?",opties:["A — Prestaties worden niet gemonitord.","B — Monitoring vindt beperkt plaats.","C — Prestaties worden periodiek gemonitord.","D — Bijsturing vindt actief plaats.","E — Monitoring en bijsturing zijn continu en datagedreven."]},
-  {meta:"Vraag 36 van 51",domain:"Ketenbeheer – Service level beheer",type:"open",label:"Toelichting",q:"Beschrijf hoe wordt omgegaan met afwijkingen in serviceprestaties en hoe dit wordt bijgestuurd."},
-  {meta:"Vraag 37 van 51",domain:"Ketenbeheer – Risicobeheer leveranciers",type:"gesloten",label:"Inrichting",q:"In hoeverre is risicobeheer van leveranciers ingericht?",opties:["A — Er is geen inzicht in leveranciersrisico’s.","B — Er zijn beperkte maatregelen zonder structurele aanpak.","C — Risicobeheer is formeel ingericht.","D — Risico’s worden periodiek geëvalueerd en bijgesteld.","E — Risicobeheer is volledig geïntegreerd en continu gemonitord."]},
-  {meta:"Vraag 38 van 51",domain:"Ketenbeheer – Risicobeheer leveranciers",type:"gesloten",label:"Werking",q:"In hoeverre worden leveranciersrisico’s actief beheerd?",opties:["A — Risico’s worden niet beheerd.","B — Beheer is beperkt en inconsistent.","C — Risico’s worden periodiek beheerd.","D — Risico’s worden actief gemonitord en aangepast.","E — Risicobeheer is continu en datagedreven."]},
-  {meta:"Vraag 39 van 51",domain:"Ketenbeheer – Risicobeheer leveranciers",type:"open",label:"Toelichting",q:"Beschrijf hoe risico’s bij leveranciers worden geïdentificeerd, beoordeeld en opgevolgd."},
-  {meta:"Vraag 40 van 51",domain:"Ketenbeheer – Interne beheersing bij derden",type:"gesloten",label:"Inrichting",q:"In hoeverre is controle op externe partijen ingericht?",opties:["A — Er is geen controle op externe partijen.","B — Controle vindt beperkt plaats.","C — Er is een formeel controleproces ingericht.","D — Controle wordt periodiek uitgevoerd en geëvalueerd.","E — Controle is volledig geïntegreerd en geautomatiseerd."]},
-  {meta:"Vraag 41 van 51",domain:"Ketenbeheer – Interne beheersing bij derden",type:"gesloten",label:"Werking",q:"In hoeverre worden externe partijen daadwerkelijk beoordeeld en bijgestuurd?",opties:["A — Externe partijen worden niet beoordeeld.","B — Beoordeling vindt beperkt plaats.","C — Leveranciers worden periodiek beoordeeld.","D — Bevindingen worden actief opgevolgd.","E — Beoordeling is continu en volledig geïntegreerd."]},
-  {meta:"Vraag 42 van 51",domain:"Ketenbeheer – Interne beheersing bij derden",type:"open",label:"Toelichting",q:"Beschrijf hoe naleving door externe partijen wordt gecontroleerd en hoe bevindingen worden opgevolgd."},
-  {meta:"Vraag 43 van 51",domain:"Bedrijfscontinuïteit – Bedrijfscontinuïteitsplanning",type:"gesloten",label:"Inrichting",q:"In hoeverre is een bedrijfscontinuïteitsplan opgesteld?",opties:["A — Er is geen plan.","B — Er is een basisplan, maar niet volledig.","C — Er is een formeel vastgesteld plan.","D — Het plan wordt periodiek getest en verbeterd.","E — Continuïteitsbeheer is volledig geïntegreerd en geoptimaliseerd."]},
-  {meta:"Vraag 44 van 51",domain:"Bedrijfscontinuïteit – Bedrijfscontinuïteitsplanning",type:"gesloten",label:"Werking",q:"In hoeverre wordt het continuïteitsplan actief gebruikt?",opties:["A — Het plan wordt niet gebruikt.","B — Gebruik is beperkt.","C — Het plan wordt toegepast bij incidenten.","D — Gebruik wordt actief getest en verbeterd.","E — Gebruik is continu en geïntegreerd in de organisatie."]},
-  {meta:"Vraag 45 van 51",domain:"Bedrijfscontinuïteit – Bedrijfscontinuïteitsplanning",type:"open",label:"Toelichting",q:"Beschrijf hoe de organisatie is voorbereid op verstoringen en hoe het continuïteitsplan in de praktijk wordt ingezet."},
-  {meta:"Vraag 46 van 51",domain:"Bedrijfscontinuïteit – Disaster Recovery testen",type:"gesloten",label:"Inrichting",q:"In hoeverre zijn disaster recovery tests ingericht?",opties:["A — Er worden geen tests uitgevoerd.","B — Tests vinden incidenteel plaats.","C — Tests worden periodiek uitgevoerd.","D — Tests worden uitgebreid uitgevoerd en geëvalueerd.","E — Tests zijn volledig geïntegreerd in governance en auditcycli."]},
-  {meta:"Vraag 47 van 51",domain:"Bedrijfscontinuïteit – Disaster Recovery testen",type:"gesloten",label:"Werking",q:"In hoeverre leiden tests tot concrete verbeteringen?",opties:["A — Tests leiden niet tot verbeteringen.","B — Verbeteringen worden beperkt doorgevoerd.","C — Verbeteringen worden opgevolgd.","D — Resultaten worden actief gebruikt voor optimalisatie.","E — Verbeteringen zijn continu en datagedreven."]},
-  {meta:"Vraag 48 van 51",domain:"Bedrijfscontinuïteit – Disaster Recovery testen",type:"open",label:"Toelichting",q:"Beschrijf hoe DR-testresultaten worden gebruikt om de herstelcapaciteit van de organisatie te verbeteren."},
-  {meta:"Vraag 49 van 51",domain:"Bedrijfscontinuïteit – Crisisbeheer",type:"gesloten",label:"Inrichting",q:"In hoeverre is crisismanagement ingericht?",opties:["A — Er is geen crisismanagement.","B — Er is een basisaanpak, maar niet volledig.","C — Er is een formeel crisismanagementplan.","D — Het plan wordt periodiek getest en verbeterd.","E — Crisismanagement is volledig geïntegreerd in governance en risicobeheer."]},
-  {meta:"Vraag 50 van 51",domain:"Bedrijfscontinuïteit – Crisisbeheer",type:"gesloten",label:"Werking",q:"In hoeverre wordt crisismanagement effectief toegepast?",opties:["A — Crisismanagement wordt niet toegepast.","B — Toepassing is beperkt en inconsistent.","C — Crisismanagement wordt toegepast bij incidenten.","D — Oefeningen en evaluaties verbeteren de aanpak.","E — Crisismanagement is continu geoptimaliseerd en effectief."]},
-  {meta:"Vraag 51 van 51",domain:"Bedrijfscontinuïteit – Crisisbeheer",type:"open",label:"Toelichting",q:"Beschrijf hoe de organisatie wordt voorbereid op en getraind voor crisissituaties."}
-];
+/* =========================================
+   QUESTIONS + ANSWERS
+========================================= */
 
-var antwoorden = new Array(51).fill(null);
+var vragen = [];
+
+var antwoorden = [];
+
 var answered = 0;
+
 var currentVraag = 0;
 
-function showPage(name, navEl) {
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.vraag-page').forEach(function(p){p.classList.remove('active');});
-  if (name === 'overzicht') {
-    document.getElementById('page-overzicht').classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
-    if (navEl) navEl.classList.add('active');
-    else document.getElementById('nav-overzicht').classList.add('active');
-  } else {
-    var el = document.getElementById('page-' + name);
-    if (el) el.classList.add('active');
-    if (name === 'resultaten') initRadar();
+/* =========================================
+   LOAD QUESTIONS FROM API
+========================================= */
+
+async function loadQuestions() {
+
+  try {
+
+    const response =
+      await fetch(`${backend}/api/questions`);
+
+    if (!response.ok) {
+      throw new Error('Questions API fout');
+    }
+
+    const data = await response.json();
+
+    console.log('Questions loaded:', data);
+
+    vragen = data.map((q, index) => {
+
+      return {
+
+        meta:
+          `Vraag ${index + 1} van ${data.length}`,
+
+        domain:
+          `${q.domain} – ${q.subdomain}`,
+
+        type:
+          q.question_type,
+
+        label:
+          q.question_role,
+
+        q:
+          q.question_text,
+
+        opties:
+          q.question_type === 'gesloten'
+            ? [
+                q.option_a,
+                q.option_b,
+                q.option_c,
+                q.option_d,
+                q.option_e
+              ]
+            : []
+
+      };
+
+    });
+
+    antwoorden =
+      new Array(vragen.length).fill(null);
+
+    console.log(
+      `${vragen.length} vragen geladen`
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert('Fout bij laden van vragen');
+
   }
+
 }
 
+/* =========================================
+   PAGE NAVIGATION
+========================================= */
 
+function showPage(name, navEl) {
 
-function showVraag() {
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.getElementById('page-vraag').classList.add('active');
+  document
+    .querySelectorAll('.page')
+    .forEach(function(p) {
+      p.classList.remove('active');
+    });
+
+  document
+    .querySelectorAll('.vraag-page')
+    .forEach(function(p) {
+      p.classList.remove('active');
+    });
+
+  if (name === 'overzicht') {
+
+    document
+      .getElementById('page-overzicht')
+      .classList.add('active');
+
+    document
+      .querySelectorAll('.nav-item')
+      .forEach(function(n) {
+        n.classList.remove('active');
+      });
+
+    if (navEl) {
+      navEl.classList.add('active');
+    }
+
+  } else {
+
+    var el =
+      document.getElementById(
+        'page-' + name
+      );
+
+    if (el) {
+      el.classList.add('active');
+    }
+
+    if (name === 'resultaten') {
+      initRadar();
+    }
+
+  }
+
+}
+
+/* =========================================
+   START ASSESSMENT
+========================================= */
+
+async function showVraag() {
+
+  if (vragen.length === 0) {
+
+    await loadQuestions();
+
+  }
+
+  document
+    .querySelectorAll('.page')
+    .forEach(function(p) {
+      p.classList.remove('active');
+    });
+
+  document
+    .getElementById('page-vraag')
+    .classList.add('active');
+
   currentVraag = 0;
+
+  answered = 0;
+
   renderVraag();
+
 }
+
+/* =========================================
+   RENDER QUESTION
+========================================= */
 
 function renderVraag() {
-  var v = vragen[currentVraag];
-  document.getElementById('vraag-meta').textContent = v.meta;
-  document.getElementById('vraag-domain').textContent = v.domain;
-  document.getElementById('vraag-q').textContent = v.q;
-  document.getElementById('progress-fill').style.width = ((currentVraag + 1) / 51 * 100) + '%';
-  document.getElementById('footer-center').textContent = answered + ' van 51 vragen beantwoord';
-  document.getElementById('error-gesloten').style.display = 'none';
-  document.getElementById('error-open').style.display = 'none';
 
-  var niveauSec = document.getElementById('niveau-section');
-  var openSec = document.getElementById('open-section');
+  var v = vragen[currentVraag];
+
+  document.getElementById(
+    'vraag-meta'
+  ).textContent = v.meta;
+
+  document.getElementById(
+    'vraag-domain'
+  ).textContent = v.domain;
+
+  document.getElementById(
+    'vraag-q'
+  ).textContent = v.q;
+
+  document.getElementById(
+    'progress-fill'
+  ).style.width =
+    ((currentVraag + 1)
+      / vragen.length * 100) + '%';
+
+  document.getElementById(
+    'footer-center'
+  ).textContent =
+    answered +
+    ' van ' +
+    vragen.length +
+    ' vragen beantwoord';
+
+  document.getElementById(
+    'error-gesloten'
+  ).style.display = 'none';
+
+  document.getElementById(
+    'error-open'
+  ).style.display = 'none';
+
+  var niveauSec =
+    document.getElementById(
+      'niveau-section'
+    );
+
+  var openSec =
+    document.getElementById(
+      'open-section'
+    );
 
   if (v.type === 'gesloten') {
+
     niveauSec.style.display = '';
+
     openSec.style.display = 'none';
-    var niveauNames = ['Ad hoc','Gestructureerd','Effectief','Periodiek beoordeeld','Geoptimaliseerd'];
-    document.querySelectorAll('.niveau-card').forEach(function(c, i) {
-      var cleanTxt = v.opties[i] ? v.opties[i].replace(/^[A-E]\s*[\u2014\u2013\-]\s*/, '') : '';
-      c.innerHTML = '<div class="niv-num">' + (i+1) + '</div><div class="niv-desc" style="font-size:11px;line-height:1.5;color:rgba(255,255,255,0.85);">' + cleanTxt + '</div>';
-      c.classList.toggle('selected', antwoorden[currentVraag] === i + 1);
-    });
+
+    document
+      .querySelectorAll('.niveau-card')
+      .forEach(function(c, i) {
+
+        var option =
+          v.opties[i]
+            ? v.opties[i]
+              .replace(
+                /^[A-E]\s*[\u2014\u2013\-]\s*/,
+                ''
+              )
+            : '';
+
+        c.innerHTML =
+          '<div class="niv-num">' +
+          (i + 1) +
+          '</div>' +
+          '<div class="niv-desc" style="font-size:11px;line-height:1.5;color:rgba(255,255,255,0.85);">' +
+          option +
+          '</div>';
+
+        c.classList.toggle(
+          'selected',
+          antwoorden[currentVraag]
+            === i + 1
+        );
+
+      });
+
   } else {
+
     niveauSec.style.display = 'none';
+
     openSec.style.display = '';
-    document.getElementById('open-antwoord').value = antwoorden[currentVraag] || '';
+
+    document.getElementById(
+      'open-antwoord'
+    ).value =
+      antwoorden[currentVraag] || '';
+
   }
 
-  var bv = document.getElementById('btn-vorige');
-  bv.style.opacity = currentVraag === 0 ? '0.4' : '1';
-  bv.style.pointerEvents = currentVraag === 0 ? 'none' : 'auto';
+  var bv =
+    document.getElementById(
+      'btn-vorige'
+    );
+
+  bv.style.opacity =
+    currentVraag === 0 ? '0.4' : '1';
+
+  bv.style.pointerEvents =
+    currentVraag === 0
+      ? 'none'
+      : 'auto';
+
 }
 
+/* =========================================
+   SELECT LEVEL
+========================================= */
+
 function selectNiveau(n) {
-  var was = antwoorden[currentVraag] !== null;
+
+  var was =
+    antwoorden[currentVraag]
+    !== null;
+
   antwoorden[currentVraag] = n;
-  if (!was) answered++;
-  document.getElementById('footer-center').textContent = answered + ' van 51 vragen beantwoord';
-  document.querySelectorAll('.niveau-card').forEach(function(c, i) { c.classList.toggle('selected', i + 1 === n); });
-  document.getElementById('error-gesloten').style.display = 'none';
+
+  if (!was) {
+    answered++;
+  }
+
+  document.getElementById(
+    'footer-center'
+  ).textContent =
+    answered +
+    ' van ' +
+    vragen.length +
+    ' vragen beantwoord';
+
+  document
+    .querySelectorAll('.niveau-card')
+    .forEach(function(c, i) {
+
+      c.classList.toggle(
+        'selected',
+        i + 1 === n
+      );
+
+    });
+
+  document.getElementById(
+    'error-gesloten'
+  ).style.display = 'none';
+
 }
+
+/* =========================================
+   NEXT QUESTION
+========================================= */
 
 async function volgendeVraag() {
 
@@ -588,31 +789,53 @@ async function volgendeVraag() {
   if (v.type === 'gesloten') {
 
     if (!antwoorden[currentVraag]) {
-      document.getElementById('error-gesloten').style.display = 'block';
+
+      document.getElementById(
+        'error-gesloten'
+      ).style.display = 'block';
+
       return;
+
     }
 
   } else {
 
-    var val = document.getElementById('open-antwoord').value.trim();
+    var val =
+      document
+        .getElementById(
+          'open-antwoord'
+        )
+        .value
+        .trim();
 
     if (!val) {
-      document.getElementById('error-open').style.display = 'block';
+
+      document.getElementById(
+        'error-open'
+      ).style.display = 'block';
+
       return;
+
     }
 
-    var was = antwoorden[currentVraag] !== null &&
-              antwoorden[currentVraag] !== '';
+    var was =
+      antwoorden[currentVraag]
+      !== null &&
+      antwoorden[currentVraag]
+      !== '';
 
     antwoorden[currentVraag] = val;
 
-    if (!was) answered++;
+    if (!was) {
+      answered++;
+    }
 
-    document.getElementById('footer-center').textContent =
-      answered + ' van 51 vragen beantwoord';
   }
 
-  if (currentVraag < 51 - 1) {
+  if (
+    currentVraag <
+    vragen.length - 1
+  ) {
 
     currentVraag++;
 
@@ -630,125 +853,319 @@ async function volgendeVraag() {
 
 }
 
+/* =========================================
+   PREVIOUS QUESTION
+========================================= */
 
 function vorigeVraag() {
-  if (vragen[currentVraag].type === 'open') {
-    var val = document.getElementById('open-antwoord').value.trim();
-    if (val) antwoorden[currentVraag] = val;
+
+  if (
+    vragen[currentVraag].type
+    === 'open'
+  ) {
+
+    var val =
+      document
+        .getElementById(
+          'open-antwoord'
+        )
+        .value
+        .trim();
+
+    if (val) {
+      antwoorden[currentVraag] = val;
+    }
+
   }
-  if (currentVraag > 0) { currentVraag--; renderVraag(); }
+
+  if (currentVraag > 0) {
+
+    currentVraag--;
+
+    renderVraag();
+
+  }
+
 }
 
-function toggleSidebar() {
-  var sb = document.getElementById('sidebar');
-  if (!sb) return;
-  var collapsed = sb.classList.toggle('collapsed');
-  var arrow = document.getElementById('sb-arrow');
-  if (arrow) arrow.style.transform = collapsed ? 'rotate(180deg)' : '';
-}
-
-var radarInited = false;
-function initRadar() {
-  if (radarInited) return;
-  radarInited = true;
-  var ctx = document.getElementById('radarChart').getContext('2d');
-  var labels = ['Strategie','Beleid','Planning','Architectuur','Risicobeheer','Eigenaarschap','Functiescheiding','Training','Afhankelijkheid','Super Users','SLA','SLB','Risico lev.','Int. beheersing','BCP','DR testen','Crisisbeheer'];
-  new Chart(ctx, {type:'radar',data:{labels:labels,datasets:[{label:'Score',data:[3,2,4,3,2,2,3,3,2,2,3,3,2,2,3,3,2],borderColor:'#e91e8c',backgroundColor:'rgba(233,30,140,0.15)',pointBackgroundColor:'#e91e8c',pointRadius:3,borderWidth:2},{label:'Benchmark',data:[3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],borderColor:'rgba(77,122,255,0.4)',backgroundColor:'rgba(77,122,255,0.06)',pointRadius:0,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:5,ticks:{stepSize:1,color:'rgba(140,150,180,0.5)',backdropColor:'transparent',font:{size:10}},grid:{color:'rgba(255,255,255,0.08)'},angleLines:{color:'rgba(255,255,255,0.08)'},pointLabels:{color:'#8891b0',font:{size:10,family:'Inter'}}}}}});
-}
+/* =========================================
+   SAVE ASSESSMENT
+========================================= */
 
 async function saveAssessment() {
 
   try {
 
-    const numericAnswers = antwoorden.filter(a =>
-      typeof a === 'number'
-    );
+    const numericAnswers =
+      antwoorden.filter(a =>
+        typeof a === 'number'
+      );
 
     const average =
-      numericAnswers.reduce((a, b) => a + b, 0) /
-      numericAnswers.length;
+      numericAnswers
+        .reduce((a, b) => a + b, 0)
+      / numericAnswers.length;
 
-    const spiderScores = {
-      "Strategie": antwoorden[0] || 0,
-      "Beleid": antwoorden[3] || 0,
-      "Planning / Roadmap": antwoorden[6] || 0,
-      "Architectuur": antwoorden[9] || 0,
-      "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": antwoorden[12] || 0,
-      "Eigenaarschap, rollen, verantwoording en verantwoordelijkheid": antwoorden[15] || 0,
-      "Functiescheiding": antwoorden[18] || 0,
-      "Certificering, training en scholing": antwoorden[21] || 0,
-      "Afhankelijkheid van individuen": antwoorden[24] || 0,
-      "Super Users": antwoorden[27] || 0,
-      "Service level overeenkomst": antwoorden[30] || 0,
-      "Service level beheer": antwoorden[33] || 0,
-      "Risicobeheer van leveranciers": antwoorden[36] || 0,
-      "Interne beheersing bij derden": antwoorden[39] || 0,
-      "Bedrijfscontinuïteits-planning": antwoorden[42] || 0,
-      "Testen van Disaster recovery": antwoorden[45] || 0,
-      "Crisisbeheer": antwoorden[48] || 0
-    };
+    const spiderScores = {};
+
+    vragen.forEach((v, index) => {
+
+      if (
+        v.label === 'Inrichting'
+        || v.label === 'inrichting'
+      ) {
+
+        spiderScores[v.domain] =
+          antwoorden[index] || 0;
+
+      }
+
+    });
 
     const payload = {
 
-      company_name: 'Demo klant',
+      company_name:
+        'Demo klant',
 
-      maturity_level: Math.round(average),
+      maturity_level:
+        Math.round(average),
 
-      average_score: Number(average.toFixed(1)),
+      average_score:
+        Number(
+          average.toFixed(1)
+        ),
 
-      assessment_date: new Date().toISOString(),
+      assessment_date:
+        new Date().toISOString(),
 
-      status: 'Afgerond',
+      status:
+        'Afgerond',
 
       report_suggestion:
         'Automatisch gegenereerd AI-voorstel op basis van maturity assessment.',
 
-      spider_scores: spiderScores,
+      spider_scores:
+        spiderScores,
 
       details:
         'Assessment ingevuld via frontend maturity assessment portal.',
 
-      last_updated: new Date().toISOString(),
+      last_updated:
+        new Date().toISOString(),
 
-      answers: antwoorden
+      answers:
+        antwoorden
 
     };
 
-    console.log('Sending assessment:', payload);
+    console.log(
+      'Sending assessment:',
+      payload
+    );
 
-    const response = await fetch(`${backend}/api/assessments`, {
+    const response =
+      await fetch(
+        `${backend}/api/assessments`,
+        {
+          method: 'POST',
 
-      method: 'POST',
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
 
-      headers: {
-        'Content-Type': 'application/json'
-      },
-
-      body: JSON.stringify(payload)
-
-    });
+          body:
+            JSON.stringify(payload)
+        }
+      );
 
     if (!response.ok) {
 
-      const errorText = await response.text();
+      const errorText =
+        await response.text();
 
       console.error(errorText);
 
-      throw new Error('Opslaan mislukt');
+      throw new Error(
+        'Opslaan mislukt'
+      );
 
     }
 
-    const result = await response.json();
+    const result =
+      await response.json();
 
-    console.log('Assessment opgeslagen:', result);
+    console.log(
+      'Assessment opgeslagen:',
+      result
+    );
 
   } catch (error) {
 
-    console.error('Save error:', error);
+    console.error(
+      'Save error:',
+      error
+    );
 
-    alert('Opslaan van assessment mislukt');
+    alert(
+      'Opslaan van assessment mislukt'
+    );
 
   }
+
+}
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+function toggleSidebar() {
+
+  var sb =
+    document.getElementById(
+      'sidebar'
+    );
+
+  if (!sb) return;
+
+  var collapsed =
+    sb.classList.toggle(
+      'collapsed'
+    );
+
+  var arrow =
+    document.getElementById(
+      'sb-arrow'
+    );
+
+  if (arrow) {
+
+    arrow.style.transform =
+      collapsed
+        ? 'rotate(180deg)'
+        : '';
+
+  }
+
+}
+
+/* =========================================
+   RADAR CHART
+========================================= */
+
+var radarInited = false;
+
+function initRadar() {
+
+  if (radarInited) return;
+
+  radarInited = true;
+
+  var ctx =
+    document.getElementById(
+      'radarChart'
+    ).getContext('2d');
+
+  var labels =
+    Object.keys(
+      vragen
+        .filter(v =>
+          v.label === 'Inrichting'
+          || v.label === 'inrichting'
+        )
+        .reduce((acc, v) => {
+
+          acc[v.domain] = true;
+
+          return acc;
+
+        }, {})
+    );
+
+  var values = [];
+
+  labels.forEach(label => {
+
+    var foundIndex =
+      vragen.findIndex(v =>
+        v.domain === label &&
+        (
+          v.label === 'Inrichting'
+          || v.label === 'inrichting'
+        )
+      );
+
+    values.push(
+      antwoorden[foundIndex] || 0
+    );
+
+  });
+
+  new Chart(ctx, {
+
+    type: 'radar',
+
+    data: {
+
+      labels: labels,
+
+      datasets: [
+
+        {
+          label: 'Score',
+
+          data: values,
+
+          borderColor: '#e91e8c',
+
+          backgroundColor:
+            'rgba(233,30,140,0.15)',
+
+          pointBackgroundColor:
+            '#e91e8c',
+
+          pointRadius: 3,
+
+          borderWidth: 2
+        }
+
+      ]
+
+    },
+
+    options: {
+
+      responsive: true,
+
+      maintainAspectRatio: false,
+
+      plugins: {
+
+        legend: {
+          display: false
+        }
+
+      },
+
+      scales: {
+
+        r: {
+
+          min: 0,
+
+          max: 5,
+
+          ticks: {
+            stepSize: 1
+          }
+
+        }
+
+      }
+
+    }
+
+  });
 
 }
 </script>

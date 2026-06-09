@@ -192,7 +192,53 @@ app.post("/api/assessments", async (req, res) => {
   }
 
 });
+/* =========================
+   GET QUESTIONS
+========================= */
 
+app.get("/api/questions", async (req, res) => {
+
+  try {
+
+    const result = await pool.query(`
+      SELECT
+          t.domain,
+          t.subdomain,
+
+          q.question_id,
+          q.question_type,
+          q.question_role,
+          q.question_text,
+
+          q.option_a,
+          q.option_b,
+          q.option_c,
+          q.option_d,
+          q.option_e,
+
+          q.display_order
+
+      FROM questions q
+
+      JOIN assessment_topics t
+      ON q.topic_id = t.topic_id
+
+      ORDER BY q.display_order ASC
+    `);
+
+    res.json(result.rows);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message,
+    });
+
+  }
+
+});
 /* =========================
    404 HANDLER
 ========================= */
