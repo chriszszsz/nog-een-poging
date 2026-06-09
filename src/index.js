@@ -240,6 +240,121 @@ app.get("/api/questions", async (req, res) => {
   }
 
 });
+
+/* =========================
+   LOGIN
+========================= */
+
+app.get("/api/login", (req, res) => {
+
+  res.json({
+    message: "GET login route bestaat ✅"
+  });
+
+});
+
+app.post("/api/login", async (req, res) => {
+
+  try {
+
+    console.log("LOGIN REQUEST RECEIVED");
+
+    const {
+      email,
+      password
+    } = req.body;
+
+    console.log("Email:", email);
+
+    const result = await pool.query(
+      `
+      SELECT *
+      FROM users
+      WHERE email = $1
+      `,
+      [email]
+    );
+
+    console.log("Users gevonden:", result.rows.length);
+
+    if (result.rows.length === 0) {
+
+      return res.status(401).json({
+        error: "Gebruiker niet gevonden"
+      });
+
+    }
+
+    const user = result.rows[0];
+
+    console.log("User gevonden:", user.email);
+
+    const validPassword =
+      await bcrypt.compare(
+        password,
+        user.password_hash
+      );
+
+    console.log("Password valid:", validPassword);
+
+    if (!validPassword) {
+
+      return res.status(401).json({
+        error: "Onjuist wachtwoord"
+      });
+
+    }
+
+    const token = jwt.sign(
+
+      {
+        user_id: user.user_id,
+        role: user.role,
+        company_id: user.company_id
+      },
+
+      process.env.JWT_SECRET,
+
+      {
+        expiresIn: "12h"
+      }
+
+    );
+
+    console.log("JWT TOKEN GEMAAKT");
+
+    res.json({
+
+      success: true,
+
+      token,
+
+      user: {
+
+        user_id: user.user_id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        role: user.role,
+        company_id: user.company_id
+
+      }
+
+    });
+
+  } catch (err) {
+
+    console.error("LOGIN ERROR:");
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message,
+    });
+
+  }
+
+});
+
 /* =========================
    404 HANDLER
 ========================= */
