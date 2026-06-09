@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axians – Maturity Assessment</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0e1c;--bg2:#111827;--bg3:#1a2035;
+  --blue:#4d7aff;--gold:#f5a623;--green:#4dd9a0;
+  --txt:#e8eaf6;--txt2:#8891b0;--txt3:#5c6480;
+  --border:rgba(255,255,255,0.07);
+  --grad:linear-gradient(135deg,rgba(29,37,64,0.85) 0%,rgba(21,28,53,0.85) 100%);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;flex-direction:column;height:100vh;overflow:hidden;font-size:14px;position:relative;}
+/* Background glow */
+body::before{content:'';position:fixed;inset:-80%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 50% 40% at 25% 52%,rgba(1,140,200,0.70) 0%,transparent 55%),
+    radial-gradient(ellipse 45% 45% at 16% 50%,rgba(0,90,155,0.65) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 45% at 63% 52%,rgba(160,1,110,0.70) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 40% at 74% 56%,rgba(200,1,70,0.60) 0%,transparent 52%),
+    radial-gradient(ellipse 55% 50% at 44% 52%,rgba(20,34,62,1.00) 0%,transparent 50%),
+    #0a1020;
+  filter:blur(90px);}
+
+/* Global topbar */
+.global-topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px;min-height:56px;border-bottom:1px solid var(--border);background:rgba(10,14,28,0.85);backdrop-filter:blur(20px);position:relative;z-index:2;flex-shrink:0;}
+.gtb-left{display:flex;align-items:center;gap:14px;}
+.gtb-right{display:flex;align-items:center;gap:16px;}
+.gtb-logo{height:20px;width:auto;display:block;}
+.gtb-toggle{display:flex;background:rgba(255,255,255,0.12);border-radius:20px;padding:3px;gap:2px;border:1px solid rgba(255,255,255,0.08);}
+.tbtn{width:24px;height:24px;border-radius:50%;border:none;cursor:pointer;background:transparent;color:rgba(255,255,255,0.5);font-size:12px;display:flex;align-items:center;justify-content:center;}
+.tbtn.active{background:rgba(255,255,255,0.18);color:#fff;}
+.gtb-settings{display:flex;align-items:center;cursor:pointer;opacity:0.65;transition:opacity .2s;}
+.gtb-settings:hover{opacity:1;}
+.gtb-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#c0392b,#e74c3c);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;cursor:pointer;}
+
+/* Layout */
+.content-row{display:flex;flex:1;overflow:hidden;position:relative;z-index:1;}
+
+/* Sidebar */
+.sidebar{width:200px;min-width:200px;background:rgba(14,18,32,0.72);backdrop-filter:blur(18px);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width 0.3s ease, min-width 0.3s ease;overflow:hidden;position:relative;z-index:1;}
+.sidebar.collapsed{width:64px;min-width:64px;}
+.sidebar .nav-item-label{transition:opacity 0.2s;white-space:nowrap;}
+.sidebar.collapsed .nav-item-label{display:none;}
+.sidebar.collapsed .sb-foot-label{display:none;}
+.sidebar.collapsed .nav-item{padding:12px 0;display:flex;justify-content:center;padding-left:0;}
+.sidebar.collapsed .sb-foot{justify-content:center;padding:14px 0;padding-left:0;}
+.nav-item{display:flex;align-items:center;gap:10px;}
+.nav-icon{flex-shrink:0;width:22px;height:22px;display:none;align-items:center;justify-content:center;}
+.nav-icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.nav-item.active .nav-icon svg{stroke:#fff;}
+.sidebar.collapsed .nav-icon{display:flex;}
+.nav{padding:16px 0;flex:1;display:flex;flex-direction:column;gap:2px;}
+.nav-item{padding:10px 20px;color:var(--txt2);cursor:pointer;font-size:13px;white-space:nowrap;transition:all .15s;}
+.nav-item:hover{color:var(--txt);background:rgba(255,255,255,.04);}
+.nav-item.active{color:#fff;background:rgba(77,122,255,.12);border-left:3px solid var(--blue);padding-left:17px;font-weight:500;}
+.sidebar.collapsed .nav-item.active{background:rgba(77,122,255,0.85);border-left:none;border-radius:10px;padding:10px 0;margin:0 8px;width:calc(100% - 16px);}
+.sidebar.collapsed .nav-item.active .nav-icon svg{stroke:#fff;}
+.sidebar.collapsed .nav-item:not(.active):hover{background:rgba(255,255,255,0.06);border-radius:8px;}
+.sb-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;color:var(--txt2);font-size:13px;cursor:pointer;white-space:nowrap;}
+.sb-foot:hover{color:var(--txt);}
+.sb-foot svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;transition:transform 0.25s;}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:transparent;position:relative;z-index:1;}
+.page{display:none;flex:1;overflow-y:auto;padding:32px 28px;}
+.page.active{display:block;}
+.page::-webkit-scrollbar{width:6px;}
+.page::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.page-title{font-size:26px;font-weight:700;color:#fff;margin-bottom:24px;letter-spacing:-.5px;}
+
+/* Cards */
+.card{background:var(--grad);border:1px solid var(--border);border-radius:14px;padding:24px 28px;backdrop-filter:blur(8px);}
+.top-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.action-card{border-radius:14px;padding:28px;cursor:pointer;transition:transform .2s;border:1px solid transparent;backdrop-filter:blur(8px);}
+.action-card:hover{transform:translateY(-2px);}
+.action-card.primary{background:linear-gradient(135deg,rgba(42,58,122,0.85),rgba(30,45,104,0.85),rgba(26,37,88,0.85));border-color:rgba(77,122,255,.2);}
+.action-card.secondary{background:linear-gradient(135deg,rgba(35,29,79,0.85),rgba(26,22,60,0.85));border-color:rgba(124,92,252,.2);}
+.ac-icon{width:48px;height:48px;border-radius:12px;background:rgba(77,122,255,.18);display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
+.action-card.secondary .ac-icon{background:rgba(124,92,252,.15);}
+.ac-icon svg{width:22px;height:22px;stroke:#7aacff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.action-card.secondary .ac-icon svg{stroke:#a98cfc;}
+.ac-title{font-size:16px;font-weight:600;color:#fff;margin-bottom:6px;}
+.ac-desc{font-size:12.5px;color:rgba(200,210,255,.6);line-height:1.5;}
+
+/* Overview */
+.lbl{font-size:11px;color:var(--txt3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.summary-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;}
+.summary-date{font-size:22px;font-weight:600;color:#fff;}
+.btn{border:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
+.btn-primary{background:var(--blue);color:#fff;}
+.btn-primary:hover{background:#3d6ae0;}
+.btn-outline{background:transparent;color:var(--txt);border:1px solid var(--border);}
+.maturity-sec{border-top:1px solid var(--border);padding-top:22px;}
+.score-row{display:flex;align-items:baseline;margin-bottom:20px;}
+.score-num{font-size:44px;font-weight:700;color:#fff;line-height:1;}
+.score-den{font-size:20px;color:var(--txt3);font-weight:400;margin-left:4px;}
+.domain-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;}
+.domain-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:16px 12px;text-align:center;}
+.domain-score{font-size:24px;font-weight:700;color:var(--gold);margin-bottom:6px;}
+.domain-name{font-size:11px;color:var(--txt3);line-height:1.35;}
+.bottom-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.info-card{background:var(--grad);border:1px solid var(--border);border-radius:14px;padding:24px;cursor:pointer;transition:border-color .2s;backdrop-filter:blur(8px);}
+.info-card:hover{border-color:rgba(77,122,255,.4);}
+.ic-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:10px;}
+.ic-text{font-size:12.5px;color:var(--txt2);line-height:1.6;}
+
+/* 6 Domeinen */
+.domein-list{background:var(--grad);border:1px solid var(--border);border-radius:14px;padding:32px;display:flex;flex-direction:column;gap:32px;backdrop-filter:blur(8px);}
+.domein-item h3{font-size:15px;font-weight:600;color:#fff;margin-bottom:10px;}
+.domein-item p{font-size:13px;color:var(--txt2);line-height:1.7;}
+
+/* Maturity Schaal */
+.schaal-list{background:var(--grad);border:1px solid var(--border);border-radius:14px;padding:32px;display:flex;flex-direction:column;backdrop-filter:blur(8px);}
+.schaal-item{padding:24px 0;border-bottom:1px solid var(--border);}
+.schaal-item:last-child{border-bottom:none;padding-bottom:0;}
+.schaal-item:first-child{padding-top:0;}
+.schaal-num{font-size:13px;color:var(--txt2);margin-bottom:6px;}
+.schaal-text{font-size:13px;color:var(--txt2);line-height:1.7;}
+
+/* Eerdere resultaten */
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:18px;}
+.stat-card{background:var(--grad);border:1px solid var(--border);border-radius:14px;padding:24px 28px;backdrop-filter:blur(8px);}
+.stat-val{font-size:36px;font-weight:700;color:#fff;margin-top:8px;}
+.stat-val.green{color:#a3e635;}
+.stat-val.blue{color:var(--blue);font-size:24px;margin-top:12px;}
+.table-card{background:var(--grad);border:1px solid var(--border);border-radius:14px;overflow:hidden;backdrop-filter:blur(8px);}
+.table-title{padding:20px 28px;font-size:15px;font-weight:600;color:#fff;border-bottom:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:12px 28px;text-align:left;font-size:12px;color:var(--txt3);font-weight:500;text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border);}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:rgba(255,255,255,.03);}
+tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle;}
+.td-date{font-weight:500;}
+.td-day{font-size:11px;color:var(--blue);margin-top:2px;}
+.score-main{font-size:15px;font-weight:600;}
+.score-sub{font-size:11px;color:var(--txt3);}
+.badge-delta{background:rgba(77,122,255,.15);color:var(--blue);font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;margin-left:8px;}
+.badge-status{display:inline-flex;align-items:center;gap:6px;background:rgba(77,122,255,.1);color:var(--blue);font-size:12px;padding:5px 12px;border-radius:20px;}
+.badge-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;}
+.btn-table{background:transparent;border:1px solid var(--border);color:var(--txt);padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px;transition:all .2s;white-space:nowrap;}
+.btn-table:hover{border-color:var(--blue);color:#fff;}
+
+/* Resultaten */
+.res-topbar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
+.res-date{font-size:22px;font-weight:600;color:#fff;margin-top:4px;}
+.res-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:18px;}
+.res-stat{background:var(--grad);border:1px solid var(--border);border-radius:14px;padding:20px 24px;backdrop-filter:blur(8px);}
+.rs-label{font-size:11px;color:var(--txt3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;}
+.rs-val{font-size:30px;font-weight:700;color:#fff;}
+.rs-val span{font-size:16px;color:var(--txt3);font-weight:400;}
+.rs-val.accent{color:var(--blue);}
+.radar-card{background:var(--grad);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:18px;backdrop-filter:blur(8px);}
+.radar-wrap{position:relative;height:400px;}
+.legend-row{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:12px;font-size:12px;color:var(--txt2);}
+.legend-dot{width:10px;height:10px;border-radius:50%;background:#e91e8c;}
+.answers-card{background:var(--grad);border:1px solid var(--border);border-radius:14px;padding:24px 28px;backdrop-filter:blur(8px);}
+.ans-header{font-size:15px;font-weight:600;color:#fff;margin-bottom:16px;}
+.ans-item{padding:16px 0;border-bottom:1px solid var(--border);}
+.ans-item:last-child{border-bottom:none;}
+.ans-q{font-size:13px;font-weight:500;color:#fff;margin-bottom:4px;}
+.ans-a{font-size:12.5px;color:var(--txt2);}
+
+/* Vraag scherm */
+.vraag-page{display:none;flex-direction:column;height:100%;overflow:hidden;background:#0d1428;}
+.vraag-page.active{display:flex;}
+.vraag-header{padding:18px 32px;border-bottom:1px solid var(--border);background:rgba(13,20,40,0.95);flex-shrink:0;}
+.vraag-header-row{display:flex;align-items:flex-start;justify-content:space-between;}
+.vraag-meta{font-size:12px;color:var(--txt3);margin-bottom:4px;}
+.vraag-domain{font-size:15px;font-weight:600;color:#fff;margin-bottom:10px;}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .4s;}
+.vraag-body{flex:1;overflow-y:auto;padding:48px 120px;display:flex;flex-direction:column;gap:32px;background:#0d1428;}
+.vraag-body::-webkit-scrollbar{width:6px;}
+.vraag-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.vraag-q{font-size:28px;font-weight:700;color:#fff;line-height:1.3;letter-spacing:-.5px;}
+.vraag-sub{font-size:14px;color:var(--txt2);margin-top:12px;}
+.niveau-label{font-size:13px;font-weight:500;color:var(--txt2);margin-bottom:14px;}
+.niveau-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.niveau-card{background:rgba(255,255,255,.04);border:2px solid var(--border);border-radius:12px;padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s;}
+.niveau-card:hover{border-color:var(--blue);background:rgba(77,122,255,.08);}
+.niveau-card.selected{border-color:var(--blue);background:rgba(77,122,255,.15);}
+.niv-num{font-size:32px;font-weight:700;color:#fff;margin-bottom:8px;}
+.niv-name{font-size:13px;font-weight:600;color:#fff;margin-bottom:6px;}
+.niv-desc{font-size:11px;color:var(--txt3);line-height:1.4;}
+.toelichting-label{font-size:13px;font-weight:500;color:var(--txt2);margin-bottom:10px;}
+.toelichting-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:16px;color:var(--txt);font-family:'Inter',sans-serif;font-size:13px;resize:none;height:120px;outline:none;transition:border-color .2s;}
+.toelichting-input:focus{border-color:var(--blue);}
+.toelichting-input::placeholder{color:var(--txt3);}
+.vraag-footer{padding:20px 32px;border-top:1px solid var(--border);background:rgba(13,20,40,0.95);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.footer-center{font-size:13px;color:var(--txt3);}
+.btn-nav{padding:10px 24px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;border:1px solid var(--border);color:var(--txt);background:transparent;}
+.btn-nav:hover{border-color:var(--blue);color:#fff;}
+.btn-nav.next{background:var(--blue);color:#fff;border-color:transparent;}
+.btn-nav.next:hover{background:#3d6ae0;}
+
+
+.error-msg{margin-top:10px;font-size:12.5px;color:#ff6b6b;font-weight:500;}
+
+</style>
+</head>
+<body>
+
+<!-- GLOBAL TOPBAR -->
+<div class="global-topbar">
+  <div class="gtb-left">
+    <svg viewBox="0 0 20 20" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="8" height="8" rx="1.5" fill="white"/>
+      <rect x="12" y="0" width="8" height="8" rx="1.5" fill="white"/>
+      <rect x="0" y="12" width="8" height="8" rx="1.5" fill="white"/>
+      <rect x="12" y="12" width="8" height="8" rx="1.5" fill="white"/>
+    </svg>
+    <img style="mix-blend-mode:screen;" src="data:image/jpeg;base64,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" alt="axians" class="gtb-logo" />
+    <div class="gtb-toggle">
+      <button class="tbtn active">
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor"><circle cx="8" cy="8" r="3"/><line x1="8" y1="1" x2="8" y2="3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="12.5" x2="8" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="1" y1="8" x2="3.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="12.5" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <button class="tbtn">
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor"><path d="M8 2a6 6 0 1 0 6 6A4.6 4.6 0 0 1 8 2z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="gtb-right">
+    <div class="gtb-settings">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+    <div class="gtb-avatar">WD</div>
+  </div>
+</div>
+
+<div class="content-row">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <nav class="nav">
+    <div class="nav-item active" id="nav-overzicht" onclick="showPage('overzicht',this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+      <span class="nav-item-label">Overzicht</span>
+    </div>
+    <div class="nav-item" onclick="showPage('overzicht',this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></span>
+      <span class="nav-item-label">CMDB</span>
+    </div>
+    <div class="nav-item" onclick="showPage('overzicht',this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span>
+      <span class="nav-item-label">Cases</span>
+    </div>
+    <div class="nav-item" onclick="showPage('overzicht',this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></span>
+      <span class="nav-item-label">Changes</span>
+    </div>
+    <div class="nav-item" onclick="showPage('overzicht',this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+      <span class="nav-item-label">Rapportages</span>
+    </div>
+    <div class="nav-item" onclick="showPage('overzicht',this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></span>
+      <span class="nav-item-label">Facturen</span>
+    </div>
+    <div class="nav-item" onclick="showPage('overzicht',this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
+      <span class="nav-item-label">Mijn documenten</span>
+    </div>
+    <div class="nav-item" id="nav-maturity" onclick="showPage('overzicht',this)">
+      <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+      <span class="nav-item-label">Maturity assessment</span>
+    </div>
+
+  </nav>
+  <div class="sb-foot" onclick="toggleSidebar()">
+    <svg id="sb-arrow" viewBox="0 0 24 24" width="16" height="16" style="flex-shrink:0;transition:transform 0.25s;"><polyline points="15 18 9 12 15 6"/><polyline points="9 18 3 12 9 6"/></svg>
+    <span class="sb-foot-label" style="transition:opacity 0.2s;">Verkleinen</span>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- PAGE: OVERZICHT -->
+  <div class="page active" id="page-overzicht">
+    <h1 class="page-title">Maturity assessment</h1>
+    <div class="top-cards">
+      <div class="action-card primary" onclick="showVraag()">
+        <div class="ac-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="ac-title">Start nieuw assessment</div>
+        <div class="ac-desc">Begin een nieuwe maturity scan voor uw organisatie</div>
+      </div>
+      <div class="action-card secondary" onclick="showPage('eerdere')">
+        <div class="ac-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <div class="ac-title">Bekijk eerdere resultaten</div>
+        <div class="ac-desc">Raadpleeg de geschiedenis en vergelijk assessments</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:18px;">
+      <div class="summary-top">
+        <div><div class="lbl">Laatste assessment</div><div class="summary-date">15 maart 2026</div></div>
+        <button class="btn btn-primary" onclick="showPage('resultaten')">Bekijk resultaten</button>
+      </div>
+      <div class="maturity-sec">
+        <div class="lbl" style="margin-bottom:12px;">Gemiddelde maturity</div>
+        <div class="score-row"><span class="score-num">2.7</span><span class="score-den">/ 5.0</span></div>
+        <div class="domain-grid">
+          <div class="domain-card"><div class="domain-score">3</div><div class="domain-name">Governance</div></div>
+          <div class="domain-card"><div class="domain-score">2</div><div class="domain-name">Risicomanagement</div></div>
+          <div class="domain-card"><div class="domain-score">3</div><div class="domain-name">Organisatie</div></div>
+          <div class="domain-card"><div class="domain-score">2</div><div class="domain-name">People</div></div>
+          <div class="domain-card"><div class="domain-score">2</div><div class="domain-name">Ketenbeheer</div></div>
+          <div class="domain-card"><div class="domain-score">4</div><div class="domain-name">Bedrijfscontinu&shy;ïteitsbeheer</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-cards">
+      <div class="info-card" onclick="showPage('domeinen')"><div class="ic-title">6 domeinen</div><div class="ic-text">Governance, Risicomanagement, Organisatie, People, Ketenbeheer, Bedrijfscontinuïteitsbeheer</div></div>
+      <div class="info-card" onclick="showPage('schaal')"><div class="ic-title">Maturity schaal</div><div class="ic-text">5 niveaus: Ad hoc, Gestructureerd, Effectief, Periodiek beoordeeld, Geoptimaliseerd</div></div>
+      <div class="info-card" onclick="showPage('resultaten')"><div class="ic-title">Inzichten</div><div class="ic-text">Concrete aanbevelingen en vervolgstappen op basis van uw scores</div></div>
+    </div>
+  </div>
+
+  <!-- PAGE: 6 DOMEINEN -->
+  <div class="page" id="page-domeinen">
+    <h1 class="page-title">6 domeinen</h1>
+    <div class="domein-list">
+      <div class="domein-item"><h3>Governance</h3><p>Governance vormt het strategisch fundament van de organisatie. Het omvat de langetermijnvisie en de formele kaders die nodig zijn om de organisatie gericht aan te sturen. Hierbij wordt de brug geslagen tussen de overkoepelende strategie en de praktische uitvoering via een roadmap en een doordachte architectuur.</p></div>
+      <div class="domein-item"><h3>Risicomanagement</h3><p>Risicomanagement is het proces waarin onzekerheden methodisch in kaart worden gebracht en beheerst. Het richt zich op het creëren van inzicht in bedreigingen, zodat er bewuste keuzes gemaakt kunnen worden over de aanpak hiervan.</p></div>
+      <div class="domein-item"><h3>Organisatie</h3><p>Dit domein gaat over de inrichting van de interne structuur en de beheersbaarheid van processen. Het waarborgt dat verantwoordelijkheden en eigenaarschap helder zijn belegd, zodat er geen onduidelijkheid bestaat over wie waarvoor aanspreekbaar is.</p></div>
+      <div class="domein-item"><h3>People</h3><p>Het domein People richt zich op de deskundigheid, de inzetbaarheid en het gedrag van medewerkers. Het waarborgt dat de nodige kennis aanwezig is door continue scholing en dat deze kennis behouden blijft voor de organisatie.</p></div>
+      <div class="domein-item"><h3>Ketenbeheer</h3><p>Ketenbeheer regisseert de samenwerking met externe partners en leveranciers. In een verbonden economie is het cruciaal dat de kwaliteit en veiligheid bij derden aansluiten op de eigen standaarden.</p></div>
+      <div class="domein-item"><h3>Bedrijfscontinuïteitsbeheer</h3><p>Bedrijfscontinuïteitsbeheer waarborgt de veerkracht van de organisatie tijdens en na een incident. Het richt zich op het vermogen om kritieke diensten draaiende te houden wanneer de normale operatie wordt verstoord.</p></div>
+    </div>
+  </div>
+
+  <!-- PAGE: MATURITY SCHAAL -->
+  <div class="page" id="page-schaal">
+    <h1 class="page-title">Maturity schaal</h1>
+    <div class="schaal-list">
+      <div class="schaal-item"><div class="schaal-num">1. Ad hoc</div><p class="schaal-text">De laagste graad van volwassenheid kenmerkt zich door een reactieve houding. Activiteiten vinden incidenteel plaats en successen zijn vaak het resultaat van de persoonlijke inzet van een individu in plaats van een bewuste organisatiestructuur.</p></div>
+      <div class="schaal-item"><div class="schaal-num">2. Gestructureerd</div><p class="schaal-text">Er ontstaat een basisvorm van volwassenheid zodra de organisatie leert van eerdere projecten. Taken worden met een zekere regelmaat uitgevoerd en er is besef van de noodzakelijke stappen.</p></div>
+      <div class="schaal-item"><div class="schaal-num">3. Effectief en aantoonbaar</div><p class="schaal-text">Een volwassen organisatiebreed fundament wordt zichtbaar wanneer alle processen eenduidig zijn vastgelegd. De informele werkwijzen maken plaats voor een standaardmethode die door de hele organisatie wordt begrepen en nageleefd.</p></div>
+      <div class="schaal-item"><div class="schaal-num">4. Periodiek beoordeeld</div><p class="schaal-text">Volwassenheid op dit niveau betekent dat de organisatie stuurt op basis van feiten en cijfers. De prestaties van processen worden nauwgezet gemeten en getoetst aan vooraf gestelde doelen.</p></div>
+      <div class="schaal-item"><div class="schaal-num">5. Geoptimaliseerd</div><p class="schaal-text">De hoogste staat van volwassenheid is bereikt wanneer verbetering een integraal onderdeel is geworden van de cultuur. De organisatie leert voortdurend van haar eigen ervaringen en externe trends.</p></div>
+    </div>
+  </div>
+
+  <!-- PAGE: EERDERE RESULTATEN -->
+  <div class="page" id="page-eerdere">
+    <h1 class="page-title">Eerdere resultaten</h1>
+    <div class="stats-row">
+      <div class="stat-card"><div class="lbl">Totaal assessments</div><div class="stat-val">3</div></div>
+      <div class="stat-card"><div class="lbl">Gemiddelde groei</div><div class="stat-val green">+0.8</div></div>
+      <div class="stat-card"><div class="lbl">Laatste assessment</div><div class="stat-val blue">mrt 2026</div></div>
+    </div>
+    <div class="table-card">
+      <div class="table-title">Eerdere assessments</div>
+      <table>
+        <thead><tr><th>Datum</th><th>Gemiddelde score</th><th>Status</th><th>Acties</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><div class="td-date">15 maart 2026</div><div class="td-day">zondag</div></td>
+            <td><span class="score-main">2.7</span> <span class="score-sub">van de 5.0</span> <span class="badge-delta">+0.8</span></td>
+            <td><span class="badge-status">Voltooid</span></td>
+            <td><button class="btn-table" onclick="showPage('resultaten')">Bekijk resultaten →</button></td>
+          </tr>
+          <tr>
+            <td><div class="td-date">20 november 2025</div><div class="td-day">donderdag</div></td>
+            <td><span class="score-main">1.8</span> <span class="score-sub">van de 5.0</span> <span class="badge-delta">+0.3</span></td>
+            <td><span class="badge-status">Voltooid</span></td>
+            <td><button class="btn-table" onclick="showPage('resultaten')">Bekijk resultaten →</button></td>
+          </tr>
+          <tr>
+            <td><div class="td-date">10 juni 2025</div><div class="td-day">dinsdag</div></td>
+            <td><span class="score-main">1.5</span> <span class="score-sub">van de 5.0</span></td>
+            <td><span class="badge-status">Voltooid</span></td>
+            <td><button class="btn-table" onclick="showPage('resultaten')">Bekijk resultaten →</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PAGE: RESULTATEN -->
+  <div class="page" id="page-resultaten">
+    <div class="res-topbar">
+      <div><div class="lbl">Assessment datum</div><div class="res-date">15 maart 2026</div></div>
+      <button class="btn btn-primary" style="margin-top:8px;">⬇ Download rapport</button>
+    </div>
+    <div class="res-stats">
+      <div class="res-stat"><div class="rs-label">Gemiddelde score</div><div class="rs-val">2.7 <span>/ 5.0</span></div></div>
+      <div class="res-stat"><div class="rs-label">Hoog risico maturity-domeinen</div><div class="rs-val accent">6 <span>/ 17</span></div></div>
+      <div class="res-stat"><div class="rs-label">Maturity-domeinen gescoord</div><div class="rs-val">4 <span style="color:#4dd9a0;font-size:16px;">voltooid</span></div></div>
+    </div>
+    <div class="radar-card">
+      <div class="radar-wrap"><canvas id="radarChart"></canvas></div>
+      <div class="legend-row"><span class="legend-dot"></span> Score</div>
+    </div>
+    <div class="answers-card">
+      <div class="ans-header">Gegeven antwoorden</div>
+      <div class="ans-item"><div class="ans-q">Vraag 1: In hoeverre is de strategie formeel vastgesteld?</div><div class="ans-a">Niveau 3 – Effectief en aantoonbaar</div></div>
+      <div class="ans-item"><div class="ans-q">Vraag 2: In hoeverre worden risico's systematisch geïdentificeerd?</div><div class="ans-a">Niveau 2 – Gestructureerd</div></div>
+      <div class="ans-item"><div class="ans-q">Vraag 3: In hoeverre zijn rollen en verantwoordelijkheden vastgelegd?</div><div class="ans-a">Niveau 3 – Effectief en aantoonbaar</div></div>
+      <div class="ans-item"><div class="ans-q">Vraag 4: In hoeverre worden medewerkers continu opgeleid?</div><div class="ans-a">Niveau 2 – Gestructureerd</div></div>
+      <div class="ans-item"><div class="ans-q">Vraag 5: In hoeverre worden leveranciers actief gemonitord?</div><div class="ans-a">Niveau 2 – Gestructureerd</div></div>
+    </div>
+  </div>
+
+  <!-- PAGE: VRAAG -->
+  <div class="vraag-page" id="page-vraag">
+    <div class="vraag-header">
+      <div class="vraag-header-row">
+        <div>
+          <div class="vraag-meta" id="vraag-meta">Vraag 1 van 12</div>
+          <div class="vraag-domain" id="vraag-domain">Domein: Governance</div>
+        </div>
+        <button class="btn btn-outline" style="font-size:12px;padding:8px 16px;">Opslaan &amp; later verder</button>
+      </div>
+      <div class="progress-bar" style="margin-top:10px;"><div class="progress-fill" id="progress-fill" style="width:8%;"></div></div>
+    </div>
+    <div class="vraag-body" id="vraag-body">
+      <div>
+        
+        <div class="vraag-q" id="vraag-q"></div>
+      </div>
+      <div id="niveau-section">
+        <div class="niveau-label">Selecteer maturity niveau (1-5)</div>
+        <div class="niveau-cards" id="niveau-cards">
+          <div class="niveau-card" onclick="selectNiveau(1)"><div class="niv-num">1</div><div class="niv-name">Ad hoc</div><div class="niv-desc">Initieel, ad-hoc uitvoering</div></div>
+          <div class="niveau-card" onclick="selectNiveau(2)"><div class="niv-num">2</div><div class="niv-name">Gestructureerd</div><div class="niv-desc">Gestructureerd en gedocumenteerd</div></div>
+          <div class="niveau-card" onclick="selectNiveau(3)"><div class="niv-num">3</div><div class="niv-name">Effectief</div><div class="niv-desc">Effectief en aantoonbaar</div></div>
+          <div class="niveau-card" onclick="selectNiveau(4)"><div class="niv-num">4</div><div class="niv-name">Periodiek beoordeeld</div><div class="niv-desc">Periodiek gemeten en verbeterd</div></div>
+          <div class="niveau-card" onclick="selectNiveau(5)"><div class="niv-num">5</div><div class="niv-name">Geoptimaliseerd</div><div class="niv-desc">Continue optimalisatie</div></div>
+        </div>
+        <div class="error-msg" id="error-gesloten" style="display:none;">Selecteer een niveau om verder te gaan.</div>
+      </div>
+      <div id="open-section" style="display:none;">
+        <div class="toelichting-label">Uw antwoord</div>
+        <textarea class="toelichting-input" id="open-antwoord" placeholder="Omschrijf uitgebreid hoe dit in de praktijk werkt binnen uw organisatie..."></textarea>
+        <div class="error-msg" id="error-open" style="display:none;">Vul een antwoord in om verder te gaan.</div>
+      </div>
+    </div>
+    <div class="vraag-footer">
+      <button class="btn-nav" id="btn-vorige" onclick="vorigeVraag()">← Vorige</button>
+      <div class="footer-center" id="footer-center">0 van 12 vragen beantwoord</div>
+      <button class="btn-nav next" onclick="volgendeVraag()">Volgende →</button>
+    </div>
+  </div>
+
+  </div>
+</div><!-- /main -->
+</div><!-- /content-row -->
+
+<script>
+var vragen = [
+  {meta:"Vraag 1 van 51",domain:"Governance – Strategie",type:"gesloten",label:"Inrichting",q:"In hoeverre beschikt de organisatie over een formeel vastgestelde IT- en informatiebeveiligingsstrategie?",opties:["A — Er is geen samenhangende strategie. Besluitvorming vindt ad hoc en reactief plaats zonder duidelijke richting.","B — Er zijn losse initiatieven of concepten, maar deze zijn niet formeel vastgesteld of breed gedragen.","C — Er is een formeel vastgestelde strategie die richting geeft aan IT- en securityactiviteiten.","D — De strategie wordt actief beheerd, periodiek geëvalueerd en aangepast op basis van ontwikkelingen.","E — De strategie is volledig geïntegreerd in de organisatie en stuurt aantoonbaar besluitvorming en investeringen."]},
+  {meta:"Vraag 2 van 51",domain:"Governance – Strategie",type:"gesloten",label:"Werking",q:"In hoeverre wordt de strategie daadwerkelijk toegepast en nageleefd binnen de organisatie?",opties:["A — De strategie wordt niet toegepast in de praktijk.","B — De strategie wordt beperkt en inconsistent toegepast.","C — De strategie wordt toegepast binnen de organisatie en vormt een basis voor besluitvorming.","D — De toepassing wordt actief gemonitord en bijgestuurd waar nodig.","E — De strategie wordt continu geoptimaliseerd op basis van prestaties, risico’s en data."]},
+  {meta:"Vraag 3 van 51",domain:"Governance – Strategie",type:"open",label:"Toelichting",q:"Beschrijf hoe de strategie in de praktijk wordt gebruikt en nageleefd binnen de organisatie."},
+  {meta:"Vraag 4 van 51",domain:"Governance – Beleid",type:"gesloten",label:"Inrichting",q:"In hoeverre beschikt de organisatie over een formeel informatiebeveiligingsbeleid?",opties:["A — Er is geen beleid; maatregelen worden ad hoc toegepast.","B — Er is een conceptbeleid, maar dit is niet formeel vastgesteld.","C — Het beleid is formeel vastgesteld en gecommuniceerd binnen de organisatie.","D — Het beleid is verankerd in processen en wordt periodiek geëvalueerd.","E — Het beleid is volledig geïntegreerd en wordt continu verbeterd op basis van risico’s en ontwikkelingen."]},
+  {meta:"Vraag 5 van 51",domain:"Governance – Beleid",type:"gesloten",label:"Werking",q:"In hoeverre wordt het beleid nageleefd en gecontroleerd binnen de organisatie?",opties:["A — Naleving wordt niet gecontroleerd.","B — Naleving wordt beperkt en ongestructureerd gecontroleerd.","C — Naleving wordt periodiek gecontroleerd en gerapporteerd.","D — Naleving wordt actief gemonitord en bijgestuurd.","E — Naleving is volledig geïntegreerd in governance en wordt continu geoptimaliseerd."]},
+  {meta:"Vraag 6 van 51",domain:"Governance – Beleid",type:"open",label:"Toelichting",q:"Beschrijf hoe het beleid in de praktijk wordt toegepast en gecontroleerd binnen de organisatie."},
+  {meta:"Vraag 7 van 51",domain:"Governance – Planning / Roadmap",type:"gesloten",label:"Inrichting",q:"In hoeverre beschikt de organisatie over een formeel IT- of securityplan / roadmap?",opties:["A — Er is geen plan; activiteiten zijn ad hoc.","B — Er is een globaal plan, maar dit is niet formeel vastgesteld.","C — Er is een formeel vastgesteld plan dat richting geeft aan activiteiten.","D — Het plan wordt periodiek geëvalueerd en aangepast.","E — Het plan is volledig geïntegreerd in de organisatie en wordt continu geoptimaliseerd."]},
+  {meta:"Vraag 8 van 51",domain:"Governance – Planning / Roadmap",type:"gesloten",label:"Werking",q:"In hoeverre wordt de roadmap actief gebruikt en opgevolgd?",opties:["A — De roadmap wordt niet gebruikt.","B — De roadmap wordt beperkt gebruikt zonder structurele opvolging.","C — De roadmap wordt gebruikt voor planning en sturing.","D — Voortgang wordt actief gemonitord en bijgestuurd.","E — De roadmap wordt continu geoptimaliseerd op basis van prestaties en ontwikkelingen."]},
+  {meta:"Vraag 9 van 51",domain:"Governance – Planning / Roadmap",type:"open",label:"Toelichting",q:"Beschrijf hoe de roadmap wordt opgesteld, gebruikt en bijgehouden binnen de organisatie."},
+  {meta:"Vraag 10 van 51",domain:"Governance – Architectuur",type:"gesloten",label:"Inrichting",q:"In hoeverre beschikt de organisatie over een formeel vastgestelde IT-architectuur?",opties:["A — Er is geen architectuur; keuzes worden ad hoc gemaakt.","B — De huidige situatie is globaal in kaart gebracht.","C — De architectuur is formeel vastgesteld (huidig en gewenst).","D — De architectuur wordt periodiek geëvalueerd en afgestemd op prioriteiten.","E — De architectuur is volledig geïntegreerd in besluitvorming en strategie."]},
+  {meta:"Vraag 11 van 51",domain:"Governance – Architectuur",type:"gesloten",label:"Werking",q:"In hoeverre wordt de architectuur toegepast binnen projecten en besluitvorming?",opties:["A — Architectuur wordt niet toegepast.","B — Architectuur wordt incidenteel toegepast.","C — Architectuur wordt toegepast binnen projecten.","D — Toepassing wordt actief bewaakt en bijgestuurd.","E — Architectuur stuurt structureel alle besluitvorming en wordt continu verbeterd."]},
+  {meta:"Vraag 12 van 51",domain:"Governance – Architectuur",type:"open",label:"Toelichting",q:"Beschrijf hoe de IT-architectuur wordt toegepast bij projecten en beslissingen binnen de organisatie."},
+  {meta:"Vraag 13 van 51",domain:"Risicomanagement – Plan voor behandeling en beperking van risico’s (inclusief risicoacceptatie)",type:"gesloten",label:"Inrichting",q:"In hoeverre is er een formeel proces voor de behandeling en beperking van risico’s?",opties:["A — Er is geen proces; risico’s worden niet behandeld of gedocumenteerd.","B — Behandeling vindt ad hoc plaats, zonder formeel vastgestelde aanpak of eigenaarschap.","C — Er is een formeel vastgesteld proces voor risicobehandeling, inclusief risicoacceptatie.","D — Risicobehandelingsplannen worden periodiek geëvalueerd en aangepast op basis van wijzigingen.","E — Risicobehandeling is volledig geïntegreerd in governance en stuurt aantoonbaar besluitvorming."]},
+  {meta:"Vraag 14 van 51",domain:"Risicomanagement – Plan voor behandeling en beperking van risico’s (inclusief risicoacceptatie)",type:"gesloten",label:"Werking",q:"In hoeverre worden risicobehandelingsplannen daadwerkelijk uitgevoerd en gemonitord?",opties:["A — Plannen worden niet uitgevoerd of gemonitord.","B — Uitvoering vindt incidenteel plaats zonder structurele opvolging.","C — Plannen worden uitgevoerd en voortgang wordt periodiek gerapporteerd.","D — Uitvoering wordt actief gemonitord en bijgestuurd op basis van risicowijzigingen.","E — Risicobehandeling is continu, datagedreven en volledig geborgd in audits en governance."]},
+  {meta:"Vraag 15 van 51",domain:"Risicomanagement – Plan voor behandeling en beperking van risico’s (inclusief risicoacceptatie)",type:"open",label:"Toelichting",q:"Beschrijf hoe risico’s worden behandeld, beperkt en geaccepteerd binnen de organisatie en hoe dit proces is ingericht."},
+  {meta:"Vraag 16 van 51",domain:"Organisatie – Eigenaarschap, rollen en verantwoordelijkheden",type:"gesloten",label:"Inrichting",q:"In hoeverre zijn rollen en verantwoordelijkheden voor IT en informatiebeveiliging formeel vastgesteld?",opties:["A — Rollen en verantwoordelijkheden zijn niet vastgelegd en worden ad hoc ingevuld.","B — Belangrijke rollen zijn deels benoemd, maar niet formeel vastgelegd of volledig duidelijk.","C — Rollen en verantwoordelijkheden zijn formeel vastgesteld en goedgekeurd door management.","D — Rollen zijn duidelijk belegd, periodiek geëvalueerd en afgestemd op organisatiedoelen.","E — Rollen en verantwoordelijkheden zijn volledig geïntegreerd in governance en sturen actief besluitvorming en processen."]},
+  {meta:"Vraag 17 van 51",domain:"Organisatie – Eigenaarschap, rollen en verantwoordelijkheden",type:"gesloten",label:"Werking",q:"In hoeverre worden rollen en verantwoordelijkheden daadwerkelijk nageleefd binnen de organisatie?",opties:["A — Rollen worden niet gevolgd in de praktijk.","B — Rollen worden inconsistent toegepast.","C — Rollen worden toegepast en zijn bekend binnen de organisatie.","D — Naleving wordt actief gemonitord en bijgestuurd.","E — Rollen en verantwoordelijkheden worden continu geoptimaliseerd en zijn volledig geïntegreerd in de organisatie."]},
+  {meta:"Vraag 18 van 51",domain:"Organisatie – Eigenaarschap, rollen en verantwoordelijkheden",type:"open",label:"Toelichting",q:"Beschrijf hoe rollen en verantwoordelijkheden in de praktijk zijn belegd en hoe hierop wordt gestuurd."},
+  {meta:"Vraag 19 van 51",domain:"Organisatie – Functiescheiding",type:"gesloten",label:"Inrichting",q:"In hoeverre is functiescheiding formeel ingericht binnen de organisatie?",opties:["A — Er is geen functiescheiding; kritieke taken kunnen door één persoon uitgevoerd worden.","B — Functiescheiding wordt deels toegepast, maar niet formeel vastgelegd.","C — Functiescheiding is formeel vastgesteld en geïmplementeerd.","D — Functiescheiding wordt periodiek gecontroleerd en geëvalueerd.","E — Functiescheiding is volledig geautomatiseerd en geïntegreerd in IAM en governance."]},
+  {meta:"Vraag 20 van 51",domain:"Organisatie – Functiescheiding",type:"gesloten",label:"Werking",q:"In hoeverre wordt functiescheiding in de praktijk gehandhaafd en gecontroleerd?",opties:["A — Functiescheiding wordt niet gecontroleerd.","B — Controle vindt beperkt en onregelmatig plaats.","C — Functiescheiding wordt periodiek gecontroleerd.","D — Afwijkingen worden actief gemonitord en gecorrigeerd.","E — Functiescheiding wordt continu bewaakt en geoptimaliseerd met geautomatiseerde controles."]},
+  {meta:"Vraag 21 van 51",domain:"Organisatie – Functiescheiding",type:"open",label:"Toelichting",q:"Beschrijf hoe functiescheiding in de praktijk is ingericht, gecontroleerd en geborgd."},
+  {meta:"Vraag 22 van 51",domain:"People – Training en certificering",type:"gesloten",label:"Inrichting",q:"In hoeverre is er een formeel programma voor training en certificering?",opties:["A — Er is geen structureel trainingsprogramma.","B — Training wordt incidenteel aangeboden zonder vaste structuur.","C — Er is een formeel trainingsprogramma voor medewerkers.","D — Trainingen worden periodiek geëvalueerd en afgestemd op rollen.","E — Training en ontwikkeling zijn volledig geïntegreerd in HR en strategische doelen."]},
+  {meta:"Vraag 23 van 51",domain:"People – Training en certificering",type:"gesloten",label:"Werking",q:"In hoeverre worden trainingen daadwerkelijk gevolgd en toegepast?",opties:["A — Trainingen worden niet gevolgd of toegepast.","B — Deelname is beperkt en niet structureel.","C — Medewerkers volgen trainingen en passen kennis toe.","D — Effectiviteit van trainingen wordt gemonitord en verbeterd.","E — Trainingen leiden aantoonbaar tot continue verbetering van kennis en prestaties."]},
+  {meta:"Vraag 24 van 51",domain:"People – Training en certificering",type:"open",label:"Toelichting",q:"Beschrijf hoe de ontwikkeling en certificering van medewerkers op het gebied van security wordt gevolgd en geborgd."},
+  {meta:"Vraag 25 van 51",domain:"People – Afhankelijkheid van individuen",type:"gesloten",label:"Inrichting",q:"In hoeverre is de organisatie ingericht om afhankelijkheid van individuen te beperken?",opties:["A — Er is sterke afhankelijkheid van individuele medewerkers.","B — Er zijn beperkte maatregelen, maar geen structurele aanpak.","C — Kritieke rollen en kennis zijn geïdentificeerd en vastgelegd.","D — Afhankelijkheden worden actief gemanaged en periodiek geëvalueerd.","E — Afhankelijkheden zijn volledig geminimaliseerd en geïntegreerd in risicobeheer."]},
+  {meta:"Vraag 26 van 51",domain:"People – Afhankelijkheid van individuen",type:"gesloten",label:"Werking",q:"In hoeverre wordt kennis daadwerkelijk gedeeld en geborgd binnen de organisatie?",opties:["A — Kennis zit voornamelijk bij individuen.","B — Kennisdeling vindt beperkt plaats.","C — Kennis wordt actief gedeeld en vastgelegd.","D — Kennisdeling wordt gemonitord en verbeterd.","E — Kennis is volledig geborgd en continu beschikbaar binnen de organisatie."]},
+  {meta:"Vraag 27 van 51",domain:"People – Afhankelijkheid van individuen",type:"open",label:"Toelichting",q:"Beschrijf hoe de organisatie voorkomt dat kennis verloren gaat bij uitval of vertrek van medewerkers."},
+  {meta:"Vraag 28 van 51",domain:"People – Super users",type:"gesloten",label:"Inrichting",q:"In hoeverre is het beheer van super-userrechten formeel ingericht?",opties:["A — Er is geen beleid voor super-userrechten.","B — Er zijn informele afspraken, maar geen formeel beleid.","C — Er is een formeel vastgesteld beleid.","D — Beleid wordt periodiek geëvalueerd en aangescherpt.","E — Beheer is volledig geïntegreerd in security governance en compliance."]},
+  {meta:"Vraag 29 van 51",domain:"People – Super users",type:"gesloten",label:"Werking",q:"In hoeverre wordt het gebruik van super-userrechten gecontroleerd?",opties:["A — Gebruik wordt niet gecontroleerd.","B — Controle vindt alleen plaats bij incidenten.","C — Gebruik wordt periodiek gecontroleerd.","D — Gebruik wordt actief gemonitord en geanalyseerd.","E — Gebruik wordt continu gemonitord met geautomatiseerde detectie."]},
+  {meta:"Vraag 30 van 51",domain:"People – Super users",type:"open",label:"Toelichting",q:"Beschrijf hoe misbruik van super-userrechten wordt voorkomen, gedetecteerd en opgevolgd binnen de organisatie."},
+  {meta:"Vraag 31 van 51",domain:"Ketenbeheer – Service Level Overeenkomsten",type:"gesloten",label:"Inrichting",q:"In hoeverre zijn SLA’s formeel vastgesteld met leveranciers?",opties:["A — Er zijn geen formele SLA’s.","B — Er zijn basisafspraken, maar niet volledig vastgelegd.","C — SLA’s zijn formeel vastgesteld en goedgekeurd.","D — SLA’s worden periodiek geëvalueerd en aangepast.","E — SLA’s zijn volledig geïntegreerd in governance en worden continu gemonitord."]},
+  {meta:"Vraag 32 van 51",domain:"Ketenbeheer – Service Level Overeenkomsten",type:"gesloten",label:"Werking",q:"In hoeverre worden SLA-afspraken daadwerkelijk gemonitord en nageleefd?",opties:["A — SLA’s worden niet gemonitord.","B — Monitoring vindt beperkt plaats.","C — SLA’s worden periodiek gemonitord.","D — Afwijkingen worden actief opgevolgd.","E — SLA-prestaties worden continu geanalyseerd en geoptimaliseerd."]},
+  {meta:"Vraag 33 van 51",domain:"Ketenbeheer – Service Level Overeenkomsten",type:"open",label:"Toelichting",q:"Beschrijf hoe de naleving van SLA’s in de praktijk wordt bewaakt en hoe afwijkingen worden opgevolgd."},
+  {meta:"Vraag 34 van 51",domain:"Ketenbeheer – Service level beheer",type:"gesloten",label:"Inrichting",q:"In hoeverre is servicelevel management ingericht?",opties:["A — Er is geen proces voor servicelevel management.","B — Er is een basisproces, maar niet volledig geïmplementeerd.","C — Er is een formeel proces ingericht.","D — Het proces wordt periodiek geëvalueerd en verbeterd.","E — Servicelevel management is volledig geïntegreerd en geoptimaliseerd."]},
+  {meta:"Vraag 35 van 51",domain:"Ketenbeheer – Service level beheer",type:"gesloten",label:"Werking",q:"In hoeverre worden prestaties actief gemonitord en bijgestuurd?",opties:["A — Prestaties worden niet gemonitord.","B — Monitoring vindt beperkt plaats.","C — Prestaties worden periodiek gemonitord.","D — Bijsturing vindt actief plaats.","E — Monitoring en bijsturing zijn continu en datagedreven."]},
+  {meta:"Vraag 36 van 51",domain:"Ketenbeheer – Service level beheer",type:"open",label:"Toelichting",q:"Beschrijf hoe wordt omgegaan met afwijkingen in serviceprestaties en hoe dit wordt bijgestuurd."},
+  {meta:"Vraag 37 van 51",domain:"Ketenbeheer – Risicobeheer leveranciers",type:"gesloten",label:"Inrichting",q:"In hoeverre is risicobeheer van leveranciers ingericht?",opties:["A — Er is geen inzicht in leveranciersrisico’s.","B — Er zijn beperkte maatregelen zonder structurele aanpak.","C — Risicobeheer is formeel ingericht.","D — Risico’s worden periodiek geëvalueerd en bijgesteld.","E — Risicobeheer is volledig geïntegreerd en continu gemonitord."]},
+  {meta:"Vraag 38 van 51",domain:"Ketenbeheer – Risicobeheer leveranciers",type:"gesloten",label:"Werking",q:"In hoeverre worden leveranciersrisico’s actief beheerd?",opties:["A — Risico’s worden niet beheerd.","B — Beheer is beperkt en inconsistent.","C — Risico’s worden periodiek beheerd.","D — Risico’s worden actief gemonitord en aangepast.","E — Risicobeheer is continu en datagedreven."]},
+  {meta:"Vraag 39 van 51",domain:"Ketenbeheer – Risicobeheer leveranciers",type:"open",label:"Toelichting",q:"Beschrijf hoe risico’s bij leveranciers worden geïdentificeerd, beoordeeld en opgevolgd."},
+  {meta:"Vraag 40 van 51",domain:"Ketenbeheer – Interne beheersing bij derden",type:"gesloten",label:"Inrichting",q:"In hoeverre is controle op externe partijen ingericht?",opties:["A — Er is geen controle op externe partijen.","B — Controle vindt beperkt plaats.","C — Er is een formeel controleproces ingericht.","D — Controle wordt periodiek uitgevoerd en geëvalueerd.","E — Controle is volledig geïntegreerd en geautomatiseerd."]},
+  {meta:"Vraag 41 van 51",domain:"Ketenbeheer – Interne beheersing bij derden",type:"gesloten",label:"Werking",q:"In hoeverre worden externe partijen daadwerkelijk beoordeeld en bijgestuurd?",opties:["A — Externe partijen worden niet beoordeeld.","B — Beoordeling vindt beperkt plaats.","C — Leveranciers worden periodiek beoordeeld.","D — Bevindingen worden actief opgevolgd.","E — Beoordeling is continu en volledig geïntegreerd."]},
+  {meta:"Vraag 42 van 51",domain:"Ketenbeheer – Interne beheersing bij derden",type:"open",label:"Toelichting",q:"Beschrijf hoe naleving door externe partijen wordt gecontroleerd en hoe bevindingen worden opgevolgd."},
+  {meta:"Vraag 43 van 51",domain:"Bedrijfscontinuïteit – Bedrijfscontinuïteitsplanning",type:"gesloten",label:"Inrichting",q:"In hoeverre is een bedrijfscontinuïteitsplan opgesteld?",opties:["A — Er is geen plan.","B — Er is een basisplan, maar niet volledig.","C — Er is een formeel vastgesteld plan.","D — Het plan wordt periodiek getest en verbeterd.","E — Continuïteitsbeheer is volledig geïntegreerd en geoptimaliseerd."]},
+  {meta:"Vraag 44 van 51",domain:"Bedrijfscontinuïteit – Bedrijfscontinuïteitsplanning",type:"gesloten",label:"Werking",q:"In hoeverre wordt het continuïteitsplan actief gebruikt?",opties:["A — Het plan wordt niet gebruikt.","B — Gebruik is beperkt.","C — Het plan wordt toegepast bij incidenten.","D — Gebruik wordt actief getest en verbeterd.","E — Gebruik is continu en geïntegreerd in de organisatie."]},
+  {meta:"Vraag 45 van 51",domain:"Bedrijfscontinuïteit – Bedrijfscontinuïteitsplanning",type:"open",label:"Toelichting",q:"Beschrijf hoe de organisatie is voorbereid op verstoringen en hoe het continuïteitsplan in de praktijk wordt ingezet."},
+  {meta:"Vraag 46 van 51",domain:"Bedrijfscontinuïteit – Disaster Recovery testen",type:"gesloten",label:"Inrichting",q:"In hoeverre zijn disaster recovery tests ingericht?",opties:["A — Er worden geen tests uitgevoerd.","B — Tests vinden incidenteel plaats.","C — Tests worden periodiek uitgevoerd.","D — Tests worden uitgebreid uitgevoerd en geëvalueerd.","E — Tests zijn volledig geïntegreerd in governance en auditcycli."]},
+  {meta:"Vraag 47 van 51",domain:"Bedrijfscontinuïteit – Disaster Recovery testen",type:"gesloten",label:"Werking",q:"In hoeverre leiden tests tot concrete verbeteringen?",opties:["A — Tests leiden niet tot verbeteringen.","B — Verbeteringen worden beperkt doorgevoerd.","C — Verbeteringen worden opgevolgd.","D — Resultaten worden actief gebruikt voor optimalisatie.","E — Verbeteringen zijn continu en datagedreven."]},
+  {meta:"Vraag 48 van 51",domain:"Bedrijfscontinuïteit – Disaster Recovery testen",type:"open",label:"Toelichting",q:"Beschrijf hoe DR-testresultaten worden gebruikt om de herstelcapaciteit van de organisatie te verbeteren."},
+  {meta:"Vraag 49 van 51",domain:"Bedrijfscontinuïteit – Crisisbeheer",type:"gesloten",label:"Inrichting",q:"In hoeverre is crisismanagement ingericht?",opties:["A — Er is geen crisismanagement.","B — Er is een basisaanpak, maar niet volledig.","C — Er is een formeel crisismanagementplan.","D — Het plan wordt periodiek getest en verbeterd.","E — Crisismanagement is volledig geïntegreerd in governance en risicobeheer."]},
+  {meta:"Vraag 50 van 51",domain:"Bedrijfscontinuïteit – Crisisbeheer",type:"gesloten",label:"Werking",q:"In hoeverre wordt crisismanagement effectief toegepast?",opties:["A — Crisismanagement wordt niet toegepast.","B — Toepassing is beperkt en inconsistent.","C — Crisismanagement wordt toegepast bij incidenten.","D — Oefeningen en evaluaties verbeteren de aanpak.","E — Crisismanagement is continu geoptimaliseerd en effectief."]},
+  {meta:"Vraag 51 van 51",domain:"Bedrijfscontinuïteit – Crisisbeheer",type:"open",label:"Toelichting",q:"Beschrijf hoe de organisatie wordt voorbereid op en getraind voor crisissituaties."}
+];
+
+var antwoorden = new Array(51).fill(null);
+var answered = 0;
+var currentVraag = 0;
+
+function showPage(name, navEl) {
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.vraag-page').forEach(function(p){p.classList.remove('active');});
+  if (name === 'overzicht') {
+    document.getElementById('page-overzicht').classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+    if (navEl) navEl.classList.add('active');
+    else document.getElementById('nav-overzicht').classList.add('active');
+  } else {
+    var el = document.getElementById('page-' + name);
+    if (el) el.classList.add('active');
+    if (name === 'resultaten') initRadar();
+  }
+}
+
+
+
+function showVraag() {
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('page-vraag').classList.add('active');
+  currentVraag = 0;
+  renderVraag();
+}
+
+function renderVraag() {
+  var v = vragen[currentVraag];
+  document.getElementById('vraag-meta').textContent = v.meta;
+  document.getElementById('vraag-domain').textContent = v.domain;
+  document.getElementById('vraag-q').textContent = v.q;
+  document.getElementById('progress-fill').style.width = ((currentVraag + 1) / 51 * 100) + '%';
+  document.getElementById('footer-center').textContent = answered + ' van 51 vragen beantwoord';
+  document.getElementById('error-gesloten').style.display = 'none';
+  document.getElementById('error-open').style.display = 'none';
+
+  var niveauSec = document.getElementById('niveau-section');
+  var openSec = document.getElementById('open-section');
+
+  if (v.type === 'gesloten') {
+    niveauSec.style.display = '';
+    openSec.style.display = 'none';
+    var niveauNames = ['Ad hoc','Gestructureerd','Effectief','Periodiek beoordeeld','Geoptimaliseerd'];
+    document.querySelectorAll('.niveau-card').forEach(function(c, i) {
+      var cleanTxt = v.opties[i] ? v.opties[i].replace(/^[A-E]\s*[\u2014\u2013\-]\s*/, '') : '';
+      c.innerHTML = '<div class="niv-num">' + (i+1) + '</div><div class="niv-desc" style="font-size:11px;line-height:1.5;color:rgba(255,255,255,0.85);">' + cleanTxt + '</div>';
+      c.classList.toggle('selected', antwoorden[currentVraag] === i + 1);
+    });
+  } else {
+    niveauSec.style.display = 'none';
+    openSec.style.display = '';
+    document.getElementById('open-antwoord').value = antwoorden[currentVraag] || '';
+  }
+
+  var bv = document.getElementById('btn-vorige');
+  bv.style.opacity = currentVraag === 0 ? '0.4' : '1';
+  bv.style.pointerEvents = currentVraag === 0 ? 'none' : 'auto';
+}
+
+function selectNiveau(n) {
+  var was = antwoorden[currentVraag] !== null;
+  antwoorden[currentVraag] = n;
+  if (!was) answered++;
+  document.getElementById('footer-center').textContent = answered + ' van 51 vragen beantwoord';
+  document.querySelectorAll('.niveau-card').forEach(function(c, i) { c.classList.toggle('selected', i + 1 === n); });
+  document.getElementById('error-gesloten').style.display = 'none';
+}
+
+function volgendeVraag() {
+  var v = vragen[currentVraag];
+  if (v.type === 'gesloten') {
+    if (!antwoorden[currentVraag]) {
+      document.getElementById('error-gesloten').style.display = 'block';
+      return;
+    }
+  } else {
+    var val = document.getElementById('open-antwoord').value.trim();
+    if (!val) {
+      document.getElementById('error-open').style.display = 'block';
+      return;
+    }
+    var was = antwoorden[currentVraag] !== null && antwoorden[currentVraag] !== '';
+    antwoorden[currentVraag] = val;
+    if (!was) answered++;
+    document.getElementById('footer-center').textContent = answered + ' van 51 vragen beantwoord';
+  }
+  if (currentVraag < 51 - 1) { currentVraag++; renderVraag(); }
+  else { showPage('resultaten'); initRadar(); }
+}
+
+function vorigeVraag() {
+  if (vragen[currentVraag].type === 'open') {
+    var val = document.getElementById('open-antwoord').value.trim();
+    if (val) antwoorden[currentVraag] = val;
+  }
+  if (currentVraag > 0) { currentVraag--; renderVraag(); }
+}
+
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  if (!sb) return;
+  var collapsed = sb.classList.toggle('collapsed');
+  var arrow = document.getElementById('sb-arrow');
+  if (arrow) arrow.style.transform = collapsed ? 'rotate(180deg)' : '';
+}
+
+var radarInited = false;
+function initRadar() {
+  if (radarInited) return;
+  radarInited = true;
+  var ctx = document.getElementById('radarChart').getContext('2d');
+  var labels = ['Strategie','Beleid','Planning','Architectuur','Risicobeheer','Eigenaarschap','Functiescheiding','Training','Afhankelijkheid','Super Users','SLA','SLB','Risico lev.','Int. beheersing','BCP','DR testen','Crisisbeheer'];
+  new Chart(ctx, {type:'radar',data:{labels:labels,datasets:[{label:'Score',data:[3,2,4,3,2,2,3,3,2,2,3,3,2,2,3,3,2],borderColor:'#e91e8c',backgroundColor:'rgba(233,30,140,0.15)',pointBackgroundColor:'#e91e8c',pointRadius:3,borderWidth:2},{label:'Benchmark',data:[3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],borderColor:'rgba(77,122,255,0.4)',backgroundColor:'rgba(77,122,255,0.06)',pointRadius:0,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:5,ticks:{stepSize:1,color:'rgba(140,150,180,0.5)',backdropColor:'transparent',font:{size:10}},grid:{color:'rgba(255,255,255,0.08)'},angleLines:{color:'rgba(255,255,255,0.08)'},pointLabels:{color:'#8891b0',font:{size:10,family:'Inter'}}}}}});
+}
+</script>
+</body>
+</html>
