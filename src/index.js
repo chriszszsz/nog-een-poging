@@ -19,6 +19,7 @@ app.post("/api/assessments", async (req, res) => {
       answers
     } = req.body;
 
+    // assessment session opslaan
     const result = await pool.query(
       `
       INSERT INTO assessment_sessions
@@ -46,13 +47,15 @@ app.post("/api/assessments", async (req, res) => {
         assessment_date,
         status,
         report_suggestion,
-        JSON.stringify(spider_scores),
+        spider_scores,
         details,
         last_updated
       ]
     );
 
     const assessment = result.rows[0];
+
+    console.log("Assessment opgeslagen:", assessment);
 
     // antwoorden opslaan
     if (answers && Array.isArray(answers)) {
@@ -73,7 +76,7 @@ app.post("/api/assessments", async (req, res) => {
           VALUES ($1, $2, $3, $4)
           `,
           [
-            assessment.id,
+            assessment.assessment_session_id,
             i + 1,
             typeof answer === "number" ? answer : null,
             typeof answer === "string" ? answer : null
@@ -91,6 +94,7 @@ app.post("/api/assessments", async (req, res) => {
 
   } catch (err) {
 
+    console.error("POST /api/assessments ERROR:");
     console.error(err);
 
     res.status(500).json({
