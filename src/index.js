@@ -11,6 +11,57 @@ from "./middleware/auth.js";
 dotenv.config();
 
 const app = express();
+
+/* =========================
+   MIDDLEWARE
+========================= */
+
+app.use((req, res, next) => {
+
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "*"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+
+});
+
+app.use(express.json());
+
+app.use(helmet());
+
+app.use(cors());
+
+
+/* =========================
+   HEALTH CHECKS
+========================= */
+
+app.get("/", (req, res) => {
+  res.send("API draait v1.0.0 ✅");
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+  });
+});
+
 /* =========================
    MY CAMPAIGNS
 ========================= */
@@ -62,56 +113,6 @@ app.get(
 
   }
 );
-
-/* =========================
-   MIDDLEWARE
-========================= */
-
-app.use((req, res, next) => {
-
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "*"
-  );
-
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-
-});
-
-app.use(express.json());
-
-app.use(helmet());
-
-app.use(cors());
-
-
-/* =========================
-   HEALTH CHECKS
-========================= */
-
-app.get("/", (req, res) => {
-  res.send("API draait v1.0.0 ✅");
-});
-
-app.get("/health", (req, res) => {
-  res.status(200).json({
-    status: "OK",
-  });
-});
 
 /* =========================
    DATABASE TEST
