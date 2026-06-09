@@ -358,12 +358,13 @@ app.post("/api/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-
       {
         user_id: user.user_id,
-        role: user.role,
-        company_id: user.company_id
+        email: user.email,
+        role: user.role
       },
+      process.env.JWT_SECRET
+    );
 
       process.env.JWT_SECRET,
 
