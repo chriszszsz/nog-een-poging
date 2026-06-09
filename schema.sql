@@ -1,20 +1,19 @@
--- =========================
--- ASSESSMENT SESSIES
--- =========================
-CREATE TABLE assessment_sessions (
-  assessment_session_id SERIAL PRIMARY KEY,
-  organization_id INT,
-  status TEXT DEFAULT 'draft',
-  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+INSERT INTO users
+(
+    company_id,
+    first_name,
+    last_name,
+    email,
+    password_hash,
+    role
+)
 
--- =========================
--- ANTWOORDEN
--- =========================
-CREATE TABLE assessment_answers (
-  answer_id SERIAL PRIMARY KEY,
-  assessment_session_id INT,
-  question_id INT,
-  score INT,
-  comment TEXT
+VALUES
+(
+    1,
+    'Christian',
+    'Hulleman',
+    'christian@axians.nl',
+    '$2b$10$dIUDDqHLZAa3masQbDZzu.U48jkE5lmLNmReGV56CW7IEFQ24x3IS',
+    'admin'
 );

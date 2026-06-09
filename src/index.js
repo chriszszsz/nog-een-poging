@@ -2,7 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
-
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { pool } from "./config/db.js";
 
 dotenv.config();
