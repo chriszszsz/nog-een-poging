@@ -356,6 +356,146 @@ app.post("/api/login", async (req, res) => {
 });
 
 /* =========================
+   GET COMPANIES
+========================= */
+
+app.get("/api/companies", async (req, res) => {
+
+  try {
+
+    const result = await pool.query(`
+      SELECT *
+      FROM companies
+      ORDER BY company_name ASC
+    `);
+
+    res.json(result.rows);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message,
+    });
+
+  }
+
+});
+
+/* =========================
+   GET USERS
+========================= */
+
+app.get("/api/users", async (req, res) => {
+
+  try {
+
+    const result = await pool.query(`
+      SELECT
+        user_id,
+        company_id,
+        first_name,
+        last_name,
+        email,
+        role
+      FROM users
+      ORDER BY first_name ASC
+    `);
+
+    res.json(result.rows);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message,
+    });
+
+  }
+
+});
+
+/* =========================
+   CREATE CAMPAIGN
+========================= */
+
+app.post("/api/campaigns", async (req, res) => {
+
+  try {
+
+    const {
+      company_id,
+      title,
+      participant_ids
+    } = req.body;
+
+    const campaignResult =
+      await pool.query(
+        `
+        INSERT INTO assessment_campaigns
+        (
+          company_id,
+          title
+        )
+        VALUES
+        (
+          $1,
+          $2
+        )
+        RETURNING *
+        `,
+        [
+          company_id,
+          title
+        ]
+      );
+
+    const campaign =
+      campaignResult.rows[0];
+
+    for (const user_id of participant_ids) {
+
+      await pool.query(
+        `
+        INSERT INTO campaign_participants
+        (
+          campaign_id,
+          user_id
+        )
+        VALUES
+        (
+          $1,
+          $2
+        )
+        `,
+        [
+          campaign.campaign_id,
+          user_id
+        ]
+      );
+
+    }
+
+    res.status(201).json({
+      success: true,
+      campaign
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message,
+    });
+
+  }
+
+});
+
+/* =========================
    404 HANDLER
 ========================= */
 
