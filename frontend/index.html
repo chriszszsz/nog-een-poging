@@ -454,6 +454,16 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
 </div><!-- /content-row -->
 
 <script>
+const token =
+  localStorage.getItem("token");
+
+if (!token) {
+
+  window.location.href =
+    "./login.html";
+
+}
+
 const backend =
 'https://maturity-assessment-api-avh2h6cuf8acg5fk.westeurope-01.azurewebsites.net';
 
