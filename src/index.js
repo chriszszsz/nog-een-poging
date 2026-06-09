@@ -68,13 +68,24 @@ app.get(
 ========================= */
 
 app.use(cors({
-  origin: [
-    "https://lively-sea-0749d6103.7.azurestaticapps.net"
+  origin: "*",
+  methods: [
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "OPTIONS"
   ],
-  credentials: true
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization"
+  ]
 }));
 
+app.options("*", cors());
+
 app.use(helmet());
+
 app.use(express.json());
 
 /* =========================
