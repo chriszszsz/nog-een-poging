@@ -419,7 +419,7 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
         <button
   class="btn btn-outline"
   style="font-size:12px;padding:8px 16px;"
-  onclick="saveProgress()"
+  onclick="saveAndExit()"
 >
   Opslaan & later verder
 </button>
@@ -1175,6 +1175,28 @@ async function saveProgress() {
     console.error(err);
 
   }
+
+}
+
+/* =========================================
+   SAVE AND EXIT
+========================================= */
+
+async function saveAndExit() {
+
+  await saveProgress();
+
+  document
+    .querySelectorAll('.vraag-page')
+    .forEach(function(p) {
+      p.classList.remove('active');
+    });
+
+  document
+    .getElementById('page-overzicht')
+    .classList.add('active');
+
+  await loadMyCampaigns();
 
 }
 
