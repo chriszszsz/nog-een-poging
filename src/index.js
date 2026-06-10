@@ -790,9 +790,10 @@ app.get(
 
       const result = await pool.query(
         `
-                SELECT
+        SELECT
           s.assessment_session_id,
           s.campaign_id,
+
           s.maturity_level,
           s.assessment_date,
           s.status,
@@ -816,7 +817,7 @@ app.get(
           WHERE user_id = $1
         )
 
-        ORDER BY s.assessment_date DESC
+        ORDER BY s.assessment_date DESC 
         `,
         [req.user.user_id]
       );
