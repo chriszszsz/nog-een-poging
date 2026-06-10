@@ -1730,15 +1730,32 @@ async function createCampaign() {
 
     console.log(data);
 
-    alert("Campaign aangemaakt ✅");
+    if (!response.ok) {
+
+      alert(
+        data.error ||
+        "Campaign aanmaken mislukt."
+      );
+
+      return;
+
+    }
+
+    alert(
+      "Campaign aangemaakt ✅"
+    );
 
     closeCampaignModal();
+
+    loadCampaigns();
 
   } catch (err) {
 
     console.error(err);
 
-    alert("Fout bij aanmaken");
+    alert(
+      "Serverfout bij aanmaken van campaign."
+    );
 
   }
 
