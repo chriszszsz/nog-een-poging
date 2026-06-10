@@ -906,20 +906,17 @@ async function loadResultsHistory() {
 }
 function updateStats(data) {
 
+  const statEls =
+    document.querySelectorAll(".stat-val");
+
   if (!Array.isArray(data) || data.length === 0) {
     return;
   }
 
-  // ✅ totaal assessments
-  const total =
-    data.length;
+  // ✅ totaal
+  statEls[0].textContent = data.length;
 
-  document.querySelector(
-    ".stat-card .stat-val"
-  ).textContent =
-    total;
-
-  // ✅ laatste datum
+  // ✅ datum
   const lastDate =
     new Date(data[0].assessment_date)
       .toLocaleDateString(
@@ -930,49 +927,42 @@ function updateStats(data) {
         }
       );
 
-  document.querySelectorAll(
-    ".stat-val"
-  )[2].textContent =
-    lastDate;
+  statEls[2].textContent = lastDate;
 
-  // ✅ groei berekenen
+  // ✅ reset growth
+  let growth = 0;
+
   if (data.length >= 2) {
 
     const latest =
-      data[0].maturity_level;
+      Number(data[0].average_score || 0);
 
     const previous =
-      data[1].maturity_level;
+      Number(data[1].average_score || 0);
 
-    const growth =
-      (latest - previous).toFixed(1);
+    growth =
+      Number(
+        (latest - previous).toFixed(1)
+      );
 
-    const growthEl =
-      document.querySelectorAll(
-        ".stat-val"
-      )[1];
+  }
 
-    growthEl.textContent =
-      `${growth > 0 ? "+" : ""}${growth}`;
+  const growthEl = statEls[1];
 
-    // ✅ kleur
-    if (growth > 0) {
+  // ✅ altijd opnieuw zetten
+  growthEl.textContent =
+    `${growth > 0 ? "+" : ""}${growth.toFixed(1)}`;
 
-      growthEl.classList.remove("red");
-      growthEl.classList.add("green");
+  // ✅ kleuren resetten
+  growthEl.classList.remove("green");
+  growthEl.classList.remove("red");
 
-    } else if (growth < 0) {
+  if (growth > 0) {
+    growthEl.classList.add("green");
+  }
 
-      growthEl.classList.remove("green");
-      growthEl.classList.add("red");
-
-    } else {
-
-      growthEl.classList.remove("green");
-      growthEl.classList.remove("red");
-
-    }
-
+  if (growth < 0) {
+    growthEl.classList.add("red");
   }
 
 }
@@ -1038,10 +1028,10 @@ function renderResultsHistory(data) {
       r.campaign_title || "-";
 
     const maturity =
-      r.average_score !== undefined
+      r.average_score
         ? Number(r.average_score).toFixed(1)
         : "-";
-``
+
 
     const user =
       r.first_name && r.last_name
