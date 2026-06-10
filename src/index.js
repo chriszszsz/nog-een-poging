@@ -581,6 +581,40 @@ app.post("/api/campaigns", async (req, res) => {
       participant_ids
     } = req.body;
 
+
+    const existing =
+      await pool.query(
+        `
+        SELECT c.campaign_id
+
+        FROM assessment_campaigns c
+
+        JOIN campaign_participants cp
+        ON c.campaign_id = cp.campaign_id
+
+        WHERE
+          c.company_id = $1
+          AND cp.status IN
+          (
+            'NOT_STARTED',
+            'IN_PROGRESS',
+            'WAITING_FOR_REPORT'
+          )
+
+        LIMIT 1
+        `,
+        [company_id]
+      );
+
+    if (existing.rows.length > 0) {
+
+      return res.status(400).json({
+        error:
+          "Er loopt al een actieve assessment campagne voor dit bedrijf."
+      });
+
+    } 
+    
     const campaignResult =
       await pool.query(
         `
