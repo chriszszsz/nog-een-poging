@@ -268,7 +268,11 @@ app.get("/api/assessments", async (req, res) => {
    NIEUWE ASSESSMENT
 ========================= */
 
-app.post("/api/assessments", async (req, res) => {
+app.post(
+  "/api/assessments",
+  authMiddleware,
+
+  async (req, res) => {
 
   try {
 
@@ -326,9 +330,14 @@ app.post("/api/assessments", async (req, res) => {
   `
   UPDATE campaign_participants
   SET status = 'WAITING_FOR_REPORT'
-  WHERE campaign_id = $1
+  WHERE
+    campaign_id = $1
+    AND user_id = $2
   `,
-  [campaign_id]
+  [
+    campaign_id,
+    req.user.user_id
+  ]
 );
 
     if (answers && Array.isArray(answers)) {

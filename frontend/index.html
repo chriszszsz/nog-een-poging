@@ -1638,20 +1638,21 @@ async function saveAssessment() {
     );
 
     const response =
-      await fetch(
-        `${backend}/api/assessments`,
-        {
-          method: 'POST',
+  await fetch(
+    `${backend}/api/assessments`,
+    {
+      method: 'POST',
 
-          headers: {
-            'Content-Type':
-              'application/json'
-          },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
 
-          body:
-            JSON.stringify(payload)
-        }
-      );
+      body:
+        JSON.stringify(payload)
+    }
+  );
+
 
     if (!response.ok) {
 
