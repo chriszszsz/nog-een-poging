@@ -893,94 +893,74 @@ function renderResults() {
       score;
 
   const spider =
-  latestResult.spider_scores || {};
+    latestResult.spider_scores || {};
 
-function gemiddeldeVoor(domainNaam) {
+  function gemiddeldeVoor(domainNaam) {
 
-  const waardes =
-    Object.entries(spider)
-      .filter(([key]) =>
-        key.startsWith(domainNaam)
-      )
-      .map(([, value]) => value);
+    const waardes =
+      Object.entries(spider)
+        .filter(([key]) => {
 
-  if (waardes.length === 0) {
-    return 0;
+          return key
+            .toLowerCase()
+            .includes(
+              domainNaam.toLowerCase()
+            );
+
+        })
+        .map(([, value]) =>
+          Number(value)
+        );
+
+    console.log(
+      domainNaam,
+      waardes
+    );
+
+    if (waardes.length === 0) {
+      return 0;
+    }
+
+    const avg =
+      waardes.reduce(
+        (a, b) => a + b,
+        0
+      ) / waardes.length;
+
+    return avg.toFixed(1);
+
   }
 
-  const avg =
-    waardes.reduce(
-      (a, b) => a + b,
-      0
-    ) / waardes.length;
-
-  return avg.toFixed(1);
-
-}
-
-document.getElementById(
-  "score-governance"
-).textContent =
-  gemiddeldeVoor("Governance");
-
-document.getElementById(
-  "score-risico"
-).textContent =
-  gemiddeldeVoor("Risicomanagement");
-
-document.getElementById(
-  "score-organisatie"
-).textContent =
-  gemiddeldeVoor("Organisatie");
-
-document.getElementById(
-  "score-people"
-).textContent =
-  gemiddeldeVoor("People");
-
-document.getElementById(
-  "score-keten"
-).textContent =
-  gemiddeldeVoor("Ketenbeheer");
-
-document.getElementById(
-  "score-bcm"
-).textContent =
-  gemiddeldeVoor("Bedrijfscontinuïteitsbeheer");
+  document.getElementById(
+    "score-governance"
+  ).textContent =
+    gemiddeldeVoor("Governance");
 
   document.getElementById(
     "score-risico"
   ).textContent =
-    Math.round(
-      spider["Risicomanagement"] || 0
-    );
+    gemiddeldeVoor("Risicomanagement");
 
   document.getElementById(
     "score-organisatie"
   ).textContent =
-    Math.round(
-      spider["Organisatie"] || 0
-    );
+    gemiddeldeVoor("Organisatie");
 
   document.getElementById(
     "score-people"
   ).textContent =
-    Math.round(
-      spider["People"] || 0
-    );
+    gemiddeldeVoor("People");
 
   document.getElementById(
     "score-keten"
   ).textContent =
-    Math.round(
-      spider["Ketenbeheer"] || 0
-    );
+    gemiddeldeVoor("Ketenbeheer");
 
   document.getElementById(
     "score-bcm"
   ).textContent =
-    Math.round(
-      spider["Bedrijfscontinuïteitsbeheer"] || 0
+    gemiddeldeVoor(
+      "Bedrijfscontinuïteitsbeheer"
     );
 
 }
