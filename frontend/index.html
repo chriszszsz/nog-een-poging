@@ -645,6 +645,7 @@ const backend =
 let myCampaigns = [];
 
 let activeCampaign = null;
+let latestResult = null;
 
 async function loadMyCampaigns() {
 
@@ -767,6 +768,86 @@ async function loadQuestions() {
   }
 
 }
+
+/* =========================================
+   LOAD LATEST RESULT
+========================================= */
+
+async function loadLatestResult() {
+
+  try {
+
+    const response =
+      await fetch(
+        `${backend}/api/latest-result`,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
+
+    latestResult =
+      await response.json();
+
+    console.log(
+      "Latest result:",
+      latestResult
+    );
+
+    if (latestResult) {
+
+      renderResults();
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+}
+
+/* =========================================
+   RENDER RESULTS
+========================================= */
+
+function renderResults() {
+
+  if (!latestResult) return;
+
+  const score =
+    latestResult.average_score || 0;
+
+  const date =
+    new Date(
+      latestResult.assessment_date
+    );
+
+  const formattedDate =
+    date.toLocaleDateString(
+      "nl-NL",
+      {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+  document
+    .querySelector(".summary-date")
+    .textContent =
+      formattedDate;
+
+  document
+    .querySelector(".score-num")
+    .textContent =
+      score;
+
+}
+
 
 /* =========================================
    PAGE NAVIGATION
@@ -1729,11 +1810,17 @@ function initRadar() {
 
 }
 
-loadMyCampaigns().then(() => {
+async function init() {
+
+  await loadMyCampaigns();
 
   renderAssessmentCard();
 
-});
+  await loadLatestResult();
+
+}
+
+init();
 </script>
 </body>
 </html>

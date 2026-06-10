@@ -646,6 +646,59 @@ app.post("/api/campaigns", async (req, res) => {
 });
 
 /* =========================
+   GET LATEST RESULT
+========================= */
+
+app.get(
+  "/api/latest-result",
+  authMiddleware,
+
+  async (req, res) => {
+
+    try {
+
+      const result =
+        await pool.query(
+          `
+          SELECT *
+          FROM assessment_sessions
+          WHERE company_name = (
+            SELECT co.company_name
+            FROM users u
+
+            JOIN companies co
+            ON u.company_id = co.company_id
+
+            WHERE u.user_id = $1
+          )
+          ORDER BY assessment_date DESC
+          LIMIT 1
+          `,
+          [req.user.user_id]
+        );
+
+      if (result.rows.length === 0) {
+
+        return res.json(null);
+
+      }
+
+      res.json(result.rows[0]);
+
+    } catch (err) {
+
+      console.error(err);
+
+      res.status(500).json({
+        error: err.message
+      });
+
+    }
+
+  }
+);
+
+/* =========================
    404 HANDLER
 ========================= */
 
