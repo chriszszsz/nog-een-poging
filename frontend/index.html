@@ -874,10 +874,15 @@ async function loadResultsHistory() {
         }
       );
 
-    const data =
+    const raw =
       await response.json();
 
-    console.log("Result history:", data);
+    console.log("Result history raw:", raw);
+
+    const data =
+      Array.isArray(raw)
+        ? raw
+        : raw.data || [];
 
     renderResultsHistory(data);
 
@@ -888,6 +893,7 @@ async function loadResultsHistory() {
   }
 
 }
+
 
 /* =========================================
    RENDER RESULTS TABLE
@@ -900,7 +906,24 @@ function renderResultsHistory(data) {
 
   tbody.innerHTML = "";
 
-  if (!data || data.length === 0) {
+  // 🔥 extra check: is het een array?
+  if (!Array.isArray(data)) {
+
+    console.error("Data is geen array:", data);
+
+    tbody.innerHTML =
+      `<tr>
+        <td colspan="4">
+          Fout bij laden resultaten
+        </td>
+      </tr>`;
+
+    return;
+
+  }
+
+  // 🔥 leeg resultaat
+  if (data.length === 0) {
 
     tbody.innerHTML =
       `<tr>
@@ -913,18 +936,26 @@ function renderResultsHistory(data) {
 
   }
 
+  // ✅ echte rendering
   data.forEach(r => {
 
     const date =
-      new Date(r.assessment_date)
-        .toLocaleDateString(
-          "nl-NL",
-          {
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-          }
-        );
+      r.assessment_date
+        ? new Date(r.assessment_date)
+            .toLocaleDateString(
+              "nl-NL",
+              {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+              }
+            )
+        : "-";
+
+    const score =
+      r.average_score
+        ? `${r.average_score} / 5.0`
+        : "-";
 
     const status =
       r.status === "RESULTS_READY"
@@ -936,9 +967,7 @@ function renderResultsHistory(data) {
       <tr>
         <td>${date}</td>
 
-        <td>
-          ${r.average_score || "-"} / 5.0
-        </td>
+        <td>${score}</td>
 
         <td>${status}</td>
 
@@ -959,14 +988,20 @@ function renderResultsHistory(data) {
 
 }
 
+
+/* =========================================
+   OPEN RESULT
+========================================= */
+
 function openResult(id) {
 
   console.log("Open result:", id);
 
+  // 🔥 later gaan we hier echte data laden
   showPage("resultaten");
 
 }
-
+``
 /* =========================================
    RENDER RESULTS
 ========================================= */
