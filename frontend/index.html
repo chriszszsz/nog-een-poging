@@ -416,7 +416,13 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
           <div class="vraag-meta" id="vraag-meta">Vraag 1 van 12</div>
           <div class="vraag-domain" id="vraag-domain">Domein: Governance</div>
         </div>
-        <button class="btn btn-outline" style="font-size:12px;padding:8px 16px;">Opslaan &amp; later verder</button>
+        <button
+  class="btn btn-outline"
+  style="font-size:12px;padding:8px 16px;"
+  onclick="saveProgress()"
+>
+  Opslaan & later verder
+</button>
       </div>
       <div class="progress-bar" style="margin-top:10px;"><div class="progress-fill" id="progress-fill" style="width:8%;"></div></div>
     </div>
@@ -931,6 +937,8 @@ async function volgendeVraag() {
 
     currentVraag++;
 
+    await saveProgress();
+
     renderVraag();
 
   } else {
@@ -1105,6 +1113,66 @@ async function saveAssessment() {
     alert(
       'Opslaan van assessment mislukt'
     );
+
+  }
+
+}
+/* =========================================
+   SAVE PROGRESS
+========================================= */
+
+async function saveProgress() {
+
+  try {
+
+    if (!activeCampaign) return;
+
+    const progress =
+      Math.round(
+        (
+          (currentVraag + 1)
+          / vragen.length
+        ) * 100
+      );
+
+    await fetch(
+      `${backend}/api/save-progress`,
+      {
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json",
+
+          Authorization:
+            `Bearer ${token}`
+
+        },
+
+        body: JSON.stringify({
+
+          campaign_id:
+            activeCampaign.campaign_id,
+
+          current_question:
+            currentVraag,
+
+          progress_percentage:
+            progress
+
+        })
+
+      }
+    );
+
+    console.log(
+      "Progress opgeslagen ✅"
+    );
+
+  } catch (err) {
+
+    console.error(err);
 
   }
 

@@ -115,6 +115,62 @@ app.get(
 );
 
 /* =========================
+   SAVE PROGRESS
+========================= */
+
+app.post(
+  "/api/save-progress",
+  authMiddleware,
+
+  async (req, res) => {
+
+    try {
+
+      const {
+        campaign_id,
+        current_question,
+        progress_percentage
+      } = req.body;
+
+      await pool.query(
+        `
+        UPDATE campaign_participants
+
+        SET
+          status = 'IN_PROGRESS',
+          current_question = $1,
+          progress_percentage = $2
+
+        WHERE
+          campaign_id = $3
+          AND user_id = $4
+        `,
+        [
+          current_question,
+          progress_percentage,
+          campaign_id,
+          req.user.user_id
+        ]
+      );
+
+      res.json({
+        success: true
+      });
+
+    } catch (err) {
+
+      console.error(err);
+
+      res.status(500).json({
+        error: err.message
+      });
+
+    }
+
+  }
+);
+
+/* =========================
    DATABASE TEST
 ========================= */
 
