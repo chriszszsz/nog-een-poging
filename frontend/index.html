@@ -963,6 +963,25 @@ function handleAssessmentClick() {
 }
 
 /* =========================================
+   UPDATE ANSWER COUNT
+========================================= */
+
+function updateAnsweredCount() {
+
+  answered =
+    antwoorden.filter(a => {
+
+      return (
+        a !== null
+        &&
+        a !== ""
+      );
+
+    }).length;
+
+}
+
+/* =========================================
    START ASSESSMENT
 ========================================= */
 
@@ -1012,11 +1031,18 @@ async function showVraag() {
     .getElementById('page-vraag')
     .classList.add('active');
 
+  if (
+  activeCampaign.status !==
+  "IN_PROGRESS"
+) {
+
   currentVraag = 0;
 
-  answered = 0;
+}
 
-  renderVraag();
+updateAnsweredCount();
+
+renderVraag();
 
 }
 
@@ -1026,10 +1052,26 @@ async function showVraag() {
 
 async function resumeAssessment() {
 
-  await showVraag();
+  if (vragen.length === 0) {
+
+    await loadQuestions();
+
+  }
 
   currentVraag =
     activeCampaign.current_question || 0;
+
+  updateAnsweredCount();
+
+  document
+    .querySelectorAll('.page')
+    .forEach(function(p) {
+      p.classList.remove('active');
+    });
+
+  document
+    .getElementById('page-vraag')
+    .classList.add('active');
 
   renderVraag();
 
