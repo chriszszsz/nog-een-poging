@@ -775,6 +775,96 @@ app.get(
 );
 
 /* =========================
+   GET COMPANY RESULTS
+========================= */
+
+app.get(
+  "/api/results",
+  authMiddleware,
+
+  async (req, res) => {
+
+    try {
+
+      const result = await pool.query(
+        `
+        SELECT
+          s.assessment_session_id,
+          s.campaign_id,
+          s.average_score,
+          s.assessment_date,
+          s.status,
+          c.title
+
+        FROM assessment_sessions s
+
+        JOIN assessment_campaigns c
+        ON s.campaign_id = c.campaign_id
+
+        WHERE c.company_id = (
+          SELECT company_id
+          FROM users
+          WHERE user_id = $1
+        )
+
+        ORDER BY s.assessment_date DESC
+        `,
+        [req.user.user_id]
+      );
+
+      res.json(result.rows);
+
+    } catch (err) {
+
+      console.error(err);
+
+      res.status(500).json({
+        error: err.message
+      });
+
+    }
+
+  }
+);
+
+/* =========================================
+   LOAD RESULTS HISTORY
+========================================= */
+
+async function loadResultsHistory() {
+
+  try {
+
+    const response =
+      await fetch(
+        `${backend}/api/results`,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
+
+    const data =
+      await response.json();
+
+    console.log(
+      "Result history:",
+      data
+    );
+
+    renderResultsHistory(data);
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+}
+
+/* =========================
    404 HANDLER
 ========================= */
 

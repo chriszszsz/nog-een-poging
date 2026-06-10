@@ -857,6 +857,117 @@ async function loadLatestResult() {
 }
 
 /* =========================================
+   LOAD RESULTS HISTORY
+========================================= */
+
+async function loadResultsHistory() {
+
+  try {
+
+    const response =
+      await fetch(
+        `${backend}/api/results`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+    const data =
+      await response.json();
+
+    console.log("Result history:", data);
+
+    renderResultsHistory(data);
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+}
+
+/* =========================================
+   RENDER RESULTS TABLE
+========================================= */
+
+function renderResultsHistory(data) {
+
+  const tbody =
+    document.querySelector("table tbody");
+
+  tbody.innerHTML = "";
+
+  if (!data || data.length === 0) {
+
+    tbody.innerHTML =
+      `<tr>
+        <td colspan="4">
+          Geen resultaten beschikbaar
+        </td>
+      </tr>`;
+
+    return;
+
+  }
+
+  data.forEach(r => {
+
+    const date =
+      new Date(r.assessment_date)
+        .toLocaleDateString(
+          "nl-NL",
+          {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+          }
+        );
+
+    const status =
+      r.status === "RESULTS_READY"
+        ? "Voltooid"
+        : "In behandeling";
+
+    const row =
+      `
+      <tr>
+        <td>${date}</td>
+
+        <td>
+          ${r.average_score || "-"} / 5.0
+        </td>
+
+        <td>${status}</td>
+
+        <td>
+          <button
+            class="btn-table"
+            onclick="openResult(${r.assessment_session_id})"
+          >
+            Bekijk →
+          </button>
+        </td>
+      </tr>
+      `;
+
+    tbody.innerHTML += row;
+
+  });
+
+}
+
+function openResult(id) {
+
+  console.log("Open result:", id);
+
+  showPage("resultaten");
+
+}
+
+/* =========================================
    RENDER RESULTS
 ========================================= */
 
@@ -1012,8 +1123,16 @@ function showPage(name, navEl) {
     }
 
     if (name === 'resultaten') {
-      initRadar();
-    }
+
+  initRadar();
+
+}
+
+if (name === 'eerdere') {
+
+  loadResultsHistory();
+
+}
 
   }
 
