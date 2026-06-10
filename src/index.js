@@ -137,7 +137,7 @@ app.post(
       } = req.body;
 
       await pool.query(
-        `
+  `
         UPDATE campaign_participants
         SET
           current_question = $1,
@@ -145,15 +145,16 @@ app.post(
           answers = $3,
           status = 'IN_PROGRESS'
 
-
         WHERE
-          campaign_id = $3
-          AND user_id = $4
+          campaign_id = $4
+          AND user_id = $5
         `,
         [
           current_question,
           progress_percentage,
-          JSON.stringify(answers)
+          JSON.stringify(answers),
+          campaign_id,
+          req.user.user_id
         ]
       );
 
