@@ -1107,7 +1107,10 @@ function renderAssessmentCard() {
       "✅ Assessment voltooid";
 
     desc.textContent =
-      "Wachten op overige deelnemers.";
+      `${activeCampaign.completed_participants}
+      van
+      ${activeCampaign.total_participants}
+      deelnemers voltooid`;
 
     card.style.opacity = ".8";
 

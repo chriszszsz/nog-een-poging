@@ -62,7 +62,7 @@ app.get("/health", (req, res) => {
   });
 });
 
-/* =========================
+  /* =========================
    MY CAMPAIGNS
 ========================= */
 
@@ -80,20 +80,53 @@ app.get(
           SELECT
             c.campaign_id,
             c.title,
+
             cp.status,
             cp.current_question,
             cp.progress_percentage,
             cp.answers,
+
             c.created_at,
-            co.company_name
+
+            co.company_name,
+
+            (
+              SELECT COUNT(*)
+
+              FROM campaign_participants cp2
+
+              WHERE
+                cp2.campaign_id =
+                c.campaign_id
+
+            ) AS total_participants,
+
+            (
+              SELECT COUNT(*)
+
+              FROM campaign_participants cp3
+
+              WHERE
+                cp3.campaign_id =
+                c.campaign_id
+
+                AND cp3.status IN
+                (
+                  'WAITING_FOR_REPORT',
+                  'RESULTS_READY'
+                )
+
+            ) AS completed_participants
 
           FROM campaign_participants cp
 
           JOIN assessment_campaigns c
-          ON cp.campaign_id = c.campaign_id
+          ON cp.campaign_id =
+             c.campaign_id
 
           JOIN companies co
-          ON c.company_id = co.company_id
+          ON c.company_id =
+             co.company_id
 
           WHERE cp.user_id = $1
 
