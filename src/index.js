@@ -81,6 +81,9 @@ app.get(
             c.campaign_id,
             c.title,
             cp.status,
+            cp.current_question,
+            cp.progress_percentage,
+            cp.answers,
             c.created_at,
             co.company_name
 
@@ -129,17 +132,19 @@ app.post(
       const {
         campaign_id,
         current_question,
-        progress_percentage
+        progress_percentage,
+        answers
       } = req.body;
 
       await pool.query(
         `
         UPDATE campaign_participants
-
         SET
-          status = 'IN_PROGRESS',
           current_question = $1,
-          progress_percentage = $2
+          progress_percentage = $2,
+          answers = $3,
+          status = 'IN_PROGRESS'
+
 
         WHERE
           campaign_id = $3
@@ -148,8 +153,7 @@ app.post(
         [
           current_question,
           progress_percentage,
-          campaign_id,
-          req.user.user_id
+          JSON.stringify(answers)
         ]
       );
 
