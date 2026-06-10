@@ -795,6 +795,7 @@ app.get(
           s.campaign_id,
 
           s.maturity_level,
+          s.average_score,
           s.assessment_date,
           s.status,
 
