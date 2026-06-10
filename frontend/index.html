@@ -662,10 +662,28 @@ function showPage(name, navEl) {
 
 async function showVraag() {
 
+  console.log(
+    "Active campaign:",
+    activeCampaign
+  );
+
+  if (!activeCampaign) {
+
+    await loadMyCampaigns();
+
+    activeCampaign =
+      myCampaigns.find(
+        c =>
+          c.status === "NOT_STARTED"
+          || c.status === "IN_PROGRESS"
+      );
+
+  }
+
   if (!activeCampaign) {
 
     alert(
-      "Geen actieve campaign"
+      "Je hebt geen open assessments meer."
     );
 
     return;
