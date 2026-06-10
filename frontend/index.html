@@ -291,81 +291,193 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
 <div class="main">
 
   <!-- PAGE: OVERZICHT -->
-  <div class="page active" id="page-overzicht">
-    <h1 class="page-title">Maturity assessment</h1>
-    <div
-  class="action-card primary"
-  id="assessment-card"
-  onclick="handleAssessmentClick()"
->
+<div class="page active" id="page-overzicht">
 
-  <div class="ac-icon">
-    <svg viewBox="0 0 24 24">
-      <polyline points="9 11 12 14 22 4"/>
-      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-    </svg>
-  </div>
-
-  <div
-    class="ac-title"
-    id="assessment-title"
-  >
-    Start nieuw assessment
-  </div>
-
-  <div
-    class="ac-desc"
-    id="assessment-desc"
-  >
-    Begin een nieuwe maturity scan voor uw organisatie
-  </div>
-
-</div>
-
-  <div class="ac-title">
+  <h1 class="page-title">
     Maturity assessment
-  </div>
+  </h1>
 
-  <div class="ac-desc">
-    Beheer en voltooi jouw assessment workflow
-  </div>
+  <div class="top-cards">
 
-  <div
-    id="assessment-action"
-    style="margin-top:20px;"
-  ></div>
+    <div
+      class="action-card primary"
+      id="assessment-card"
+      onclick="handleAssessmentClick()"
+    >
 
-</div>
-      <div class="action-card secondary" onclick="showPage('eerdere')">
-        <div class="ac-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-        <div class="ac-title">Bekijk eerdere resultaten</div>
-        <div class="ac-desc">Raadpleeg de geschiedenis en vergelijk assessments</div>
+      <div class="ac-icon">
+        <svg viewBox="0 0 24 24">
+          <polyline points="9 11 12 14 22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
       </div>
+
+      <div
+        class="ac-title"
+        id="assessment-title"
+      >
+        Start nieuw assessment
+      </div>
+
+      <div
+        class="ac-desc"
+        id="assessment-desc"
+      >
+        Begin een nieuwe maturity scan voor uw organisatie
+      </div>
+
     </div>
-    <div class="card" style="margin-bottom:18px;">
-      <div class="summary-top">
-        <div><div class="lbl">Laatste assessment</div><div class="summary-date">15 maart 2026</div></div>
-        <button class="btn btn-primary" onclick="showPage('resultaten')">Bekijk resultaten</button>
+
+    <div
+      class="action-card secondary"
+      onclick="showPage('eerdere')"
+    >
+
+      <div class="ac-icon">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M3 9h18M9 21V9"/>
+        </svg>
       </div>
-      <div class="maturity-sec">
-        <div class="lbl" style="margin-bottom:12px;">Gemiddelde maturity</div>
-        <div class="score-row"><span class="score-num">2.7</span><span class="score-den">/ 5.0</span></div>
-        <div class="domain-grid">
-          <div class="domain-card"><div class="domain-score">3</div><div class="domain-name">Governance</div></div>
-          <div class="domain-card"><div class="domain-score">2</div><div class="domain-name">Risicomanagement</div></div>
-          <div class="domain-card"><div class="domain-score">3</div><div class="domain-name">Organisatie</div></div>
-          <div class="domain-card"><div class="domain-score">2</div><div class="domain-name">People</div></div>
-          <div class="domain-card"><div class="domain-score">2</div><div class="domain-name">Ketenbeheer</div></div>
-          <div class="domain-card"><div class="domain-score">4</div><div class="domain-name">Bedrijfscontinu&shy;ïteitsbeheer</div></div>
+
+      <div class="ac-title">
+        Bekijk eerdere resultaten
+      </div>
+
+      <div class="ac-desc">
+        Raadpleeg de geschiedenis en vergelijk assessments
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-bottom:18px;">
+
+    <div class="summary-top">
+
+      <div>
+        <div class="lbl">
+          Laatste assessment
+        </div>
+
+        <div class="summary-date">
+          15 maart 2026
         </div>
       </div>
+
+      <button
+        class="btn btn-primary"
+        onclick="showPage('resultaten')"
+      >
+        Bekijk resultaten
+      </button>
+
     </div>
-    <div class="bottom-cards">
-      <div class="info-card" onclick="showPage('domeinen')"><div class="ic-title">6 domeinen</div><div class="ic-text">Governance, Risicomanagement, Organisatie, People, Ketenbeheer, Bedrijfscontinuïteitsbeheer</div></div>
-      <div class="info-card" onclick="showPage('schaal')"><div class="ic-title">Maturity schaal</div><div class="ic-text">5 niveaus: Ad hoc, Gestructureerd, Effectief, Periodiek beoordeeld, Geoptimaliseerd</div></div>
-      <div class="info-card" onclick="showPage('resultaten')"><div class="ic-title">Inzichten</div><div class="ic-text">Concrete aanbevelingen en vervolgstappen op basis van uw scores</div></div>
+
+    <div class="maturity-sec">
+
+      <div
+        class="lbl"
+        style="margin-bottom:12px;"
+      >
+        Gemiddelde maturity
+      </div>
+
+      <div class="score-row">
+        <span class="score-num">2.7</span>
+        <span class="score-den">/ 5.0</span>
+      </div>
+
+      <div class="domain-grid">
+
+        <div class="domain-card">
+          <div class="domain-score">3</div>
+          <div class="domain-name">Governance</div>
+        </div>
+
+        <div class="domain-card">
+          <div class="domain-score">2</div>
+          <div class="domain-name">Risicomanagement</div>
+        </div>
+
+        <div class="domain-card">
+          <div class="domain-score">3</div>
+          <div class="domain-name">Organisatie</div>
+        </div>
+
+        <div class="domain-card">
+          <div class="domain-score">2</div>
+          <div class="domain-name">People</div>
+        </div>
+
+        <div class="domain-card">
+          <div class="domain-score">2</div>
+          <div class="domain-name">Ketenbeheer</div>
+        </div>
+
+        <div class="domain-card">
+          <div class="domain-score">4</div>
+          <div class="domain-name">
+            Bedrijfscontinuïteitsbeheer
+          </div>
+        </div>
+
+      </div>
+
     </div>
+
   </div>
+
+  <div class="bottom-cards">
+
+    <div
+      class="info-card"
+      onclick="showPage('domeinen')"
+    >
+      <div class="ic-title">
+        6 domeinen
+      </div>
+
+      <div class="ic-text">
+        Governance, Risicomanagement, Organisatie,
+        People, Ketenbeheer,
+        Bedrijfscontinuïteitsbeheer
+      </div>
+    </div>
+
+    <div
+      class="info-card"
+      onclick="showPage('schaal')"
+    >
+      <div class="ic-title">
+        Maturity schaal
+      </div>
+
+      <div class="ic-text">
+        5 niveaus: Ad hoc, Gestructureerd,
+        Effectief, Periodiek beoordeeld,
+        Geoptimaliseerd
+      </div>
+    </div>
+
+    <div
+      class="info-card"
+      onclick="showPage('resultaten')"
+    >
+      <div class="ic-title">
+        Inzichten
+      </div>
+
+      <div class="ic-text">
+        Concrete aanbevelingen en vervolgstappen
+        op basis van uw scores
+      </div>
+    </div>
+
+  </div>
+
+</div>
 
   <!-- PAGE: 6 DOMEINEN -->
   <div class="page" id="page-domeinen">
