@@ -179,6 +179,7 @@ app.post("/api/assessments", async (req, res) => {
   try {
 
     const {
+      campaign_id,
       company_name,
       maturity_level,
       average_score,
@@ -195,6 +196,7 @@ app.post("/api/assessments", async (req, res) => {
       `
       INSERT INTO assessment_sessions
       (
+        campaign_id,
         company_name,
         maturity_level,
         average_score,
@@ -207,11 +209,12 @@ app.post("/api/assessments", async (req, res) => {
       )
       VALUES
       (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
       )
       RETURNING *
       `,
       [
+        campaign_id,
         company_name,
         maturity_level,
         average_score,
@@ -225,6 +228,14 @@ app.post("/api/assessments", async (req, res) => {
     );
 
     const assessment = result.rows[0];
+    await pool.query(
+  `
+  UPDATE campaign_participants
+  SET status = 'WAITING_FOR_REPORT'
+  WHERE campaign_id = $1
+  `,
+  [campaign_id]
+);
 
     if (answers && Array.isArray(answers)) {
 
