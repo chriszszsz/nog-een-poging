@@ -1273,9 +1273,9 @@ async function volgendeVraag() {
     vragen.length - 1
   ) {
 
-    currentVraag++;
-
     await saveProgress();
+
+    currentVraag++;
 
     renderVraag();
 
@@ -1494,7 +1494,7 @@ async function saveProgress() {
             activeCampaign.campaign_id,
 
           current_question:
-            currentVraag,
+            currentVraag +1,
 
           progress_percentage:
             progress
