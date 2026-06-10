@@ -893,14 +893,60 @@ function renderResults() {
       score;
 
   const spider =
-    latestResult.spider_scores || {};
+  latestResult.spider_scores || {};
 
-  document.getElementById(
-    "score-governance"
-  ).textContent =
-    Math.round(
-      spider["Governance"] || 0
-    );
+function gemiddeldeVoor(domainNaam) {
+
+  const waardes =
+    Object.entries(spider)
+      .filter(([key]) =>
+        key.startsWith(domainNaam)
+      )
+      .map(([, value]) => value);
+
+  if (waardes.length === 0) {
+    return 0;
+  }
+
+  const avg =
+    waardes.reduce(
+      (a, b) => a + b,
+      0
+    ) / waardes.length;
+
+  return avg.toFixed(1);
+
+}
+
+document.getElementById(
+  "score-governance"
+).textContent =
+  gemiddeldeVoor("Governance");
+
+document.getElementById(
+  "score-risico"
+).textContent =
+  gemiddeldeVoor("Risicomanagement");
+
+document.getElementById(
+  "score-organisatie"
+).textContent =
+  gemiddeldeVoor("Organisatie");
+
+document.getElementById(
+  "score-people"
+).textContent =
+  gemiddeldeVoor("People");
+
+document.getElementById(
+  "score-keten"
+).textContent =
+  gemiddeldeVoor("Ketenbeheer");
+
+document.getElementById(
+  "score-bcm"
+).textContent =
+  gemiddeldeVoor("Bedrijfscontinuïteitsbeheer");
 
   document.getElementById(
     "score-risico"
