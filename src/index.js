@@ -295,6 +295,7 @@ app.post(
       INSERT INTO assessment_sessions
       (
         campaign_id,
+        user_id,
         company_name,
         maturity_level,
         average_score,
@@ -307,12 +308,13 @@ app.post(
       )
       VALUES
       (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
       )
       RETURNING *
       `,
       [
         campaign_id,
+        req.user.user_id,
         company_name,
         maturity_level,
         average_score,
@@ -788,18 +790,25 @@ app.get(
 
       const result = await pool.query(
         `
-        SELECT
+                SELECT
           s.assessment_session_id,
           s.campaign_id,
-          s.average_score,
+          s.maturity_level,
           s.assessment_date,
           s.status,
-          c.title
+
+          c.title AS campaign_title,
+
+          u.first_name,
+          u.last_name
 
         FROM assessment_sessions s
 
         JOIN assessment_campaigns c
         ON s.campaign_id = c.campaign_id
+
+        JOIN users u
+        ON s.user_id = u.user_id
 
         WHERE c.company_id = (
           SELECT company_id

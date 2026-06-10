@@ -879,10 +879,26 @@ async function loadResultsHistory() {
 
     console.log("Result history raw:", raw);
 
-    const data =
-      Array.isArray(raw)
-        ? raw
-        : raw.data || [];
+    // ✅ FIX: alles ondersteunen
+    let data = [];
+
+    if (Array.isArray(raw)) {
+
+      data = raw;
+
+    } else if (Array.isArray(raw.rows)) {
+
+      data = raw.rows;
+
+    } else if (Array.isArray(raw.data)) {
+
+      data = raw.data;
+
+    } else {
+
+      console.error("Onbekend format:", raw);
+
+    }
 
     renderResultsHistory(data);
 
