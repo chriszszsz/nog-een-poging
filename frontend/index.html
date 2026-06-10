@@ -285,12 +285,29 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
   <!-- PAGE: OVERZICHT -->
   <div class="page active" id="page-overzicht">
     <h1 class="page-title">Maturity assessment</h1>
-    <div class="top-cards">
-      <div class="action-card primary" onclick="showVraag()">
-        <div class="ac-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-        <div class="ac-title">Start nieuw assessment</div>
-        <div class="ac-desc">Begin een nieuwe maturity scan voor uw organisatie</div>
-      </div>
+    <div class="action-card primary">
+
+  <div class="ac-icon">
+    <svg viewBox="0 0 24 24">
+      <polyline points="9 11 12 14 22 4"/>
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+    </svg>
+  </div>
+
+  <div class="ac-title">
+    Maturity assessment
+  </div>
+
+  <div class="ac-desc">
+    Beheer en voltooi jouw assessment workflow
+  </div>
+
+  <div
+    id="assessment-action"
+    style="margin-top:20px;"
+  ></div>
+
+</div>
       <div class="action-card secondary" onclick="showPage('eerdere')">
         <div class="ac-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
         <div class="ac-title">Bekijk eerdere resultaten</div>
@@ -663,6 +680,142 @@ function showPage(name, navEl) {
 }
 
 /* =========================================
+   BUTTON STATE
+========================================= */
+
+function getAssessmentButton() {
+
+  if (!activeCampaign) {
+
+    return `
+      <button
+        class="btn btn-outline"
+        disabled
+        style="
+          opacity:.6;
+          cursor:not-allowed;
+        "
+      >
+        🔒 Geen assessment beschikbaar
+      </button>
+    `;
+
+  }
+
+  if (
+    activeCampaign.status ===
+    "NOT_STARTED"
+  ) {
+
+    return `
+      <button
+        class="btn btn-primary"
+        onclick="showVraag()"
+      >
+        ▶ Start assessment
+      </button>
+    `;
+
+  }
+
+  if (
+    activeCampaign.status ===
+    "IN_PROGRESS"
+  ) {
+
+    return `
+      <button
+        class="btn btn-primary"
+        onclick="resumeAssessment()"
+      >
+        💾 Verder met vraag
+        ${activeCampaign.current_question + 1}
+        van 51
+      </button>
+    `;
+
+  }
+
+  if (
+    activeCampaign.status ===
+    "WAITING_FOR_REPORT"
+  ) {
+
+    return `
+      <button
+        class="btn btn-outline"
+        disabled
+        style="
+          opacity:.7;
+          cursor:not-allowed;
+        "
+      >
+        ✅ Assessment voltooid
+      </button>
+
+      <div
+        style="
+          margin-top:12px;
+          font-size:12px;
+          color:rgba(255,255,255,0.6);
+          line-height:1.5;
+        "
+      >
+        Wachten op overige deelnemers.
+      </div>
+    `;
+
+  }
+
+  if (
+    activeCampaign.status ===
+    "RESULTS_READY"
+  ) {
+
+    return `
+      <button
+        class="btn btn-outline"
+        disabled
+        style="
+          opacity:.7;
+          cursor:not-allowed;
+        "
+      >
+        🔒 Assessment afgerond
+      </button>
+
+      <div
+        style="
+          margin-top:12px;
+          font-size:12px;
+          color:rgba(255,255,255,0.6);
+          line-height:1.5;
+        "
+      >
+        Resultaten zijn beschikbaar in het overzicht hieronder.
+      </div>
+    `;
+
+  }
+
+  return "";
+
+}
+function renderAssessmentButton() {
+
+  const container =
+    document.getElementById(
+      "assessment-action"
+    );
+
+  if (!container) return;
+
+  container.innerHTML =
+    getAssessmentButton();
+
+}
+
+/* =========================================
    START ASSESSMENT
 ========================================= */
 
@@ -715,6 +868,21 @@ async function showVraag() {
   currentVraag = 0;
 
   answered = 0;
+
+  renderVraag();
+
+}
+
+/* =========================================
+   RESUME ASSESSMENT
+========================================= */
+
+async function resumeAssessment() {
+
+  await showVraag();
+
+  currentVraag =
+    activeCampaign.current_question || 0;
 
   renderVraag();
 
@@ -1198,6 +1366,8 @@ async function saveAndExit() {
 
   await loadMyCampaigns();
 
+  renderAssessmentButton();
+
 }
 
 /* =========================================
@@ -1353,6 +1523,12 @@ function initRadar() {
   });
 
 }
+
+loadMyCampaigns().then(() => {
+
+  renderAssessmentButton();
+
+});
 </script>
 </body>
 </html>
