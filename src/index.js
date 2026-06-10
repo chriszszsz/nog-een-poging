@@ -804,6 +804,8 @@ app.get(
           u.first_name,
           u.last_name
 
+          'DEBUG_V2' as test_flag
+
         FROM assessment_sessions s
 
         JOIN assessment_campaigns c
