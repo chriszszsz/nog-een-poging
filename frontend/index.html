@@ -392,38 +392,84 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
       <div class="domain-grid">
 
         <div class="domain-card">
-          <div class="domain-score">3</div>
-          <div class="domain-name">Governance</div>
-        </div>
+          <div
+            class="domain-score"
+            id="score-governance"
+          >
+            0
+          </div>
 
-        <div class="domain-card">
-          <div class="domain-score">2</div>
-          <div class="domain-name">Risicomanagement</div>
-        </div>
-
-        <div class="domain-card">
-          <div class="domain-score">3</div>
-          <div class="domain-name">Organisatie</div>
-        </div>
-
-        <div class="domain-card">
-          <div class="domain-score">2</div>
-          <div class="domain-name">People</div>
-        </div>
-
-        <div class="domain-card">
-          <div class="domain-score">2</div>
-          <div class="domain-name">Ketenbeheer</div>
-        </div>
-
-        <div class="domain-card">
-          <div class="domain-score">4</div>
           <div class="domain-name">
-            Bedrijfscontinuïteitsbeheer
+            Governance
           </div>
         </div>
 
+        <div class="domain-card">
+          <div
+            class="domain-score"
+            id="score-risico"
+          >
+            0
+          </div>
+
+          <div class="domain-name">
+            Risicomanagement
+          </div>
+        </div>
+
+        <div class="domain-card">
+          <div
+            class="domain-score"
+            id="score-organisatie"
+          >
+            0
+          </div>
+
+          <div class="domain-name">
+            Organisatie
+          </div>
+        </div>
+
+        <div class="domain-card">
+          <div
+            class="domain-score"
+            id="score-people"
+          >
+            0
+          </div>
+
+          <div class="domain-name">
+            People
+          </div>
+        </div>
+
+        <div class="domain-card">
+          <div
+            class="domain-score"
+            id="score-keten"
+          >
+            0
+          </div>
+
+          <div class="domain-name">
+            Ketenbeheer
+          </div>
+        </div>
+
+        <div class="domain-card">
+          <div
+            class="domain-score"
+            id="score-bcm"
+          >
+            0
+          </div>
+
+          <div class="domain-name">
+            Bedrijfscontinuïteitsbeheer
+          </div>
       </div>
+
+    </div>
 
     </div>
 
@@ -846,8 +892,52 @@ function renderResults() {
     .textContent =
       score;
 
-}
+  const spider =
+    latestResult.spider_scores || {};
 
+  document.getElementById(
+    "score-governance"
+  ).textContent =
+    Math.round(
+      spider["Governance"] || 0
+    );
+
+  document.getElementById(
+    "score-risico"
+  ).textContent =
+    Math.round(
+      spider["Risicomanagement"] || 0
+    );
+
+  document.getElementById(
+    "score-organisatie"
+  ).textContent =
+    Math.round(
+      spider["Organisatie"] || 0
+    );
+
+  document.getElementById(
+    "score-people"
+  ).textContent =
+    Math.round(
+      spider["People"] || 0
+    );
+
+  document.getElementById(
+    "score-keten"
+  ).textContent =
+    Math.round(
+      spider["Ketenbeheer"] || 0
+    );
+
+  document.getElementById(
+    "score-bcm"
+  ).textContent =
+    Math.round(
+      spider["Bedrijfscontinuïteitsbeheer"] || 0
+    );
+
+}
 
 /* =========================================
    PAGE NAVIGATION
