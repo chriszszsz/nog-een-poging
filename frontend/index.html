@@ -561,26 +561,17 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
     <div class="table-card">
       <div class="table-title">Eerdere assessments</div>
       <table>
-        <thead><tr><th>Datum</th><th>Gemiddelde score</th><th>Status</th><th>Acties</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Assessment</th>
+            <th>Maturity niveau</th>
+            <th>Gemaakt door</th>
+            <th>Status</th>
+            <th>Acties</th>
+          </tr>
+        </thead>
         <tbody>
-          <tr>
-            <td><div class="td-date">15 maart 2026</div><div class="td-day">zondag</div></td>
-            <td><span class="score-main">2.7</span> <span class="score-sub">van de 5.0</span> <span class="badge-delta">+0.8</span></td>
-            <td><span class="badge-status">Voltooid</span></td>
-            <td><button class="btn-table" onclick="showPage('resultaten')">Bekijk resultaten →</button></td>
-          </tr>
-          <tr>
-            <td><div class="td-date">20 november 2025</div><div class="td-day">donderdag</div></td>
-            <td><span class="score-main">1.8</span> <span class="score-sub">van de 5.0</span> <span class="badge-delta">+0.3</span></td>
-            <td><span class="badge-status">Voltooid</span></td>
-            <td><button class="btn-table" onclick="showPage('resultaten')">Bekijk resultaten →</button></td>
-          </tr>
-          <tr>
-            <td><div class="td-date">10 juni 2025</div><div class="td-day">dinsdag</div></td>
-            <td><span class="score-main">1.5</span> <span class="score-sub">van de 5.0</span></td>
-            <td><span class="badge-status">Voltooid</span></td>
-            <td><button class="btn-table" onclick="showPage('resultaten')">Bekijk resultaten →</button></td>
-          </tr>
         </tbody>
       </table>
     </div>
@@ -929,7 +920,7 @@ function renderResultsHistory(data) {
 
     tbody.innerHTML =
       `<tr>
-        <td colspan="4">
+        <td colspan="6">
           Fout bij laden resultaten
         </td>
       </tr>`;
@@ -943,7 +934,7 @@ function renderResultsHistory(data) {
 
     tbody.innerHTML =
       `<tr>
-        <td colspan="4">
+        <td colspan="6">
           Geen resultaten beschikbaar
         </td>
       </tr>`;
@@ -952,7 +943,7 @@ function renderResultsHistory(data) {
 
   }
 
-  // ✅ echte rendering
+  // ✅ juiste rendering
   data.forEach(r => {
 
     const date =
@@ -968,9 +959,17 @@ function renderResultsHistory(data) {
             )
         : "-";
 
-    const score =
-      r.average_score
-        ? `${r.average_score} / 5.0`
+    const assessment =
+      r.campaign_title || "-";
+
+    const maturity =
+      r.maturity_level !== undefined
+        ? r.maturity_level
+        : "-";
+
+    const user =
+      r.first_name && r.last_name
+        ? `${r.first_name} ${r.last_name}`
         : "-";
 
     const status =
@@ -982,11 +981,10 @@ function renderResultsHistory(data) {
       `
       <tr>
         <td>${date}</td>
-
-        <td>${score}</td>
-
+        <td>${assessment}</td>
+        <td>${maturity}</td>
+        <td>${user}</td>
         <td>${status}</td>
-
         <td>
           <button
             class="btn-table"
