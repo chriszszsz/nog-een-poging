@@ -985,7 +985,7 @@ function updateAnsweredCount() {
    START ASSESSMENT
 ========================================= */
 
-async function showVraag() {
+async function showVraag(resume = false) {
 
   console.log(
     "Active campaign:",
@@ -1031,18 +1031,20 @@ async function showVraag() {
     .getElementById('page-vraag')
     .classList.add('active');
 
-  if (
-  activeCampaign.status !==
-  "IN_PROGRESS"
-) {
+  if (resume) {
 
-  currentVraag = 0;
+    currentVraag =
+      activeCampaign.current_question || 0;
 
-}
+  } else {
 
-updateAnsweredCount();
+    currentVraag = 0;
 
-renderVraag();
+  }
+
+  updateAnsweredCount();
+
+  renderVraag();
 
 }
 
@@ -1052,28 +1054,7 @@ renderVraag();
 
 async function resumeAssessment() {
 
-  if (vragen.length === 0) {
-
-    await loadQuestions();
-
-  }
-
-  currentVraag =
-    activeCampaign.current_question || 0;
-
-  updateAnsweredCount();
-
-  document
-    .querySelectorAll('.page')
-    .forEach(function(p) {
-      p.classList.remove('active');
-    });
-
-  document
-    .getElementById('page-vraag')
-    .classList.add('active');
-
-  renderVraag();
+  await showVraag(true);
 
 }
 
