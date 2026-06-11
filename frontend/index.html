@@ -1095,10 +1095,10 @@ async function openResult(id) {
 
     selectedResult = data;
 
-    // ✅ EERST navigeren
+    // ✅ eerst navigeren
     showPage("resultaten");
 
-    // ✅ DAARNA renderen (cruciaal!)
+    // ✅ daarna renderen
     renderResultDetail();
 
   } catch (err) {
@@ -1138,21 +1138,21 @@ function renderResultDetail() {
   document.querySelector(".rs-val").innerHTML =
     `${session.average_score} <span>/ 5.0</span>`;
 
-  // ✅ HOOG RISICO (< 3)
+  // ✅ hoog risico (<3)
   const highRisk =
     values.filter(v => v < 3).length;
 
   document.querySelectorAll(".rs-val")[1].innerHTML =
     `${highRisk} <span>/ ${values.length}</span>`;
 
-  // ✅ ✅ JOUW REGEL: alleen 5 = voltooid
+  // ✅ alleen 5 = voltooid
   const completed =
     values.filter(v => v === 5).length;
 
   document.querySelectorAll(".rs-val")[2].innerHTML =
     `${completed} <span style="color:#4dd9a0;font-size:16px;">voltooid</span>`;
 
-  // ✅ ANSWERS RENDEREN
+  // ✅ antwoorden renderen
   const container =
     document.querySelector(".answers-card");
 
@@ -1163,28 +1163,25 @@ function renderResultDetail() {
 
     let text = "";
 
-    // ✅ OPEN VRAAG (alleen comment)
-    if (a.comment && a.score === null) {
+    // ✅ GESLOTEN VRAAG → score + betekenis uit DB
+    if (a.score !== null) {
 
-      text = a.comment;
+      text =
+        `Score: ${a.score} – ${a.answer_text}`;
 
     }
 
-    // ✅ GESLOTEN VRAAG
-    else if (a.score !== null) {
+    // ✅ OPEN VRAAG → alleen tekst
+    else if (a.comment) {
 
-      text = `Score: ${a.score}`;
-
-      if (a.comment) {
-        text += ` - ${a.comment}`;
-      }
+      text = a.comment;
 
     }
 
     container.innerHTML += `
       <div class="ans-item">
         <div class="ans-q">
-          Vraag ${a.question_id}
+          Vraag ${a.question_id}: ${a.question_text}
         </div>
         <div class="ans-a">
           ${text}
@@ -1197,7 +1194,7 @@ function renderResultDetail() {
 }
 
 /* =========================================
-   RENDER RESULTS
+   RENDER RESULTSe
 ========================================= */
 
 function renderResults() {
