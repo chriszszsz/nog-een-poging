@@ -104,7 +104,7 @@
       <div id="dashboard-view">
 
         <!-- ✅ TABS -->
-        <div class="flex gap-2 border-b border-slate-200">
+        <div class="flex gap-6 border-b border-slate-200">
 
           <button onclick="switchTab('overview')" id="tab-overview"
             class="px-4 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600">
@@ -157,22 +157,12 @@
 
 <div id="companies-tab" class="hidden space-y-6 mt-6">
 
-  <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-    <h2 class="text-lg font-semibold text-slate-900">
-      Bedrijven
-    </h2>
-  </div>
-
   <div id="company-cards" class="grid gap-4 md:grid-cols-2"></div>
 
 </div>
 
         <!-- ✅ CAMPAIGNS TAB -->
         <div id="campaigns-tab" class="hidden mt-6 space-y-6">
-
-          <div class="bg-white p-6 rounded-xl shadow-sm">
-            <h2 class="font-semibold text-lg">Campagnes</h2>
-          </div>
 
           <div class="bg-white rounded-xl shadow-sm overflow-hidden">
             <table class="w-full">
@@ -909,56 +899,47 @@ function renderCampaigns() {
 
   currentTab = tab;
 
-  // ✅ OVERVIEW TAB
-  const overviewTab = document.getElementById('overview-tab');
   const overviewBtn = document.getElementById('tab-overview');
-
-  if (overviewTab && overviewBtn) {
-    overviewTab.classList.toggle('hidden', tab !== 'overview');
-    overviewBtn.classList.toggle('border-blue-600', tab === 'overview');
-    overviewBtn.classList.toggle('text-blue-600', tab === 'overview');
-    overviewBtn.classList.toggle('text-slate-600', tab !== 'overview');
-  }
-
-  // ✅ COMPANIES TAB
-  const companiesTab = document.getElementById('companies-tab');
   const companiesBtn = document.getElementById('tab-companies');
-
-  if (companiesTab && companiesBtn) {
-    companiesTab.classList.toggle('hidden', tab !== 'companies');
-    companiesBtn.classList.toggle('border-blue-600', tab === 'companies');
-    companiesBtn.classList.toggle('text-blue-600', tab === 'companies');
-    companiesBtn.classList.toggle('text-slate-600', tab !== 'companies');
-  }
-
-  // ✅ CAMPAIGNS TAB
-  const campaignsTab = document.getElementById('campaigns-tab');
   const campaignsBtn = document.getElementById('tab-campaigns');
 
-  if (campaignsTab && campaignsBtn) {
-    campaignsTab.classList.toggle('hidden', tab !== 'campaigns');
-    campaignsBtn.classList.toggle('border-blue-600', tab === 'campaigns');
-    campaignsBtn.classList.toggle('text-blue-600', tab === 'campaigns');
-    campaignsBtn.classList.toggle('text-slate-600', tab !== 'campaigns');
+  const overviewTab = document.getElementById('overview-tab');
+  const companiesTab = document.getElementById('companies-tab');
+  const campaignsTab = document.getElementById('campaigns-tab');
+
+  // TOGGLE CONTENT
+  overviewTab?.classList.toggle('hidden', tab !== 'overview');
+  companiesTab?.classList.toggle('hidden', tab !== 'companies');
+  campaignsTab?.classList.toggle('hidden', tab !== 'campaigns');
+
+  // RESET ALLE TABS
+  [overviewBtn, companiesBtn, campaignsBtn].forEach(btn => {
+    btn.classList.remove('border-blue-600', 'text-blue-600');
+    btn.classList.add('border-transparent', 'text-slate-600');
+  });
+
+  // ACTIVE TAB
+  const activeBtn = document.getElementById(`tab-${tab}`);
+  if (activeBtn) {
+    activeBtn.classList.add('border-blue-600', 'text-blue-600');
+    activeBtn.classList.remove('border-transparent', 'text-slate-600');
   }
 
-  // ✅ altijd zichtbaar maken
-  const dashboard = document.getElementById('dashboard-view');
-  if (dashboard) {
-    dashboard.classList.remove('hidden');
+  // RENDER
+  if (tab === 'overview') {
+    renderOverviewCards();
+    renderAssessmentsTable();
   }
 
-  const detail = document.getElementById('assessment-detail-screen');
-  if (detail) {
-    detail.classList.add('hidden');
+  if (tab === 'companies') {
+    renderCompanyCards();
   }
 
-  // ✅ rerender
-  if (tab === 'overview') renderOverviewCards();
-  if (tab === 'companies') renderCompanyCards();
-  if (tab === 'campaigns') renderCampaigns();
-
+  if (tab === 'campaigns') {
+    renderCampaigns();
+  }
 }
+
 
     function getMaturityLabel(score) {
       return maturityLabels[score] || 'Onbekend';
