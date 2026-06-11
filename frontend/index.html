@@ -2173,8 +2173,8 @@ function initRadar() {
       0
     );
 
-  gradient.addColorStop(0, "#0068B6");
-  gradient.addColorStop(1, "#AC006D");
+  gradient.addColorStop(0, "rgba(0, 104, 182, 0.35)");
+  gradient.addColorStop(1, "rgba(172, 0, 109, 0.35)");
 
   radarChartInstance = new Chart(ctx, {
 
@@ -2198,9 +2198,10 @@ function initRadar() {
           pointBackgroundColor: "#AC006D",
           pointBorderColor: "#ffffff",
 
-          pointRadius: 4,
+          pointRadius: 3,
 
           borderWidth: 2,
+          borderColor: "#AC006D",
 
           tension: 0.2
         }
