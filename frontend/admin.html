@@ -39,20 +39,21 @@
   <div class="sticky top-0 z-50 bg-white shadow-sm ring-1 ring-slate-200">
     <div class="px-6 md:px-10 py-4 flex items-center justify-between">
 
-      <!-- links -->
       <div class="flex items-center gap-4">
         <img
           src="https://seekvectorlogo.net/wp-content/uploads/2019/10/axians-vector-logo.png"
           class="h-12 flex-shrink-0"
-       p class="text-sm font-semibold text-slate-900">
+        />
+
+        <div class="border-l border-slate-200 pl-4">
+          <p class="text-sm font-semibold text-slate-900">
             Digital Maturity Assessment
           </p>
         </div>
       </div>
 
-      <!-- rechts -->
       <button onclick="logout()"
-        class="rounded-xl bg-slate-800 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-700 transition">
+        class="rounded-xl bg-slate-800 px-5 py-2 text-sm font-semibold text-white">
         Uitloggen
       </button>
 
@@ -63,105 +64,127 @@
   <div class="min-h-full p-6 md:p-10">
     <div class="mx-auto max-w-6xl space-y-6">
 
-      <!-- ✅ HERO CARD -->
+      <!-- ✅ HERO -->
       <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
           <div>
-            <h1 id="page-title"
-              class="text-3xl font-semibold tracking-tight"
-              style="color: #005EB8;">
+            <h1 class="text-3xl font-semibold tracking-tight text-blue-700">
               Digital Maturity Assessment
             </h1>
-
-            <p id="page-description"
-              class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-              Overzicht en beheer van assessments, resultaten, rapporten en AI-voorstellen.
+            <p class="mt-2 text-sm text-slate-600">
+              Overzicht en beheer van assessments, resultaten en campagnes.
             </p>
           </div>
 
-          <div class="flex gap-3 flex-wrap">
+          <div class="flex gap-3">
 
-            <button
-              onclick="openCampaignModal()"
-              class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white bg-emerald-600">
+            <button onclick="openCampaignModal()"
+              class="px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-xl">
               + Nieuwe campagne
             </button>
 
-            <button
-              onclick="switchTab('overview')"
-              class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white"
-              style="background-color: #A20067;">
+            <button onclick="switchTab('overview')"
+              class="px-4 py-2 text-sm font-semibold text-white rounded-xl"
+              style="background:#A20067">
               Overzicht
             </button>
 
-            <button
-              onclick="switchTab('companies')"
-              class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white"
-              style="background-color: #005EB8;">
+            <button onclick="switchTab('companies')"
+              class="px-4 py-2 text-sm font-semibold text-white rounded-xl"
+              style="background:#005EB8">
               Bedrijven
             </button>
 
           </div>
-
         </div>
       </div>
 
-      <!-- ✅ TABS -->
+      <!-- ✅ DASHBOARD -->
       <div id="dashboard-view">
 
+        <!-- ✅ TABS -->
         <div class="flex gap-2 border-b border-slate-200">
 
-  <button onclick="switchTab('overview')" id="tab-overview"
-    class="px-4 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600">
-    Assessment Overzicht
-  </button>
+          <button onclick="switchTab('overview')" id="tab-overview"
+            class="px-4 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600">
+            Assessment Overzicht
+          </button>
 
-  <button onclick="switchTab('companies')" id="tab-companies"
-    class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600">
-    Bedrijven
-  </button>
+          <button onclick="switchTab('companies')" id="tab-companies"
+            class="px-4 py-3 text-sm font-semibold text-slate-600">
+            Bedrijven
+          </button>
 
-  <button onclick="switchTab('campaigns')" id="tab-campaigns"
-    class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600">
-    Campagnes
-  </button>
+          <button onclick="switchTab('campaigns')" id="tab-campaigns"
+            class="px-4 py-3 text-sm font-semibold text-slate-600">
+            Campagnes
+          </button>
 
-</div>
-<div id="campaigns-tab" class="hidden space-y-6 mt-6">
+        </div>
 
-  <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-    <h2 class="text-lg font-semibold text-slate-900">
-      Campagnes
-    </h2>
-    <p class="text-sm text-slate-600">
-      Beheer en bekijk campagnes.
-    </p>
-  </div>
+        <!-- ✅ OVERVIEW TAB -->
+        <div id="overview-tab" class="mt-6 space-y-6">
 
-  <div class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
-    <table class="w-full">
-      <thead class="bg-slate-50 border-b">
-        <tr class="text-left text-xs font-semibold text-slate-600 uppercase">
-          <th class="px-6 py-3">Titel</th>
-          <th class="px-6 py-3">Bedrijf</th>
-          <th class="px-6 py-3">Deelnemers</th>
-          <th class="px-6 py-3">Status</th>
-        </tr>
-      </thead>
+          <div class="grid grid-cols-4 gap-4">
 
-      <tbody id="campaigns-table-body">
-        <tr>
-          <td colspan="4" class="p-6 text-center text-slate-500">
-            Geen campagnes gevonden
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+              <p>Aantal assessments</p>
+              <p id="stat-assessments" class="text-3xl font-bold">0</p>
+            </div>
 
-</div>
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+              <p>Gemiddeld niveau</p>
+              <p id="stat-average" class="text-3xl font-bold">0</p>
+            </div>
 
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+              <p>Afgerond</p>
+              <p id="stat-completed" class="text-3xl font-bold">0</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+              <p>Laatste update</p>
+              <p id="stat-last-update" class="text-3xl font-bold">-</p>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ✅ CAMPAIGNS TAB -->
+        <div id="campaigns-tab" class="hidden mt-6 space-y-6">
+
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h2 class="font-semibold text-lg">Campagnes</h2>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <table class="w-full">
+
+              <thead class="bg-slate-100">
+                <tr>
+                  <th class="p-3 text-left">Titel</th>
+                  <th class="p-3 text-left">Bedrijf</th>
+                  <th class="p-3 text-left">Deelnemers</th>
+                  <th class="p-3 text-left">Status</th>
+                </tr>
+              </thead>
+
+              <tbody id="campaigns-table-body">
+                <tr>
+                  <td colspan="4" class="p-6 text-center text-slate-500">
+                    Geen campagnes gevonden
+                  </td>
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+
+        </div>
+
+      </div>
   <script>
     const token =
   localStorage.getItem("token");
@@ -868,36 +891,59 @@ function renderCampaigns() {
       renderCompanyCards();
     }
     function switchTab(tab) {
-      currentTab = tab;
-      document.getElementById('tab-overview').classList.toggle('border-blue-600', tab === 'overview');
-      document.getElementById('tab-overview').classList.toggle('text-blue-600', tab === 'overview');
-      document.getElementById('tab-overview').classList.toggle('border-transparent', tab !== 'overview');
-      document.getElementById('tab-overview').classList.toggle('text-slate-600', tab !== 'overview');
-      document.getElementById('tab-companies').classList.toggle('border-blue-600', tab === 'companies');
-      document.getElementById('tab-companies').classList.toggle('text-blue-600', tab === 'companies');
-      document.getElementById('tab-companies').classList.toggle('border-transparent', tab !== 'companies');
-      document.getElementById('tab-companies').classList.toggle('text-slate-600', tab !== 'companies');
-      document.getElementById('overview-tab').classList.toggle('hidden', tab !== 'overview');
-      document.getElementById('companies-tab').classList.toggle('hidden', tab !== 'companies');
-      document.getElementById('dashboard-view').classList.remove('hidden');
-      document.getElementById('assessment-detail-screen').classList.add('hidden');
-      document.getElementById('campaigns-tab')
-  .classList.toggle('hidden', tab !== 'campaigns');
 
-document.getElementById('tab-campaigns')
-  .classList.toggle('border-blue-600', tab === 'campaigns');
+  currentTab = tab;
 
-document.getElementById('tab-campaigns')
-  .classList.toggle('text-blue-600', tab === 'campaigns');
+  // ✅ OVERVIEW TAB
+  const overviewTab = document.getElementById('overview-tab');
+  const overviewBtn = document.getElementById('tab-overview');
 
-document.getElementById('tab-campaigns')
-  .classList.toggle('border-transparent', tab !== 'campaigns');
+  if (overviewTab && overviewBtn) {
+    overviewTab.classList.toggle('hidden', tab !== 'overview');
+    overviewBtn.classList.toggle('border-blue-600', tab === 'overview');
+    overviewBtn.classList.toggle('text-blue-600', tab === 'overview');
+    overviewBtn.classList.toggle('text-slate-600', tab !== 'overview');
+  }
 
-document.getElementById('tab-campaigns')
-  .classList.toggle('text-slate-600', tab !== 'campaigns');
-      if (tab === 'overview') renderOverviewCards();
-      if (tab === 'companies') renderCompanyCards();
-    }
+  // ✅ COMPANIES TAB
+  const companiesTab = document.getElementById('companies-tab');
+  const companiesBtn = document.getElementById('tab-companies');
+
+  if (companiesTab && companiesBtn) {
+    companiesTab.classList.toggle('hidden', tab !== 'companies');
+    companiesBtn.classList.toggle('border-blue-600', tab === 'companies');
+    companiesBtn.classList.toggle('text-blue-600', tab === 'companies');
+    companiesBtn.classList.toggle('text-slate-600', tab !== 'companies');
+  }
+
+  // ✅ CAMPAIGNS TAB
+  const campaignsTab = document.getElementById('campaigns-tab');
+  const campaignsBtn = document.getElementById('tab-campaigns');
+
+  if (campaignsTab && campaignsBtn) {
+    campaignsTab.classList.toggle('hidden', tab !== 'campaigns');
+    campaignsBtn.classList.toggle('border-blue-600', tab === 'campaigns');
+    campaignsBtn.classList.toggle('text-blue-600', tab === 'campaigns');
+    campaignsBtn.classList.toggle('text-slate-600', tab !== 'campaigns');
+  }
+
+  // ✅ altijd zichtbaar maken
+  const dashboard = document.getElementById('dashboard-view');
+  if (dashboard) {
+    dashboard.classList.remove('hidden');
+  }
+
+  const detail = document.getElementById('assessment-detail-screen');
+  if (detail) {
+    detail.classList.add('hidden');
+  }
+
+  // ✅ rerender
+  if (tab === 'overview') renderOverviewCards();
+  if (tab === 'companies') renderCompanyCards();
+  if (tab === 'campaigns') renderCampaigns();
+
+}
 
     function getMaturityLabel(score) {
       return maturityLabels[score] || 'Onbekend';
