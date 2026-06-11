@@ -1281,18 +1281,23 @@ function closeCompanyModal() {
           : 'Adres niet beschikbaar';
 
       return `
-        <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+  <div 
+    onclick="viewCompany(${company.company_id})"
+    class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 cursor-pointer hover:shadow-md transition"
+  >
 
-          <h3 class="text-lg font-semibold">
-            ${company.company_name}
-          </h3>
+    <h3 class="text-lg font-semibold">
+      ${company.company_name}
+    </h3>
 
-          <p class="text-sm text-slate-500">
-            ${address}
-          </p>
+    <p class="text-sm text-slate-500">
+      ${address}
+    </p>
 
-        </div>
-      `;
+  </div>
+`;
+
+
 
     }).join('');
 
@@ -1314,14 +1319,21 @@ function closeCompanyModal() {
       document.getElementById('assessment-detail-screen').classList.remove('hidden');
     }
 
-    function viewCompany(companyName) {
-      console.log('viewCompany', companyName);
-      selectedCompany = companyName;
-      selectedAssessment = null;
-      renderCompanyDetail();
-      document.getElementById('dashboard-view').classList.add('hidden');
-      document.getElementById('assessment-detail-screen').classList.remove('hidden');
-    }
+    function viewCompany(companyId) {
+
+  const company =
+    companies.find(c => c.company_id == companyId);
+
+  if (!company) return;
+
+  selectedCompany = company;
+
+  renderCompanyDashboard();
+
+  document.getElementById('dashboard-view').classList.add('hidden');
+  document.getElementById('assessment-detail-screen').classList.remove('hidden');
+
+}
 
 function viewCampaign(title) {
 
