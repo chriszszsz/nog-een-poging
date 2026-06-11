@@ -62,7 +62,7 @@
 
   <!-- ✅ CONTENT -->
   <div class="min-h-full p-6 md:p-10">
-    <div class="mx-auto max-w-6xl space-y-6">
+    <div class="mx-auto max-w-7xl space-y-6">
 
       <!-- ✅ HERO -->
       <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
@@ -126,31 +126,46 @@
         <!-- ✅ OVERVIEW TAB -->
         <div id="overview-tab" class="mt-6 space-y-6">
 
-          <div class="grid grid-cols-4 gap-4">
+          <div class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
 
-            <div class="bg-white p-6 rounded-xl shadow-sm">
-              <p>Aantal assessments</p>
-              <p id="stat-assessments" class="text-3xl font-bold">0</p>
-            </div>
+  <table class="w-full">
 
-            <div class="bg-white p-6 rounded-xl shadow-sm">
-              <p>Gemiddeld niveau</p>
-              <p id="stat-average" class="text-3xl font-bold">0</p>
-            </div>
+    <thead class="bg-slate-100 text-xs uppercase text-slate-600">
+      <tr>
+        <th class="p-4 text-left">Bedrijf</th>
+        <th class="p-4 text-left">Score</th>
+        <th class="p-4 text-left">Niveau</th>
+        <th class="p-4 text-left">Datum</th>
+        <th class="p-4 text-left">Status</th>
+        <th class="p-4 text-left">Acties</th>
+      </tr>
+    </thead>
 
-            <div class="bg-white p-6 rounded-xl shadow-sm">
-              <p>Afgerond</p>
-              <p id="stat-completed" class="text-3xl font-bold">0</p>
-            </div>
+    <tbody id="assessments-table-body">
+      <tr>
+        <td colspan="6" class="p-6 text-center text-slate-500">
+          Geen assessments gevonden
+        </td>
+      </tr>
+    </tbody>
 
-            <div class="bg-white p-6 rounded-xl shadow-sm">
-              <p>Laatste update</p>
-              <p id="stat-last-update" class="text-3xl font-bold">-</p>
-            </div>
+  </table>
 
-          </div>
+</div>
 
         </div>
+
+<div id="companies-tab" class="hidden space-y-6 mt-6">
+
+  <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+    <h2 class="text-lg font-semibold text-slate-900">
+      Bedrijven
+    </h2>
+  </div>
+
+  <div id="company-cards" class="grid gap-4 md:grid-cols-2"></div>
+
+</div>
 
         <!-- ✅ CAMPAIGNS TAB -->
         <div id="campaigns-tab" class="hidden mt-6 space-y-6">
