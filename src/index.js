@@ -245,9 +245,33 @@ app.get("/api/assessments", async (req, res) => {
   try {
 
     const result = await pool.query(`
-      SELECT *
-      FROM assessment_sessions
-      ORDER BY assessment_session_id DESC
+      SELECT
+        s.assessment_session_id AS id,
+
+        s.company_name,
+        s.maturity_level,
+        s.average_score,
+        s.assessment_date,
+        s.status,
+        s.report_suggestion,
+        s.spider_scores,
+        s.details,
+        s.last_updated,
+
+        c.title AS campaign_title,
+
+        u.first_name,
+        u.last_name
+
+      FROM assessment_sessions s
+
+      LEFT JOIN assessment_campaigns c
+        ON s.campaign_id = c.campaign_id
+
+      LEFT JOIN users u
+        ON s.user_id = u.user_id
+
+      ORDER BY s.assessment_session_id DESC
     `);
 
     res.json(result.rows);
