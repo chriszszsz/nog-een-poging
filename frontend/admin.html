@@ -283,6 +283,32 @@
 
 </div>
 
+<div id="user-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+  <div class="bg-white p-6 rounded-xl w-full max-w-md space-y-4">
+
+    <h2 class="font-semibold">Nieuwe medewerker</h2>
+
+    <input id="user-first" placeholder="Voornaam" class="w-full border p-2 rounded" />
+    <input id="user-last" placeholder="Achternaam" class="w-full border p-2 rounded" />
+    <input id="user-email" placeholder="Email" class="w-full border p-2 rounded" />
+
+    <select id="user-role" class="w-full border p-2 rounded">
+      <option value="participant">Medewerker</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <div class="flex justify-end gap-2">
+      <button onclick="closeUserModal()">Annuleren</button>
+      <button onclick="createUser()" class="bg-blue-600 text-white px-4 py-2 rounded">
+        Opslaan
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
   <script>
     const token =
   localStorage.getItem("token");
@@ -1518,7 +1544,14 @@ function viewCampaign(title) {
 
     <div class="bg-white rounded-xl p-6">
 
-      <h3 class="font-semibold mb-4">Medewerkers</h3>
+      <div class="flex justify-between items-center mb-4">
+  <h3 class="font-semibold">Medewerkers</h3>
+
+  <button onclick="openUserModal(${company.company_id})"
+    class="px-3 py-2 bg-blue-600 text-white rounded">
+    + Toevoegen
+  </button>
+</div>
 
       ${
         companyUsers.map(u => `
@@ -2249,6 +2282,51 @@ async function createCompany() {
     alert("Serverfout bij aanmaken bedrijf");
 
   }
+
+}
+let selectedCompanyIdForUser = null;
+
+function openUserModal(companyId) {
+  selectedCompanyIdForUser = companyId;
+  document.getElementById("user-modal").classList.remove("hidden");
+}
+
+function closeUserModal() {
+  document.getElementById("user-modal").classList.add("hidden");
+}
+async function createUser() {
+
+  const first_name = document.getElementById("user-first").value;
+  const last_name = document.getElementById("user-last").value;
+  const email = document.getElementById("user-email").value;
+  const role = document.getElementById("user-role").value;
+
+  const response = await fetch(
+    `${defaultConfig.backend_url}/api/users`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        first_name,
+        last_name,
+        email,
+        role,
+        company_id: selectedCompanyIdForUser
+      })
+    }
+  );
+
+  if (!response.ok) {
+    alert("Fout bij aanmaken medewerker");
+    return;
+  }
+
+  alert("Medewerker aangemaakt ✅");
+
+  closeUserModal();
+
+  await fetchUsers();
+  renderCompanyDashboard();
 
 }
 
