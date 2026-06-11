@@ -131,17 +131,19 @@
 
   <table class="w-full">
 
-    <thead class="bg-slate-100 text-xs uppercase text-slate-600">
-      <tr>
-        <th class="p-4 text-left">Bedrijf</th>
-        <th class="p-4 text-left">Assessment</th>
-        <th class="p-4 text-left">Datum</th>
-        <th class="p-4 text-left">Score</th>
-        <th class="p-4 text-left">Gemaakt door</th>
-        <th class="p-4 text-left">Status</th>
-        <th class="p-4 text-left">Acties</th>
-      </tr>
-    </thead>
+    
+<thead class="bg-slate-100 text-xs uppercase text-slate-600">
+  <tr>
+    <th class="p-4 text-left">Bedrijf</th>
+    <th class="p-4 text-left">Campagne</th>
+    <th class="p-4 text-left">Datum</th>
+    <th class="p-4 text-left">Score</th>
+    <th class="p-4 text-left">Gemaakt door</th>
+    <th class="p-4 text-left">Status</th>
+    <th class="p-4 text-left">Acties</th>
+  </tr>
+</thead>
+
 
     <tbody id="assessments-table-body">
       <tr>
@@ -169,18 +171,20 @@
           <div class="bg-white rounded-xl shadow-sm overflow-hidden">
             <table class="w-full">
 
-              <thead class="bg-slate-100">
-                <tr>
-                  <th class="p-3 text-left">Titel</th>
-                  <th class="p-3 text-left">Bedrijf</th>
-                  <th class="p-3 text-left">Deelnemers</th>
-                  <th class="p-3 text-left">Status</th>
-                </tr>
-              </thead>
+              <thead class="bg-slate-100 text-xs uppercase text-slate-600">
+                  <tr>
+                    <th class="p-4 text-left">Campagne</th>
+                    <th class="p-4 text-left">Bedrijf</th>
+                    <th class="p-4 text-left">Deelnemers</th>
+                    <th class="p-4 text-left">Status</th>
+                    <th class="p-4 text-left">Acties</th>
+                  </tr>
+                </thead>
+
 
               <tbody id="campaigns-table-body">
                 <tr>
-                  <td colspan="4" class="p-6 text-center text-slate-500">
+                  <td colspan="5" class="p-6 text-center text-slate-500">
                     Geen campagnes gevonden
                   </td>
                 </tr>
@@ -192,6 +196,7 @@
         </div>
 
       </div>
+      <div id="assessment-detail-screen" class="hidden p-6 md:p-10"></div>
   <script>
     const token =
   localStorage.getItem("token");
@@ -208,12 +213,10 @@ if (!token) {
 
 }
 
-if (user.role !== "admin") {
-
-  window.location.href =
-    "./index.html";
-
+if (!user || user.role !== "admin") {
+  window.location.href = "./index.html";
 }
+
 
     const defaultConfig = {
       page_title: 'Digital Maturity Assessment',
@@ -230,6 +233,15 @@ if (user.role !== "admin") {
     let overviewSortColumn = 'assessment_date';
     let overviewSortDirection = 'desc';
     
+
+// ✅ HIER TOEVOEGEN
+const statusMapNL = {
+  'NOT_STARTED': 'Niet gestart',
+  'IN_PROGRESS': 'In uitvoering',
+  'WAITING_FOR_REPORT': 'Wacht op rapport',
+  'RESULTS_READY': 'Voltooid',
+  'COMPLETED': 'Afgerond'
+};
 
     const statusOrder = {
       'Niet gestart': 1,
@@ -863,7 +875,7 @@ function renderCampaigns() {
 
     tbody.innerHTML = `
       <tr>
-        <td colspan="4" class="p-6 text-center text-slate-500">
+        <td colspan="6" class="p-6 text-center text-slate-500">
           Geen campagnes gevonden
         </td>
       </tr>
@@ -871,19 +883,36 @@ function renderCampaigns() {
     return;
   }
 
+  
+
   tbody.innerHTML =
     campaigns.map(c => `
       <tr class="border-t">
 
-        <td class="px-6 py-4">${c.title}</td>
+        <td class="px-6 py-4">
+  <button onclick="viewCampaign('${c.title}')" class="text-blue-600 font-medium">
+    ${c.title}
+  </button>
+</td>
 
         <td class="px-6 py-4">${c.company_name}</td>
 
         <td class="px-6 py-4">${c.participant_count || 0}</td>
 
         <td class="px-6 py-4">
-          ${c.status || '-'}
-        </td>
+  <span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium 
+    ${
+      c.status === 'RESULTS_READY'
+        ? 'bg-teal-100 text-teal-700'
+        : c.status === 'IN_PROGRESS'
+        ? 'bg-blue-100 text-blue-700'
+        : c.status === 'WAITING_FOR_REPORT'
+        ? 'bg-amber-100 text-amber-700'
+        : 'bg-slate-100 text-slate-700'
+    }">
+    ${statusMapNL[c.status] || c.status}
+  </span>
+</td>
 
       </tr>
     `).join('');
@@ -1018,7 +1047,7 @@ function renderCampaigns() {
         ).toFixed(1);
 
   const completed =
-    assessments.filter(item => item.status === 'Afgerond').length;
+    assessments.filter(item => statusMapNL[item.status] === 'Afgerond').length;
 
   const lastUpdate =
     assessments.reduce(
@@ -1045,12 +1074,6 @@ function renderCampaigns() {
       }
       tbody.innerHTML = sorted.map(item => {
 
-  const statusMap = {
-    'NOT_STARTED': 'Niet gestart',
-    'IN_PROGRESS': 'In uitvoering',
-    'WAITING_FOR_REPORT': 'Wacht op rapport',
-    'COMPLETED': 'Afgerond'
-  };
 
   return `
     <tr class="border-t hover:bg-slate-50">
@@ -1058,7 +1081,7 @@ function renderCampaigns() {
       <td class="px-6 py-4 text-sm font-medium">${item.company_name}</td>
 
       <td class="px-6 py-4 text-sm">
-        ${item.campaign_name || 'Assessment'}
+        ${item.campaign_title || '-'}
       </td>
 
       <td class="px-6 py-4 text-sm">
@@ -1070,13 +1093,24 @@ function renderCampaigns() {
       </td>
 
       <td class="px-6 py-4 text-sm">
-        ${item.created_by || 'Onbekend'}
+        ${item.first_name && item.last_name
+          ? `${item.first_name} ${item.last_name}`
+          : '-'}
       </td>
 
       <td class="px-6 py-4 text-sm">
-        <span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium bg-slate-100">
-          ${statusMap[item.status] || item.status}
-        </span>
+        <span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium
+  ${
+    item.status === 'RESULTS_READY'
+      ? 'bg-teal-100 text-teal-700'
+      : item.status === 'IN_PROGRESS'
+      ? 'bg-blue-100 text-blue-700'
+      : item.status === 'WAITING_FOR_REPORT'
+      ? 'bg-amber-100 text-amber-700'
+      : 'bg-slate-100 text-slate-700'
+  }">
+  ${statusMapNL[item.status] || item.status}
+</span>
       </td>
 
       <td class="px-6 py-4 text-sm">
@@ -1153,6 +1187,48 @@ function renderCampaigns() {
       document.getElementById('dashboard-view').classList.add('hidden');
       document.getElementById('assessment-detail-screen').classList.remove('hidden');
     }
+
+function viewCampaign(title) {
+
+  const campaign = campaigns.find(c => c.title === title);
+  if (!campaign) return;
+
+  document.getElementById('dashboard-view').classList.add('hidden');
+
+  document.getElementById('assessment-detail-screen').classList.remove('hidden');
+
+  document.getElementById('assessment-detail-screen').innerHTML = `
+    <div class="mb-6">
+      <button onclick="closeDetail()" class="text-blue-600 mb-4">← Terug</button>
+
+      <h2 class="text-2xl font-semibold text-slate-900">
+        ${campaign.title}
+      </h2>
+
+      <p class="text-sm text-slate-600">
+        ${campaign.company_name}
+      </p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-3">
+
+      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <p class="text-sm text-slate-600">Deelnemers</p>
+        <p class="text-3xl font-bold text-slate-900">
+          ${campaign.participant_count || 0}
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <p class="text-sm text-slate-600">Status</p>
+        <p class="text-3xl font-bold text-slate-900">
+          ${statusMapNL[campaign.status] || campaign.status}
+        </p>
+      </div>
+
+    </div>
+  `;
+}
 
     function renderCompanyDetail() {
       const companyAssessments = assessments.filter(item => item.company_name === selectedCompany).sort((a, b) => new Date(b.assessment_date) - new Date(a.assessment_date));
@@ -1238,7 +1314,8 @@ function renderCampaigns() {
 
     function renderAssessmentDetail() {
       const assessment = selectedAssessment;
-      const showReportSection = !['Niet gestart', 'In uitvoering'].includes(assessment.status);
+      const showReportSection =
+  !['NOT_STARTED', 'IN_PROGRESS'].includes(assessment.status);
       let reportHTML = '';
       if (showReportSection) {
         let actionButtons = `<button onclick="downloadProposal('${assessment.id}')" class="rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">Download voorstel</button>`;
@@ -1294,7 +1371,9 @@ function renderCampaigns() {
             <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
               <h3 class="text-lg font-semibold text-slate-900 mb-4">Details</h3>
               <div class="space-y-3 text-sm text-slate-600">
-                <div class="flex justify-between"><span>Status</span><span class="font-semibold text-slate-900">${assessment.status}</span></div>
+                <div class="flex justify-between"><span>Status</span><span class="font-semibold text-slate-900">
+  ${statusMapNL[assessment.status] || assessment.status}
+</span></div>
                 <div class="flex justify-between"><span>Maturity score</span><span class="font-semibold text-slate-900">${assessment.average_score}</span></div>
                 <div class="flex justify-between"><span>Maturity Niveau</span><span class="font-semibold text-slate-900">${getMaturityLabel(assessment.average_score)}</span></div>
                 <div class="flex justify-between"><span>Datum</span><span class="font-semibold text-slate-900">${new Date(assessment.assessment_date).toLocaleDateString('nl-NL')}</span></div>
