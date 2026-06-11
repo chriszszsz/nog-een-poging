@@ -197,6 +197,53 @@
 
       </div>
       <div id="assessment-detail-screen" class="hidden p-6 md:p-10"></div>
+
+<!-- ✅ HIER TOEVOEGEN -->
+<div id="campaign-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+  <div class="bg-white p-6 rounded-2xl w-full max-w-lg space-y-4">
+
+    <h2 class="text-lg font-semibold">
+      Nieuwe campagne
+    </h2>
+
+    <!-- Titel -->
+    <input
+      id="campaign-title"
+      placeholder="Campagne titel"
+      class="w-full border p-2 rounded"
+    />
+
+    <!-- Bedrijf -->
+    <select
+      id="campaign-company"
+      class="w-full border p-2 rounded"
+    ></select>
+
+    <!-- Deelnemers -->
+    <div
+      id="participants-list"
+      class="space-y-2 max-h-40 overflow-y-auto"
+    ></div>
+
+    <!-- Knoppen -->
+    <div class="flex justify-end gap-3">
+
+      <button onclick="closeCampaignModal()"
+        class="px-4 py-2 bg-slate-200 rounded">
+        Annuleren
+      </button>
+
+      <button onclick="createCampaign()"
+        class="px-4 py-2 bg-emerald-600 text-white rounded">
+        Opslaan
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
   <script>
     const token =
   localStorage.getItem("token");
@@ -1828,9 +1875,9 @@ function closeCampaignModal() {
 function renderCompanies() {
 
   const select =
-    document.getElementById(
-      "campaign-company"
-    );
+    document.getElementById("campaign-company");
+
+  if (!select) return; // ✅ voorkomt crash
 
   select.innerHTML =
     companies.map(company => `
@@ -1841,37 +1888,27 @@ function renderCompanies() {
 
 }
 
+
 function renderParticipants() {
 
   const container =
-    document.getElementById(
-      "participants-list"
-    );
+    document.getElementById("participants-list");
+
+  if (!container) return; // ✅ ook hier
 
   const participants =
-    users.filter(
-      user => user.role === "participant"
-    );
+    users.filter(user => user.role === "participant");
 
   container.innerHTML =
     participants.map(user => `
       <label class="flex items-center gap-3">
-
-        <input
-          type="checkbox"
-          value="${user.user_id}"
-          class="participant-checkbox"
-        />
-
-        <span>
-          ${user.first_name}
-          ${user.last_name}
-        </span>
-
+        <input type="checkbox" value="${user.user_id}" class="participant-checkbox" />
+        <span>${user.first_name} ${user.last_name}</span>
       </label>
     `).join("");
 
 }
+
 
 async function createCampaign() {
 
