@@ -1074,15 +1074,90 @@ function renderResultsHistory(data) {
    OPEN RESULT
 ========================================= */
 
-function openResult(id) {
+async function openResult(id) {
 
-  console.log("Open result:", id);
+  try {
 
-  // 🔥 later gaan we hier echte data laden
-  showPage("resultaten");
+    const response =
+      await fetch(
+        `${backend}/api/results/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+    const data =
+      await response.json();
+
+    console.log("Result detail:", data);
+
+    selectedResult = data;
+
+    // ✅ EERST navigeren
+    showPage("resultaten");
+
+    // ✅ DAARNA renderen (cruciaal!)
+    renderResultDetail();
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+}
+
+function renderResultDetail() {
+
+  if (!selectedResult) return;
+
+  const session =
+    selectedResult.session;
+
+  const answers =
+    selectedResult.answers;
+
+  // ✅ datum
+  document.querySelector(".res-date").textContent =
+    new Date(session.assessment_date)
+      .toLocaleDateString("nl-NL", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+
+  // ✅ gemiddelde score
+  document.querySelector(".rs-val").innerHTML =
+    `${session.average_score} <span>/ 5.0</span>`;
+
+  // ✅ answers container
+  const container =
+    document.querySelector(".answers-card");
+
+  container.innerHTML =
+    `<div class="ans-header">Gegeven antwoorden</div>`;
+
+  // ✅ loop door answers
+  answers.forEach(a => {
+
+    container.innerHTML += `
+      <div class="ans-item">
+        <div class="ans-q">
+          Vraag ${a.question_id}
+        </div>
+        <div class="ans-a">
+          Score: ${a.score ?? "-"}
+        </div>
+      </div>
+    `;
+
+  });
 
 }
 ``
+
 /* =========================================
    RENDER RESULTS
 ========================================= */
@@ -1240,7 +1315,13 @@ function showPage(name, navEl) {
 
     if (name === 'resultaten') {
 
+  if (selectedResult) {
+    renderResultDetail();
+  }
+
   initRadar();
+
+}
 
 }
 
@@ -1252,7 +1333,6 @@ if (name === 'eerdere') {
 
   }
 
-}
 
 /* =========================================
    ASSESSMENT CARD STATE
