@@ -1138,16 +1138,16 @@ function renderResultDetail() {
   document.querySelector(".rs-val").innerHTML =
     `${session.average_score} <span>/ 5.0</span>`;
 
-  // ✅ HOOG RISICO (score < 3)
+  // ✅ HOOG RISICO (< 3)
   const highRisk =
     values.filter(v => v < 3).length;
 
   document.querySelectorAll(".rs-val")[1].innerHTML =
     `${highRisk} <span>/ ${values.length}</span>`;
 
-  // ✅ AANTAL DOMAINS GESCOORD
+  // ✅ ✅ JOUW REGEL: alleen 5 = voltooid
   const completed =
-    values.filter(v => v !== 0).length;
+    values.filter(v => v === 5).length;
 
   document.querySelectorAll(".rs-val")[2].innerHTML =
     `${completed} <span style="color:#4dd9a0;font-size:16px;">voltooid</span>`;
@@ -1163,14 +1163,22 @@ function renderResultDetail() {
 
     let text = "";
 
-    // ✅ gesloten vraag (score)
-    if (a.score !== null) {
-      text = `Score: ${a.score}`;
+    // ✅ OPEN VRAAG (alleen comment)
+    if (a.comment && a.score === null) {
+
+      text = a.comment;
+
     }
 
-    // ✅ open vraag (comment)
-    if (a.comment) {
-      text += ` - ${a.comment}`;
+    // ✅ GESLOTEN VRAAG
+    else if (a.score !== null) {
+
+      text = `Score: ${a.score}`;
+
+      if (a.comment) {
+        text += ` - ${a.comment}`;
+      }
+
     }
 
     container.innerHTML += `
