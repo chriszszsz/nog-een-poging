@@ -622,36 +622,49 @@ app.post("/api/companies", async (req, res) => {
    GET USERS
 ========================= */
 
-app.get("/api/users", async (req, res) => {
+app.post("/api/users", async (req, res) => {
 
   try {
 
-    const result = await pool.query(`
-      SELECT
-        user_id,
-        company_id,
+    const {
+      first_name,
+      last_name,
+      email,
+      role_description,
+      company_id
+    } = req.body;
+
+    const result = await pool.query(
+      `
+      INSERT INTO users
+      (first_name, last_name, email, role, role_description, company_id)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *
+      `,
+      [
         first_name,
         last_name,
         email,
-        role,
+        "participant",   // ✅ hardcoded
         role_description,
-      FROM users
-      ORDER BY first_name ASC
-    `);
+        company_id
+      ]
+    );
 
-    res.json(result.rows);
+    res.json(result.rows[0]);
 
   } catch (err) {
 
-    console.error(err);
+    console.error("USER CREATE ERROR:", err); // 🔥 belangrijk
 
     res.status(500).json({
-      error: err.message,
+      error: err.message
     });
 
   }
 
 });
+
 
 /* =========================
    CREATE CAMPAIGN
