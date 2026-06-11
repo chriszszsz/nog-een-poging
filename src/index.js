@@ -633,7 +633,8 @@ app.get("/api/users", async (req, res) => {
         first_name,
         last_name,
         email,
-        role
+        role,
+        role_description,
       FROM users
       ORDER BY first_name ASC
     `);

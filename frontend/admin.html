@@ -293,10 +293,9 @@
     <input id="user-last" placeholder="Achternaam" class="w-full border p-2 rounded" />
     <input id="user-email" placeholder="Email" class="w-full border p-2 rounded" />
 
-    <select id="user-role" class="w-full border p-2 rounded">
-      <option value="participant">Medewerker</option>
-      <option value="admin">Admin</option>
-    </select>
+    <input id="user-function" placeholder="Functie (bijv IT Manager)"
+  class="w-full border p-2 rounded" />
+
 
     <div class="flex justify-end gap-2">
       <button onclick="closeUserModal()">Annuleren</button>
@@ -1557,6 +1556,9 @@ function viewCampaign(title) {
         companyUsers.map(u => `
           <div class="border-t py-2">
             ${u.first_name} ${u.last_name}
+<span class="text-xs text-slate-500">
+  (${u.role_description || 'Onbekend'})
+</span>
           </div>
         `).join('')
       }
@@ -2299,7 +2301,8 @@ async function createUser() {
   const first_name = document.getElementById("user-first").value;
   const last_name = document.getElementById("user-last").value;
   const email = document.getElementById("user-email").value;
-  const role = document.getElementById("user-role").value;
+  const role_description =
+  document.getElementById("user-function").value;
 
   const response = await fetch(
     `${defaultConfig.backend_url}/api/users`,
@@ -2310,7 +2313,8 @@ async function createUser() {
         first_name,
         last_name,
         email,
-        role,
+        role: "participant", // ✅ hardcoded
+        role_description,
         company_id: selectedCompanyIdForUser
       })
     }
