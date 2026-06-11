@@ -1319,7 +1319,9 @@ function showPage(name, navEl) {
     renderResultDetail();
   }
 
-  initRadar();
+  setTimeout(() => {
+    initRadar();
+  }, 50);
 
 }
 
@@ -2130,55 +2132,51 @@ function toggleSidebar() {
    RADAR CHART
 ========================================= */
 
-var radarInited = false;
+var radarChartInstance = null;
 
 function initRadar() {
 
-  if (radarInited) return;
+  const canvas =
+    document.getElementById('radarChart');
 
-  radarInited = true;
+  if (!canvas) return;
 
-  var ctx =
-    document.getElementById(
-      'radarChart'
-    ).getContext('2d');
+  const ctx =
+    canvas.getContext('2d');
 
-  var labels =
-    Object.keys(
-      vragen
-        .filter(v =>
-          v.label === 'Inrichting'
-          || v.label === 'inrichting'
-        )
-        .reduce((acc, v) => {
+  // ✅ destroy oude chart
+  if (radarChartInstance) {
+    radarChartInstance.destroy();
+  }
 
-          acc[v.domain] = true;
+  // ✅ gebruik selectedResult
+  if (!selectedResult || !selectedResult.session) {
+    console.warn("Geen selectedResult");
+    return;
+  }
 
-          return acc;
+  const spider =
+    selectedResult.session.spider_scores || {};
 
-        }, {})
+  const labels =
+    Object.keys(spider);
+
+  const values =
+    Object.values(spider).map(v => Number(v));
+
+  // ✅ gradient (zoals Figma)
+  const gradient =
+    ctx.createLinearGradient(
+      0,
+      0,
+      ctx.canvas.width,
+      0
     );
 
-  var values = [];
+  gradient.addColorStop(0, "#0068B6");
+  gradient.addColorStop(1, "#AC006D");
 
-  labels.forEach(label => {
-
-    var foundIndex =
-      vragen.findIndex(v =>
-        v.domain === label &&
-        (
-          v.label === 'Inrichting'
-          || v.label === 'inrichting'
-        )
-      );
-
-    values.push(
-      antwoorden[foundIndex] || 0
-    );
-
-  });
-
-  new Chart(ctx, {
+  radarChartInstance = new Chart(ctx, {
 
     type: 'radar',
 
@@ -2193,17 +2191,18 @@ function initRadar() {
 
           data: values,
 
-          borderColor: '#e91e8c',
+          borderColor: "#AC006D",
 
-          backgroundColor:
-            'rgba(233,30,140,0.15)',
+          backgroundColor: gradient,
 
-          pointBackgroundColor:
-            '#e91e8c',
+          pointBackgroundColor: "#AC006D",
+          pointBorderColor: "#ffffff",
 
-          pointRadius: 3,
+          pointRadius: 4,
 
-          borderWidth: 2
+          borderWidth: 2,
+
+          tension: 0.2
         }
 
       ]
@@ -2229,11 +2228,27 @@ function initRadar() {
         r: {
 
           min: 0,
-
           max: 5,
 
           ticks: {
-            stepSize: 1
+            stepSize: 1,
+            color: "rgba(255,255,255,0.4)",
+            backdropColor: "transparent"
+          },
+
+          grid: {
+            color: "rgba(255,255,255,0.15)"
+          },
+
+          angleLines: {
+            color: "rgba(255,255,255,0.08)"
+          },
+
+          pointLabels: {
+            color: "#cbd5f5",
+            font: {
+              size: 11
+            }
           }
 
         }
@@ -2245,6 +2260,7 @@ function initRadar() {
   });
 
 }
+
 
 async function init() {
 
