@@ -867,10 +867,31 @@ app.get(
       const answersResult =
         await pool.query(
           `
-          SELECT *
-          FROM assessment_answers
-          WHERE assessment_session_id = $1
-          ORDER BY question_id ASC
+          SELECT
+            q.question_id,
+            q.question_text,
+            q.question_type,
+
+            a.score,
+            a.comment,
+
+            -- ✅ mapping score → juiste tekst uit DB
+            CASE a.score
+              WHEN 1 THEN q.option_a
+              WHEN 2 THEN q.option_b
+              WHEN 3 THEN q.option_c
+              WHEN 4 THEN q.option_d
+              WHEN 5 THEN q.option_e
+            END AS answer_text
+
+          FROM assessment_answers a
+
+          JOIN questions q
+          ON a.question_id = q.question_id
+
+          WHERE a.assessment_session_id = $1
+
+          ORDER BY q.question_id ASC
           `,
           [req.params.id]
         );
