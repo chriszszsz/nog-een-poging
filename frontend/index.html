@@ -2166,15 +2166,17 @@ function initRadar() {
 
   // ✅ gradient (zoals Figma)
   const gradient =
-    ctx.createLinearGradient(
-      0,
-      0,
-      ctx.canvas.width,
-      0
-    );
+  ctx.createRadialGradient(
+    ctx.canvas.width / 2,
+    ctx.canvas.height / 2,
+    50,
+    ctx.canvas.width / 2,
+    ctx.canvas.height / 2,
+    300
+  );
 
-  gradient.addColorStop(0, "rgba(0, 104, 182, 0.35)");
-  gradient.addColorStop(1, "rgba(172, 0, 109, 0.35)");
+gradient.addColorStop(0, "rgba(0,104,182,0.4)");
+gradient.addColorStop(1, "rgba(172,0,109,0.4)");
 
   radarChartInstance = new Chart(ctx, {
 
