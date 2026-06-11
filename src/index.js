@@ -16,30 +16,7 @@ const app = express();
    MIDDLEWARE
 ========================= */
 
-app.use((req, res, next) => {
-
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "*"
-  );
-
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-
-});
+app.use(cors());
 
 app.use(express.json());
 
@@ -602,6 +579,46 @@ app.get("/api/companies", async (req, res) => {
 });
 
 /* =========================
+   CREATE COMPANY
+========================= */
+
+app.post("/api/companies", async (req, res) => {
+
+  try {
+
+    const {
+      company_name,
+      address,
+      city,
+      postcode
+    } = req.body;
+
+    const result = await pool.query(
+      `
+      INSERT INTO companies
+      (company_name, address, city, postcode)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
+      `,
+      [company_name, address, city, postcode]
+    );
+
+    res.status(201).json(result.rows[0]);
+
+  } catch (err) {
+
+    console.error("CREATE COMPANY ERROR:");
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
+});
+
+/* =========================
    GET USERS
 ========================= */
 
@@ -741,6 +758,55 @@ app.post("/api/campaigns", async (req, res) => {
 
     res.status(500).json({
       error: err.message,
+    });
+
+  }
+
+});
+
+/* =========================
+   GET CAMPAIGNS
+========================= */
+
+app.get("/api/campaigns", async (req, res) => {
+
+  try {
+
+    const result = await pool.query(`
+      SELECT
+        c.campaign_id,
+        c.title,
+        c.created_at,
+
+        co.company_name,
+
+        COUNT(cp.user_id) AS participant_count,
+
+        MAX(cp.status) AS status
+
+      FROM assessment_campaigns c
+
+      JOIN companies co
+        ON c.company_id = co.company_id
+
+      LEFT JOIN campaign_participants cp
+        ON c.campaign_id = cp.campaign_id
+
+      GROUP BY
+        c.campaign_id,
+        co.company_name
+
+      ORDER BY c.created_at DESC
+    `);
+
+    res.json(result.rows);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message
     });
 
   }
@@ -938,43 +1004,6 @@ app.get(
   }
 );
 
-
-/* =========================================
-   LOAD RESULTS HISTORY
-========================================= */
-
-async function loadResultsHistory() {
-
-  try {
-
-    const response =
-      await fetch(
-        `${backend}/api/results`,
-        {
-          headers: {
-            Authorization:
-              `Bearer ${token}`
-          }
-        }
-      );
-
-    const data =
-      await response.json();
-
-    console.log(
-      "Result history:",
-      data
-    );
-
-    renderResultsHistory(data);
-
-  } catch (err) {
-
-    console.error(err);
-
-  }
-
-}
 
 /* =========================
    404 HANDLER

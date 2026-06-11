@@ -1276,7 +1276,10 @@ function closeCompanyModal() {
         return;
       }
       container.innerHTML = companies.sort((a, b) => a.company_name.localeCompare(b.company_name)).map(company => {
-        const address = companyAddresses[company.company_name] || 'Adres niet beschikbaar';
+        const address =
+  company.address
+    ? `${company.address}, ${company.city || ''}`
+    : 'Adres niet beschikbaar';
         return `
           <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 hover:shadow-md transition">
             <div class="flex flex-col gap-2">
@@ -2081,6 +2084,63 @@ async function createCampaign() {
     "./login.html";
 
 }
+
+async function createCompany() {
+
+  try {
+
+    const company_name =
+      document.getElementById("company-name").value;
+
+    const address =
+      document.getElementById("company-address").value;
+
+    const city =
+      document.getElementById("company-city").value;
+
+    const postcode =
+      document.getElementById("company-postcode").value;
+
+    const response =
+      await fetch(
+        `${defaultConfig.backend_url}/api/companies`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            company_name,
+            address: address || null,
+            city: city || null,
+            postcode: postcode || null
+          })
+        }
+      );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || "Fout bij aanmaken bedrijf");
+      return;
+    }
+
+    alert("Bedrijf aangemaakt ✅");
+
+    closeCompanyModal();
+
+    await fetchCompanies();   // ✅ ophalen uit DB
+    renderCompanyCards();     // ✅ direct zichtbaar
+
+  } catch (err) {
+
+    console.error(err);
+    alert("Serverfout bij aanmaken bedrijf");
+
+  }
+
+}
+
   </script>
 </body>
 </html>
