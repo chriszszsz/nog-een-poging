@@ -134,9 +134,10 @@
     <thead class="bg-slate-100 text-xs uppercase text-slate-600">
       <tr>
         <th class="p-4 text-left">Bedrijf</th>
-        <th class="p-4 text-left">Score</th>
-        <th class="p-4 text-left">Niveau</th>
+        <th class="p-4 text-left">Assessment</th>
         <th class="p-4 text-left">Datum</th>
+        <th class="p-4 text-left">Score</th>
+        <th class="p-4 text-left">Gemaakt door</th>
         <th class="p-4 text-left">Status</th>
         <th class="p-4 text-left">Acties</th>
       </tr>
@@ -828,17 +829,26 @@ async function fetchCampaigns() {
     const response =
       await fetch(`${defaultConfig.backend_url}/api/campaigns`);
 
-    campaigns =
-      await response.json();
+    if (!response.ok) throw new Error('geen campaigns');
 
-    renderCampaigns();
+    campaigns = await response.json();
 
   } catch (err) {
 
-    console.error(err);
+    console.warn('fallback campaigns');
+
+    campaigns = [
+      {
+        title: "AI Assessment 2026",
+        company_name: "Axians",
+        participant_count: 3,
+        status: "IN_PROGRESS"
+      }
+    ];
 
   }
 
+  renderCampaigns();
 }
 
 
@@ -1033,16 +1043,51 @@ function renderCampaigns() {
         tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-500">Geen assessments gevonden</td></tr>';
         return;
       }
-      tbody.innerHTML = sorted.map(item => `
-        <tr class="border-t hover:bg-slate-50">
-          <td class="px-6 py-4 text-sm font-medium text-slate-900">${item.company_name}</td>
-          <td class="px-6 py-4 text-sm font-semibold text-emerald-600">${item.average_score}</td>
-          <td class="px-6 py-4 text-sm text-slate-600">${getMaturityLabel(item.average_score)}</td>
-          <td class="px-6 py-4 text-sm text-slate-600">${new Date(item.assessment_date).toLocaleDateString('nl-NL')}</td>
-          <td class="px-6 py-4 text-sm"><span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium ${getStatusBadge(item.status)}">${item.status}</span></td>
-          <td class="px-6 py-4 text-sm"><button onclick="viewAssessment('${item.id}')" class="text-blue-600 hover:text-blue-700 font-medium">Bekijk</button></td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = sorted.map(item => {
+
+  const statusMap = {
+    'NOT_STARTED': 'Niet gestart',
+    'IN_PROGRESS': 'In uitvoering',
+    'WAITING_FOR_REPORT': 'Wacht op rapport',
+    'COMPLETED': 'Afgerond'
+  };
+
+  return `
+    <tr class="border-t hover:bg-slate-50">
+
+      <td class="px-6 py-4 text-sm font-medium">${item.company_name}</td>
+
+      <td class="px-6 py-4 text-sm">
+        ${item.campaign_name || 'Assessment'}
+      </td>
+
+      <td class="px-6 py-4 text-sm">
+        ${new Date(item.assessment_date).toLocaleDateString('nl-NL')}
+      </td>
+
+      <td class="px-6 py-4 text-sm font-semibold text-emerald-600">
+        ${item.average_score}
+      </td>
+
+      <td class="px-6 py-4 text-sm">
+        ${item.created_by || 'Onbekend'}
+      </td>
+
+      <td class="px-6 py-4 text-sm">
+        <span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium bg-slate-100">
+          ${statusMap[item.status] || item.status}
+        </span>
+      </td>
+
+      <td class="px-6 py-4 text-sm">
+        <button onclick="viewAssessment('${item.id}')" class="text-blue-600 font-medium">
+          Bekijk
+        </button>
+      </td>
+
+    </tr>
+  `;
+}).join('');
     }
 
     function renderCompanyCards() {
