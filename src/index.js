@@ -7,6 +7,14 @@ import jwt from "jsonwebtoken";
 import { pool } from "./config/db.js";
 import { authMiddleware }
 from "./middleware/auth.js";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  baseURL: "https://maturity-tool-ai-resource.services.ai.azure.com/openai/v1",
+  apiKey: process.env.AZURE_OPENAI_KEY
+});
+
+const MODEL = "gpt-4o";
 
 dotenv.config();
 
@@ -342,6 +350,24 @@ app.post(
     req.user.user_id
   ]
 );
+
+const check = await pool.query(`
+  SELECT
+    COUNT(*) FILTER (WHERE status IN ('WAITING_FOR_REPORT','RESULTS_READY')) AS done,
+    COUNT(*) AS total
+  FROM campaign_participants
+  WHERE campaign_id = $1
+`, [campaign_id]);
+
+const { done, total } = check.rows[0];
+
+if (Number(done) === Number(total)) {
+
+  console.log("✅ Alle deelnemers klaar → start AI");
+
+  await generateCampaignReport(campaign_id);
+
+}
 
     if (answers && Array.isArray(answers)) {
 
@@ -1071,3 +1097,127 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server draait op poort ${PORT}`);
 });
+
+/* =========================
+   AI RAPPORT GENEREREN
+========================= */
+async function generateCampaignReport(campaign_id) {
+
+  try {
+
+    // 1. Haal ALLE antwoorden + rol
+    const result = await pool.query(`
+      SELECT
+        s.assessment_session_id,
+        u.role_description,
+
+        q.question_text,
+
+        a.score,
+        a.comment
+
+      FROM assessment_answers a
+
+      JOIN assessment_sessions s
+        ON a.assessment_session_id = s.assessment_session_id
+
+      JOIN users u
+        ON s.user_id = u.user_id
+
+      JOIN questions q
+        ON a.question_id = q.question_id
+
+      WHERE s.campaign_id = $1
+
+      ORDER BY s.assessment_session_id, q.question_id
+    `, [campaign_id]);
+
+    const rows = result.rows;
+
+    // 2. Groeperen per assessment (deelnemer)
+    const participantsMap = {};
+
+    rows.forEach(r => {
+
+      if (!participantsMap[r.assessment_session_id]) {
+        participantsMap[r.assessment_session_id] = {
+          role: r.role_description,
+          answers: []
+        };
+      }
+
+      participantsMap[r.assessment_session_id].answers.push({
+        question: r.question_text,
+        score: r.score,
+        comment: r.comment
+      });
+
+    });
+
+    const participants = Object.values(participantsMap);
+
+    // 3. Bouw input voor AI (🔥 BELANGRIJK)
+    const aiInput = {
+      participants
+    };
+
+    // 4. AI CALL
+    const response = await openai.chat.completions.create({
+      model: MODEL,
+      messages: [
+        {
+          role: "system",
+          content: `
+Je bent een senior consultant gespecialiseerd in digital maturity assessments.
+
+Analyseer de input van meerdere medewerkers binnen een organisatie.
+
+BELANGRIJK:
+- Gebruik GEEN namen (privacy)
+- Analyseer verschillen tussen rollen
+- Herken patronen in antwoorden
+- Benoem inconsistenties tussen medewerkers
+- Geef duidelijke verbeteradviezen
+- Schrijf professioneel (consultancy stijl)
+- Structureer in:
+  1. Samenvatting
+  2. Belangrijkste inzichten
+  3. Verschillen tussen rollen
+  4. Risico's
+  5. Aanbevelingen
+
+Gebruik de data zoals gegeven — maak geen aannames buiten de data.
+`
+        },
+        {
+          role: "user",
+          content: JSON.stringify(aiInput)
+        }
+      ]
+    });
+
+    const report = response.choices[0].message.content;
+
+    // 5. Opslaan
+    await pool.query(`
+      UPDATE assessment_campaigns
+      SET report = $1
+      WHERE campaign_id = $2
+    `, [report, campaign_id]);
+
+    // 6. Status update
+    await pool.query(`
+      UPDATE campaign_participants
+      SET status = 'RESULTS_READY'
+      WHERE campaign_id = $1
+    `, [campaign_id]);
+
+    console.log("✅ AI rapport succesvol gegenereerd");
+
+  } catch (err) {
+
+    console.error("❌ AI GENERATION ERROR:", err);
+
+  }
+
+}
