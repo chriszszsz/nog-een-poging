@@ -79,24 +79,23 @@
 
           <div class="flex gap-3">
 
-            <button onclick="openCampaignModal()"
-              class="px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-xl">
-              + Nieuwe campagne
-            </button>
+  <!-- ✅ DYNAMISCHE ACTIES -->
+  <div id="hero-actions" class="flex gap-3"></div>
 
-            <button onclick="switchTab('overview')"
-              class="px-4 py-2 text-sm font-semibold text-white rounded-xl"
-              style="background:#A20067">
-              Overzicht
-            </button>
+  <!-- TABS -->
+  <button onclick="switchTab('overview')"
+    class="px-4 py-2 text-sm font-semibold text-white rounded-xl"
+    style="background:#A20067">
+    Overzicht
+  </button>
 
-            <button onclick="switchTab('companies')"
-              class="px-4 py-2 text-sm font-semibold text-white rounded-xl"
-              style="background:#005EB8">
-              Bedrijven
-            </button>
+  <button onclick="switchTab('companies')"
+    class="px-4 py-2 text-sm font-semibold text-white rounded-xl"
+    style="background:#005EB8">
+    Bedrijven
+  </button>
 
-          </div>
+</div>
         </div>
       </div>
 
@@ -147,7 +146,7 @@
 
     <tbody id="assessments-table-body">
       <tr>
-        <td colspan="6" class="p-6 text-center text-slate-500">
+        <td colspan="7" class="p-6 text-center text-slate-500">
           Geen assessments gevonden
         </td>
       </tr>
@@ -880,6 +879,8 @@ const statusMapNL = {
 
   switchTab('overview');
 
+  renderHeroActions();
+
 }
 async function fetchCampaigns() {
 
@@ -1025,7 +1026,43 @@ function renderCampaigns() {
   if (tab === 'campaigns') {
     renderCampaigns();
   }
+  renderHeroActions();
 }
+
+function renderHeroActions() {
+
+  const container = document.getElementById("hero-actions");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (currentTab === "campaigns") {
+    container.innerHTML = `
+      <button onclick="openCampaignModal()"
+        class="px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-xl">
+        + Nieuwe campagne
+      </button>
+    `;
+  }
+
+  if (currentTab === "companies") {
+    container.innerHTML = `
+      <button onclick="openCompanyModal()"
+        class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-xl">
+        + Nieuw bedrijf
+      </button>
+    `;
+  }
+
+}
+
+
+
+function openCompanyModal() {
+  alert("Modal komt hier");
+}
+
+
 
 
     function getMaturityLabel(score) {
@@ -1116,7 +1153,7 @@ function renderCampaigns() {
       const filtered = assessments.filter(item => item.company_name.toLowerCase().includes(overviewSearchTerm));
       const sorted = sortAssessments(filtered);
       if (sorted.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-500">Geen assessments gevonden</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-500">Geen assessments gevonden</td></tr>';
         return;
       }
       tbody.innerHTML = sorted.map(item => {
