@@ -1346,6 +1346,8 @@ function closeCompanyModal() {
 
     function viewCompany(companyId) {
 
+  if (!companyId) return; // ✅ voorkomt crash
+
   const company =
     companies.find(c => c.company_id == companyId);
 
@@ -1464,8 +1466,10 @@ function viewCampaign(title) {
     }
 
     function renderCompanyDashboard() {
-
-  const company = selectedCompany;
+  
+      if (!selectedCompany) return;
+  
+      const company = selectedCompany;
 
   const companyUsers =
     users.filter(u =>
@@ -1546,7 +1550,7 @@ function viewCampaign(title) {
       <div class="flex justify-between items-center mb-4">
   <h3 class="font-semibold">Medewerkers</h3>
 
-  <button onclick="openUserModal(${company.company_id})"
+  <button onclick="openUserModal('${company.company_id}')"
     class="px-3 py-2 bg-blue-600 text-white rounded">
     + Toevoegen
   </button>
