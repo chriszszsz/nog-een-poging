@@ -665,6 +665,37 @@ app.post("/api/users", async (req, res) => {
 
 });
 
+app.get("/api/users", async (req, res) => {
+
+  try {
+
+    const result = await pool.query(`
+      SELECT
+        user_id,
+        company_id,
+        first_name,
+        last_name,
+        email,
+        role,
+        role_description
+      FROM users
+      ORDER BY first_name ASC
+    `);
+
+    res.json(result.rows);
+
+  } catch (err) {
+
+    console.error("GET USERS ERROR:", err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
+});
+
 
 /* =========================
    CREATE CAMPAIGN
