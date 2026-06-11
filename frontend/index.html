@@ -1119,6 +1119,12 @@ function renderResultDetail() {
   const answers =
     selectedResult.answers;
 
+  const spider =
+    session.spider_scores || {};
+
+  const values =
+    Object.values(spider).map(v => Number(v));
+
   // ✅ datum
   document.querySelector(".res-date").textContent =
     new Date(session.assessment_date)
@@ -1132,15 +1138,40 @@ function renderResultDetail() {
   document.querySelector(".rs-val").innerHTML =
     `${session.average_score} <span>/ 5.0</span>`;
 
-  // ✅ answers container
+  // ✅ HOOG RISICO (score < 3)
+  const highRisk =
+    values.filter(v => v < 3).length;
+
+  document.querySelectorAll(".rs-val")[1].innerHTML =
+    `${highRisk} <span>/ ${values.length}</span>`;
+
+  // ✅ AANTAL DOMAINS GESCOORD
+  const completed =
+    values.filter(v => v !== 0).length;
+
+  document.querySelectorAll(".rs-val")[2].innerHTML =
+    `${completed} <span style="color:#4dd9a0;font-size:16px;">voltooid</span>`;
+
+  // ✅ ANSWERS RENDEREN
   const container =
     document.querySelector(".answers-card");
 
   container.innerHTML =
     `<div class="ans-header">Gegeven antwoorden</div>`;
 
-  // ✅ loop door answers
   answers.forEach(a => {
+
+    let text = "";
+
+    // ✅ gesloten vraag (score)
+    if (a.score !== null) {
+      text = `Score: ${a.score}`;
+    }
+
+    // ✅ open vraag (comment)
+    if (a.comment) {
+      text += ` - ${a.comment}`;
+    }
 
     container.innerHTML += `
       <div class="ans-item">
@@ -1148,7 +1179,7 @@ function renderResultDetail() {
           Vraag ${a.question_id}
         </div>
         <div class="ans-a">
-          Score: ${a.score ?? "-"}
+          ${text}
         </div>
       </div>
     `;
@@ -1156,7 +1187,6 @@ function renderResultDetail() {
   });
 
 }
-``
 
 /* =========================================
    RENDER RESULTS
