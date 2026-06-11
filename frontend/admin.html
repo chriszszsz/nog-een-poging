@@ -34,207 +34,134 @@
   </style>
 </head>
 <body class="h-full bg-slate-50 overflow-auto">
+
+  <!-- ✅ HEADER -->
   <div class="sticky top-0 z-50 bg-white shadow-sm ring-1 ring-slate-200">
-    <div class="px-6 md:px-10 py-4 flex items-center gap-4">
-      <img src="https://seekvectorlogo.net/wp-content/uploads/2019/10/axians-vector-logo.png" alt="Axians" class="h-20 flex-shrink-0" loading="lazy" onerror="this.style.display='none'">
-      <div class="border-l border-slate-200 pl-4">
-        <p id="header-title" class="text-sm font-semibold text-slate-900">Digital Maturity Assessment</p>
+    <div class="px-6 md:px-10 py-4 flex items-center justify-between">
+
+      <!-- links -->
+      <div class="flex items-center gap-4">
+        <img
+          src="https://seekvectorlogo.net/wp-content/uploads/2019/10/axians-vector-logo.png"
+          class="h-12 flex-shrink-0"
+       p class="text-sm font-semibold text-slate-900">
+            Digital Maturity Assessment
+          </p>
+        </div>
       </div>
+
+      <!-- rechts -->
+      <button onclick="logout()"
+        class="rounded-xl bg-slate-800 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-700 transition">
+        Uitloggen
+      </button>
+
     </div>
   </div>
+
+  <!-- ✅ CONTENT -->
   <div class="min-h-full p-6 md:p-10">
     <div class="mx-auto max-w-6xl space-y-6">
+
+      <!-- ✅ HERO CARD -->
       <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
           <div>
-            <h1 id="page-title" class="text-3xl font-semibold tracking-tight" style="color: #005EB8;">Digital Maturity Assessment</h1>
-            <p id="page-description" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Overzicht en beheer van assessments, resultaten, rapporten en AI-voorstellen.</p>
+            <h1 id="page-title"
+              class="text-3xl font-semibold tracking-tight"
+              style="color: #005EB8;">
+              Digital Maturity Assessment
+            </h1>
+
+            <p id="page-description"
+              class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              Overzicht en beheer van assessments, resultaten, rapporten en AI-voorstellen.
+            </p>
           </div>
-          <button onclick="logout()" class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-lg transition hover:shadow-xl active:scale-95 bg-slate-800">
-  Uitloggen
-</button>
+
           <div class="flex gap-3 flex-wrap">
+
             <button
-  onclick="openCampaignModal()"
-  class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-lg transition hover:shadow-xl active:scale-95 bg-emerald-600"
->
-  + Nieuwe campagne
-</button>
+              onclick="openCampaignModal()"
+              class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white bg-emerald-600">
+              + Nieuwe campagne
+            </button>
 
-            <button onclick="switchTab('overview')" class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-lg transition hover:shadow-xl active:scale-95" style="background-color: #A20067;">
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h18M3 17h18" />
-              </svg> Overzicht
+            <button
+              onclick="switchTab('overview')"
+              class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white"
+              style="background-color: #A20067;">
+              Overzicht
             </button>
-            <button onclick="switchTab('companies')" class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-lg transition hover:shadow-xl active:scale-95" style="background-color: #005EB8;">
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-              </svg> Bedrijven
+
+            <button
+              onclick="switchTab('companies')"
+              class="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold text-white"
+              style="background-color: #005EB8;">
+              Bedrijven
             </button>
+
           </div>
+
         </div>
       </div>
+
+      <!-- ✅ TABS -->
       <div id="dashboard-view">
-      <div class="flex gap-2 border-b border-slate-200">
-        <button onclick="switchTab('overview')" id="tab-overview" class="px-4 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600">Assessment Overzicht</button>
-        <button onclick="switchTab('companies')" id="tab-companies" class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900">Bedrijven</button>
-      </div>
 
-      <div id="overview-tab" class="space-y-6 mt-6">
-        <div class="grid gap-4 md:grid-cols-4">
-          <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <p class="text-sm text-slate-600">Aantal assessments</p>
-            <p id="stat-assessments" class="mt-3 text-3xl font-bold text-slate-900">0</p>
-          </div>
-          <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <p class="text-sm text-slate-600">Gemiddeld niveau</p>
-            <p id="stat-average" class="mt-3 text-3xl font-bold text-black-600">0</p>
-          </div>
-          <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <p class="text-sm text-slate-600">Afgerond</p>
-            <p id="stat-completed" class="mt-3 text-3xl font-bold text-black-600">0</p>
-          </div>
-          <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <p class="text-sm text-slate-600">Laatste update</p>
-            <p id="stat-last-update" class="mt-3 text-3xl font-bold text-black-600">-</p>
-          </div>
-        </div>
+        <div class="flex gap-2 border-b border-slate-200">
 
-        <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 class="text-lg font-semibold text-slate-900">Assessment overzicht</h2>
-              <p class="text-sm text-slate-600">Zoek op bedrijfsnaam en open de details van elk assessment.</p>
-            </div>
-            <div class="w-full md:w-80">
-              <label class="sr-only" for="overview-search">Zoeken op bedrijfsnaam</label>
-              <input id="overview-search" type="search" oninput="filterOverviewSearch()" placeholder="Zoeken op bedrijfsnaam" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200" />
-            </div>
-          </div>
-        </div>
+  <button onclick="switchTab('overview')" id="tab-overview"
+    class="px-4 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600">
+    Assessment Overzicht
+  </button>
 
-        <div class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full min-w-[900px]">
-              <thead class="bg-slate-50 border-b border-slate-200">
-                <tr class="text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  <th onclick="setOverviewSort('company_name')" class="px-6 py-3 cursor-pointer">Bedrijf</th>
-                  <th onclick="setOverviewSort('average_score')" class="px-6 py-3 cursor-pointer">Maturity score</th>
-                  <th onclick="setOverviewSort('average_score')" class="px-6 py-3 cursor-pointer">Maturity Niveau</th>
-                  <th onclick="setOverviewSort('assessment_date')" class="px-6 py-3 cursor-pointer">Datum</th>
-                  <th onclick="setOverviewSort('status')" class="px-6 py-3 cursor-pointer">Status</th>
-                  <th class="px-6 py-3">Acties</th>
-                </tr>
-              </thead>
-              <tbody id="assessments-table-body" class="divide-y divide-slate-200">
-                <tr class="text-center text-slate-500 hover:bg-slate-50">
-                  <td colspan="6" class="p-8">Geen assessments gevonden</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+  <button onclick="switchTab('companies')" id="tab-companies"
+    class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600">
+    Bedrijven
+  </button>
 
-      <div id="companies-tab" class="hidden space-y-6 mt-6">
-        <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 class="text-lg font-semibold text-slate-900">Zoeken op bedrijfsnaam</h2>
-              <p class="text-sm text-slate-600">Filter snel naar de juiste organisatie.</p>
-            </div>
-            <div class="w-full md:w-80">
-              <label class="sr-only" for="company-search">Zoeken op bedrijfsnaam</label>
-              <input id="company-search" type="search" oninput="filterCompanySearch()" placeholder="Zoeken op bedrijfsnaam" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200" />
-            </div>
-          </div>
-        </div>
-        <div id="company-cards" class="grid gap-4 md:grid-cols-2 lg:grid-cols-2"></div>
-      </div>
-    </div>
+  <button onclick="switchTab('campaigns')" id="tab-campaigns"
+    class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600">
+    Campagnes
+  </button>
 
-      <div id="assessment-detail-screen" class="hidden space-y-6 mt-6"></div>
-      <div id="assessment-question-view" class="hidden"></div>
+</div>
+<div id="campaigns-tab" class="hidden space-y-6 mt-6">
 
-      <div
-  id="campaign-modal"
-  class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6"
->
+  <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+    <h2 class="text-lg font-semibold text-slate-900">
+      Campagnes
+    </h2>
+    <p class="text-sm text-slate-600">
+      Beheer en bekijk campagnes.
+    </p>
+  </div>
 
-  <div class="bg-white rounded-3xl p-8 w-full max-w-2xl">
+  <div class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
+    <table class="w-full">
+      <thead class="bg-slate-50 border-b">
+        <tr class="text-left text-xs font-semibold text-slate-600 uppercase">
+          <th class="px-6 py-3">Titel</th>
+          <th class="px-6 py-3">Bedrijf</th>
+          <th class="px-6 py-3">Deelnemers</th>
+          <th class="px-6 py-3">Status</th>
+        </tr>
+      </thead>
 
-    <div class="flex items-center justify-between mb-6">
-
-      <h2 class="text-2xl font-semibold text-slate-900">
-        Nieuwe Campaign
-      </h2>
-
-      <button
-        onclick="closeCampaignModal()"
-        class="text-slate-500 hover:text-slate-900"
-      >
-        ✕
-      </button>
-
-    </div>
-
-    <div class="space-y-6">
-
-      <div>
-
-        <label class="block text-sm font-medium text-slate-700 mb-2">
-          Titel
-        </label>
-
-        <input
-          id="campaign-title"
-          type="text"
-          placeholder="Q2 Security Assessment"
-          class="w-full rounded-xl border border-slate-300 px-4 py-3"
-        />
-
-      </div>
-
-      <div>
-
-        <label class="block text-sm font-medium text-slate-700 mb-2">
-          Bedrijf
-        </label>
-
-        <select
-          id="campaign-company"
-          class="w-full rounded-xl border border-slate-300 px-4 py-3"
-        ></select>
-
-      </div>
-
-      <div>
-
-        <label class="block text-sm font-medium text-slate-700 mb-3">
-          Participants
-        </label>
-
-        <div
-          id="participants-list"
-          class="space-y-3 max-h-64 overflow-auto"
-        ></div>
-
-      </div>
-
-      <button
-        onclick="createCampaign()"
-        class="w-full rounded-xl bg-blue-600 text-white py-4 font-semibold hover:bg-blue-700"
-      >
-        Campaign aanmaken
-      </button>
-
-    </div>
-
+      <tbody id="campaigns-table-body">
+        <tr>
+          <td colspan="4" class="p-6 text-center text-slate-500">
+            Geen campagnes gevonden
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
 </div>
-    </div>
-  </div>
+
   <script>
     const token =
   localStorage.getItem("token");
@@ -267,10 +194,12 @@ if (user.role !== "admin") {
     let selectedAssessment = null;
     let selectedCompany = null;
     let currentTab = 'overview';
+    let campaigns = [];
     let overviewSearchTerm = '';
     let companySearchTerm = '';
     let overviewSortColumn = 'assessment_date';
     let overviewSortDirection = 'desc';
+    
 
     const statusOrder = {
       'Niet gestart': 1,
@@ -858,7 +787,67 @@ if (user.role !== "admin") {
 
   await fetchAssessments();
 
+  await fetchCampaigns();
+
   switchTab('overview');
+
+}
+async function fetchCampaigns() {
+
+  try {
+
+    const response =
+      await fetch(`${defaultConfig.backend_url}/api/campaigns`);
+
+    campaigns =
+      await response.json();
+
+    renderCampaigns();
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+}
+
+
+function renderCampaigns() {
+
+  const tbody =
+    document.getElementById("campaigns-table-body");
+
+  if (!tbody) return;
+
+  if (!campaigns.length) {
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" class="p-6 text-center text-slate-500">
+          Geen campagnes gevonden
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML =
+    campaigns.map(c => `
+      <tr class="border-t">
+
+        <td class="px-6 py-4">${c.title}</td>
+
+        <td class="px-6 py-4">${c.company_name}</td>
+
+        <td class="px-6 py-4">${c.participant_count || 0}</td>
+
+        <td class="px-6 py-4">
+          ${c.status || '-'}
+        </td>
+
+      </tr>
+    `).join('');
 
 }
 
@@ -892,6 +881,20 @@ if (user.role !== "admin") {
       document.getElementById('companies-tab').classList.toggle('hidden', tab !== 'companies');
       document.getElementById('dashboard-view').classList.remove('hidden');
       document.getElementById('assessment-detail-screen').classList.add('hidden');
+      document.getElementById('campaigns-tab')
+  .classList.toggle('hidden', tab !== 'campaigns');
+
+document.getElementById('tab-campaigns')
+  .classList.toggle('border-blue-600', tab === 'campaigns');
+
+document.getElementById('tab-campaigns')
+  .classList.toggle('text-blue-600', tab === 'campaigns');
+
+document.getElementById('tab-campaigns')
+  .classList.toggle('border-transparent', tab !== 'campaigns');
+
+document.getElementById('tab-campaigns')
+  .classList.toggle('text-slate-600', tab !== 'campaigns');
       if (tab === 'overview') renderOverviewCards();
       if (tab === 'companies') renderCompanyCards();
     }
