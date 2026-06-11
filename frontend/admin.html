@@ -1253,46 +1253,50 @@ function closeCompanyModal() {
     }
 
     function renderCompanyCards() {
-      const container = document.getElementById('company-cards');
-      if (!container) return;
-      const filtered = assessments.filter(item => item.company_name.toLowerCase().includes(companySearchTerm));
-      const companies = Object.values(filtered.reduce((acc, item) => {
-        if (!acc[item.company_name]) {
-          acc[item.company_name] = {
-            company_name: item.company_name,
-            latestAssessment: item,
-            assessments: [item]
-          };
-        } else {
-          acc[item.company_name].assessments.push(item);
-          if (new Date(item.assessment_date) > new Date(acc[item.company_name].latestAssessment.assessment_date)) {
-            acc[item.company_name].latestAssessment = item;
-          }
-        }
-        return acc;
-      }, {}));
-      if (companies.length === 0) {
-        container.innerHTML = '<div class="col-span-full rounded-2xl bg-white p-8 text-center text-slate-500">Geen bedrijven gevonden.</div>';
-        return;
-      }
-      container.innerHTML = companies.sort((a, b) => a.company_name.localeCompare(b.company_name)).map(company => {
-        const address =
-  company.address
-    ? `${company.address}, ${company.city || ''}`
-    : 'Adres niet beschikbaar';
-        return `
-          <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 hover:shadow-md transition">
-            <div class="flex flex-col gap-2">
-              <h3 class="text-lg font-semibold text-slate-900">${company.company_name}</h3>
-              <p class="text-sm text-slate-500">${address}</p>
-            </div>
-            <div class="mt-6">
-              <button data-company="${company.company_name.replace(/"/g, '&quot;')}" onclick="viewCompany(this.dataset.company)" class="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">Bekijk assessments</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
+
+  const container =
+    document.getElementById('company-cards');
+
+  if (!container) return;
+
+  const filtered =
+    companies.filter(company =>
+      company.company_name
+        .toLowerCase()
+        .includes(companySearchTerm)
+    );
+
+  if (filtered.length === 0) {
+    container.innerHTML =
+      '<div class="col-span-full text-center text-slate-500">Geen bedrijven gevonden.</div>';
+    return;
+  }
+
+  container.innerHTML =
+    filtered.map(company => {
+
+      const address =
+        company.address
+          ? `${company.address}, ${company.city || ''}`
+          : 'Adres niet beschikbaar';
+
+      return `
+        <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+
+          <h3 class="text-lg font-semibold">
+            ${company.company_name}
+          </h3>
+
+          <p class="text-sm text-slate-500">
+            ${address}
+          </p>
+
+        </div>
+      `;
+
+    }).join('');
+
+}
 
     async function viewAssessment(id) {
       const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
