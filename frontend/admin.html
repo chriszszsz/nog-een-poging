@@ -243,6 +243,46 @@
   </div>
 
 </div>
+
+<!-- ✅ NIEUW BEDRIJF MODAL -->
+<div id="company-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+  <div class="bg-white p-6 rounded-2xl w-full max-w-lg space-y-4">
+
+    <h2 class="text-lg font-semibold">
+      Nieuw bedrijf
+    </h2>
+
+    <input id="company-name" placeholder="Bedrijfsnaam"
+      class="w-full border p-2 rounded" />
+
+    <input id="company-address" placeholder="Adres"
+      class="w-full border p-2 rounded" />
+
+    <input id="company-city" placeholder="Plaats"
+      class="w-full border p-2 rounded" />
+
+    <input id="company-postcode" placeholder="Postcode"
+      class="w-full border p-2 rounded" />
+
+    <div class="flex justify-end gap-3">
+
+      <button onclick="closeCompanyModal()"
+        class="px-4 py-2 bg-slate-200 rounded">
+        Annuleren
+      </button>
+
+      <button onclick="createCompany()"
+        class="px-4 py-2 bg-blue-600 text-white rounded">
+        Opslaan
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
   <script>
     const token =
   localStorage.getItem("token");
@@ -1059,7 +1099,11 @@ function renderHeroActions() {
 
 
 function openCompanyModal() {
-  alert("Modal komt hier");
+  document.getElementById("company-modal").classList.remove("hidden");
+}
+
+function closeCompanyModal() {
+  document.getElementById("company-modal").classList.add("hidden");
 }
 
 
