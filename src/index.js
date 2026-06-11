@@ -837,6 +837,63 @@ app.get(
   }
 );
 
+/* =========================
+   GET SINGLE RESULT DETAIL
+========================= */
+
+app.get(
+  "/api/results/:id",
+  authMiddleware,
+  async (req, res) => {
+
+    try {
+
+      const sessionResult =
+        await pool.query(
+          `
+          SELECT *
+          FROM assessment_sessions
+          WHERE assessment_session_id = $1
+          `,
+          [req.params.id]
+        );
+
+      if (sessionResult.rows.length === 0) {
+        return res.status(404).json({
+          error: "Niet gevonden"
+        });
+      }
+
+      const answersResult =
+        await pool.query(
+          `
+          SELECT *
+          FROM assessment_answers
+          WHERE assessment_session_id = $1
+          ORDER BY question_id ASC
+          `,
+          [req.params.id]
+        );
+
+      res.json({
+        session: sessionResult.rows[0],
+        answers: answersResult.rows
+      });
+
+    } catch (err) {
+
+      console.error(err);
+
+      res.status(500).json({
+        error: err.message
+      });
+
+    }
+
+  }
+);
+
+
 /* =========================================
    LOAD RESULTS HISTORY
 ========================================= */
