@@ -783,7 +783,6 @@ app.get(
 app.get(
   "/api/results",
   authMiddleware,
-
   async (req, res) => {
 
     try {
@@ -804,8 +803,6 @@ app.get(
           u.first_name,
           u.last_name
 
-          'DEBUG_V2' as test_flag
-
         FROM assessment_sessions s
 
         JOIN assessment_campaigns c
@@ -820,7 +817,7 @@ app.get(
           WHERE user_id = $1
         )
 
-        ORDER BY s.assessment_date DESC 
+        ORDER BY s.assessment_date DESC
         `,
         [req.user.user_id]
       );
