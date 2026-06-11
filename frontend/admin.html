@@ -1472,9 +1472,9 @@ function viewCampaign(title) {
       const company = selectedCompany;
 
   const companyUsers =
-    users.filter(u =>
-      u.company_id == company.company_id
-    );
+  Array.isArray(users)
+    ? users.filter(u => u.company_id == company.company_id)
+    : [];
 
   const companyCampaigns =
     campaigns.filter(c =>
@@ -2076,14 +2076,32 @@ async function fetchCompanies() {
 
 async function fetchUsers() {
 
-  const response =
-    await fetch(
+  try {
+
+    const response = await fetch(
       `${defaultConfig.backend_url}/api/users`
     );
 
-  users = await response.json();
+    if (!response.ok) {
+      console.warn("Users API error");
+      users = [];
+      return;
+    }
+
+    const data = await response.json();
+
+    users = Array.isArray(data) ? data : [];
+
+  } catch (err) {
+
+    console.error("fetchUsers crash:", err);
+
+    users = [];
+
+  }
 
 }
+
 
 function openCampaignModal() {
 
