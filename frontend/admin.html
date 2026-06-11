@@ -106,20 +106,21 @@
         <!-- ✅ TABS -->
         <div class="flex gap-6 border-b border-slate-200">
 
-          <button onclick="switchTab('overview')" id="tab-overview"
-            class="px-4 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600">
-            Assessment Overzicht
-          </button>
+                <button onclick="switchTab('overview')" id="tab-overview"
+                  class="px-4 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600">
+                  Assessment Overzicht
+                </button>
 
-          <button onclick="switchTab('companies')" id="tab-companies"
-            class="px-4 py-3 text-sm font-semibold text-slate-600">
-            Bedrijven
-          </button>
+                <button onclick="switchTab('companies')" id="tab-companies"
+                  class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600">
+                  Bedrijven
+                </button>
 
-          <button onclick="switchTab('campaigns')" id="tab-campaigns"
-            class="px-4 py-3 text-sm font-semibold text-slate-600">
-            Campagnes
-          </button>
+                <button onclick="switchTab('campaigns')" id="tab-campaigns"
+                  class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600">
+                  Campagnes
+                </button>
+
 
         </div>
 
@@ -993,15 +994,35 @@ function renderCampaigns() {
     }
 
     function renderOverviewCards() {
-      const total = assessments.length;
-      const average = total === 0 ? 0 : (assessments.reduce((sum, item) => sum + Number(item.average_score), 0) / total).toFixed(1);
-      const completed = assessments.filter(item => item.status === 'Afgerond').length;
-      const lastUpdate = assessments.reduce((latest, item) => item.assessment_date > latest ? item.assessment_date : latest, '');
-      document.getElementById('stat-assessments').textContent = total;
-      document.getElementById('stat-average').textContent = `${average}`;
-      document.getElementById('stat-completed').textContent = completed;
-      document.getElementById('stat-last-update').textContent = formatDutchDate(lastUpdate);
-    }
+
+  const el1 = document.getElementById('stat-assessments');
+  if (!el1) return; // ✅ STOP als niet aanwezig
+
+  const total = assessments.length;
+
+  const average =
+    total === 0
+      ? 0
+      : (
+          assessments.reduce((sum, item) => sum + Number(item.average_score), 0) / total
+        ).toFixed(1);
+
+  const completed =
+    assessments.filter(item => item.status === 'Afgerond').length;
+
+  const lastUpdate =
+    assessments.reduce(
+      (latest, item) =>
+        item.assessment_date > latest ? item.assessment_date : latest,
+      ''
+    );
+
+  document.getElementById('stat-assessments').textContent = total;
+  document.getElementById('stat-average').textContent = average;
+  document.getElementById('stat-completed').textContent = completed;
+  document.getElementById('stat-last-update').textContent =
+    lastUpdate ? new Date(lastUpdate).toLocaleDateString('nl-NL') : '-';
+}
 
     function renderAssessmentsTable() {
       const tbody = document.getElementById('assessments-table-body');
