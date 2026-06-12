@@ -1166,25 +1166,52 @@ async function generateCampaignReport(campaign_id) {
       model: MODEL,
       messages: [
         {
-          role: "system",
-          content: `
-Je bent een senior consultant gespecialiseerd in digital maturity assessments.
+  role: "system",
+  content: `
+Je bent een senior consultant gespecialiseerd in digitale maturiteit en organisatieanalyse.
 
-Analyseer de input van meerdere medewerkers binnen een organisatie.
+Je taak is om een diepgaande analyse te maken op basis van assessment data van meerdere rollen binnen een organisatie.
 
 BELANGRIJK:
 - Gebruik GEEN namen (privacy)
-- Analyseer verschillen tussen rollen
-- Herken patronen in antwoorden
-- Benoem inconsistenties tussen medewerkers
-- Geef duidelijke verbeteradviezen
-- Schrijf professioneel (consultancy stijl)
-- Structureer in:
-  1. Samenvatting
-  2. Belangrijkste inzichten
-  3. Verschillen tussen rollen
-  4. Risico's
-  5. Aanbevelingen
+- Gebruik de data zoals gegeven (scores 1–5)
+- Analyseer verschillen tussen rollen en perspectieven
+- Zoek naar onderliggende oorzaken van verschillen
+- Leg verbanden tussen onderwerpen (bijv. governance ↔ operatie)
+- Benoem inconsistencies expliciet
+- Ga verder dan beschrijven — verklaar waarom iets gebeurt
+
+SCHRIJFSTIJL:
+- professioneel en analytisch
+- volledig uitgewerkt (geen bullet-only output)
+- duidelijke argumentatie
+- advisory tone (consultant)
+
+STRUCTUUR:
+
+1. Samenvatting
+→ bondige maar inhoudelijke overview van de belangrijkste bevindingen
+
+2. Integrale analyse
+→ leg verbanden tussen domeinen (strategie, governance, operatie, IT)
+→ beschrijf patronen en onderliggende dynamiek
+
+3. Verschillen tussen rollen
+→ waar zien rollen de wereld anders
+→ wat zegt dat over de organisatie
+
+4. Kritische risico’s
+→ niet alleen wat, maar waarom dit riskant is
+→ impact op organisatie (concreet)
+
+5. Aanbevelingen
+→ strategisch + operationeel
+→ logische vervolgstappen (geen generieke adviezen)
+
+Belangrijk:
+- vermijd algemene zinnen
+- schrijf alsof je een adviesrapport oplevert aan directie
+
 
 Gebruik de data zoals gegeven — maak geen aannames buiten de data.
 `
@@ -1221,3 +1248,95 @@ Gebruik de data zoals gegeven — maak geen aannames buiten de data.
   }
 
 }
+
+/* =========================
+   AI tester
+========================= */
+
+app.post("/api/test-ai", async (req, res) => {
+
+  try {
+
+    const campaign_id = req.body.campaign_id || 2;
+
+    console.log("🧪 TEST AI RUN");
+
+    // Hergebruik exact dezelfde data query
+    const result = await pool.query(`
+      SELECT
+        s.assessment_session_id,
+        u.role_description,
+        q.question_text,
+        a.score,
+        a.comment
+      FROM assessment_answers a
+      JOIN assessment_sessions s
+        ON a.assessment_session_id = s.assessment_session_id
+      JOIN users u
+        ON s.user_id = u.user_id
+      JOIN questions q
+        ON a.question_id = q.question_id
+      WHERE s.campaign_id = $1
+      ORDER BY s.assessment_session_id, q.question_id
+    `, [campaign_id]);
+
+    const rows = result.rows;
+
+    const participantsMap = {};
+
+    rows.forEach(r => {
+      if (!participantsMap[r.assessment_session_id]) {
+        participantsMap[r.assessment_session_id] = {
+          role: r.role_description,
+          answers: []
+        };
+      }
+
+      participantsMap[r.assessment_session_id].answers.push({
+        question: r.question_text,
+        score: r.score,
+        comment: r.comment
+      });
+    });
+
+    const participants = Object.values(participantsMap);
+
+    const aiInput = {
+      participant_count: participants.length,
+      participants
+    };
+
+    // 🔥 AI CALL
+    const response = await openai.chat.completions.create({
+      model: MODEL,
+      messages: [
+        {
+          role: "system",
+          content: `<<< jouw prompt >>>`
+        },
+        {
+          role: "user",
+          content: JSON.stringify(aiInput)
+        }
+      ]
+    });
+
+    const report = response.choices[0].message.content;
+
+    // ✅ GEEN DB UPDATE → alleen teruggeven
+    res.json({
+      participants: participants.length,
+      report
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
+});
