@@ -8,7 +8,7 @@ import { pool } from "./config/db.js";
 import { authMiddleware }
 from "./middleware/auth.js";
 import OpenAI from "openai";
-
+dotenv.config();
 const openai = new OpenAI({
   baseURL: "https://maturity-tool-ai-resource.services.ai.azure.com/openai/v1",
   apiKey: process.env.AZURE_OPENAI_KEY
@@ -16,7 +16,7 @@ const openai = new OpenAI({
 
 const MODEL = "gpt-5.4";
 
-dotenv.config();
+
 
 const app = express();
 
@@ -30,7 +30,6 @@ app.use(express.json());
 
 app.use(helmet());
 
-app.use(cors());
 
 
 /* =========================
@@ -1134,7 +1133,7 @@ app.post("/api/test-ai", async (req, res) => {
 
     // 🔥 AI CALL
     const response = await openai.responses.create({
-  model: MODEL,
+  model: "gpt-5.4",
   input: [
     {
       role: "system",
@@ -1457,7 +1456,7 @@ Schrijf daarom een geïntegreerd adviesrapport dat leest als het werk van een er
   ]
 });
 
-    const report = response.choices[0].message.content;
+    const report = response.output[0].content[0].text;
 
     // ✅ GEEN DB UPDATE → alleen teruggeven
     res.json({
@@ -1542,7 +1541,7 @@ async function generateCampaignReport(campaign_id) {
 
     // 4. AI CALL
     const response = await openai.chat.completions.create({
-      model: MODEL,
+      model: "gpt-5.4",
       messages: [
         {
   role: "system",
@@ -1610,7 +1609,8 @@ Gebruik de data zoals gegeven — maak geen aannames buiten de data.
       ]
     });
 
-    const report = response.choices[0].message.content;
+    const report = response.output[0].content[0].text;
+
 
     // 5. Opslaan
     await pool.query(`
