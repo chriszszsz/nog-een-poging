@@ -10,7 +10,7 @@ from "./middleware/auth.js";
 import OpenAI from "openai";
 dotenv.config();
 const openai = new OpenAI({
-  baseURL: "https://maturity-tool-ai-resource.services.ai.azure.com/api/projects/maturity-tool-ai",
+  baseURL: "https://maturity-tool-ai-resource.services.ai.azure.com/openai/v1",
   apiKey: process.env.AZURE_OPENAI_KEY
 });
 
