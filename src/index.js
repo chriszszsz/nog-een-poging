@@ -1075,6 +1075,97 @@ app.get(
   }
 );
 
+/* =========================
+   AI tester
+========================= */
+
+app.post("/api/test-ai", async (req, res) => {
+
+  try {
+
+    const campaign_id = req.body.campaign_id || 2;
+
+    console.log("🧪 TEST AI RUN");
+
+    // Hergebruik exact dezelfde data query
+    const result = await pool.query(`
+      SELECT
+        s.assessment_session_id,
+        u.role_description,
+        q.question_text,
+        a.score,
+        a.comment
+      FROM assessment_answers a
+      JOIN assessment_sessions s
+        ON a.assessment_session_id = s.assessment_session_id
+      JOIN users u
+        ON s.user_id = u.user_id
+      JOIN questions q
+        ON a.question_id = q.question_id
+      WHERE s.campaign_id = $1
+      ORDER BY s.assessment_session_id, q.question_id
+    `, [campaign_id]);
+
+    const rows = result.rows;
+
+    const participantsMap = {};
+
+    rows.forEach(r => {
+      if (!participantsMap[r.assessment_session_id]) {
+        participantsMap[r.assessment_session_id] = {
+          role: r.role_description,
+          answers: []
+        };
+      }
+
+      participantsMap[r.assessment_session_id].answers.push({
+        question: r.question_text,
+        score: r.score,
+        comment: r.comment
+      });
+    });
+
+    const participants = Object.values(participantsMap);
+
+    const aiInput = {
+      participant_count: participants.length,
+      participants
+    };
+
+    // 🔥 AI CALL
+    const response = await openai.chat.completions.create({
+      model: MODEL,
+      messages: [
+        {
+          role: "system",
+          content: `<<< jouw prompt >>>`
+        },
+        {
+          role: "user",
+          content: JSON.stringify(aiInput)
+        }
+      ]
+    });
+
+    const report = response.choices[0].message.content;
+
+    // ✅ GEEN DB UPDATE → alleen teruggeven
+    res.json({
+      participants: participants.length,
+      report
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
+});
 
 /* =========================
    404 HANDLER
@@ -1248,95 +1339,3 @@ Gebruik de data zoals gegeven — maak geen aannames buiten de data.
   }
 
 }
-
-/* =========================
-   AI tester
-========================= */
-
-app.post("/api/test-ai", async (req, res) => {
-
-  try {
-
-    const campaign_id = req.body.campaign_id || 2;
-
-    console.log("🧪 TEST AI RUN");
-
-    // Hergebruik exact dezelfde data query
-    const result = await pool.query(`
-      SELECT
-        s.assessment_session_id,
-        u.role_description,
-        q.question_text,
-        a.score,
-        a.comment
-      FROM assessment_answers a
-      JOIN assessment_sessions s
-        ON a.assessment_session_id = s.assessment_session_id
-      JOIN users u
-        ON s.user_id = u.user_id
-      JOIN questions q
-        ON a.question_id = q.question_id
-      WHERE s.campaign_id = $1
-      ORDER BY s.assessment_session_id, q.question_id
-    `, [campaign_id]);
-
-    const rows = result.rows;
-
-    const participantsMap = {};
-
-    rows.forEach(r => {
-      if (!participantsMap[r.assessment_session_id]) {
-        participantsMap[r.assessment_session_id] = {
-          role: r.role_description,
-          answers: []
-        };
-      }
-
-      participantsMap[r.assessment_session_id].answers.push({
-        question: r.question_text,
-        score: r.score,
-        comment: r.comment
-      });
-    });
-
-    const participants = Object.values(participantsMap);
-
-    const aiInput = {
-      participant_count: participants.length,
-      participants
-    };
-
-    // 🔥 AI CALL
-    const response = await openai.chat.completions.create({
-      model: MODEL,
-      messages: [
-        {
-          role: "system",
-          content: `<<< jouw prompt >>>`
-        },
-        {
-          role: "user",
-          content: JSON.stringify(aiInput)
-        }
-      ]
-    });
-
-    const report = response.choices[0].message.content;
-
-    // ✅ GEEN DB UPDATE → alleen teruggeven
-    res.json({
-      participants: participants.length,
-      report
-    });
-
-  } catch (err) {
-
-    console.error(err);
-
-    res.status(500).json({
-      error: err.message
-    });
-
-  }
-
-});
