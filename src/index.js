@@ -1457,7 +1457,7 @@ Schrijf daarom een geïntegreerd adviesrapport dat leest als het werk van een er
   ]
 });
 
-    const report = response.output[0].content[0].text;
+    const report = response.choices[0].message.content;
 
     // ✅ GEEN DB UPDATE → alleen teruggeven
     res.json({
@@ -1610,7 +1610,7 @@ Gebruik de data zoals gegeven — maak geen aannames buiten de data.
       ]
     });
 
-    const report = response.output[0].content[0].text;
+    const report = response.choices[0].message.content;
 
     // 5. Opslaan
     await pool.query(`
