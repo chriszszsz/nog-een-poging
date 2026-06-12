@@ -1007,22 +1007,15 @@ function renderCampaigns() {
   ${c.title}
 </td>
 
-
-        <td class="px-6 py-4">${c.company_name}</td>
-
-        <td class="px-6 py-4">${c.participant_count || 0}</td>
-
-        <td class="px-6 py-4 text-sm">
-  <button 
-    onclick="viewCampaign(${c.campaign_id})"
-    class="text-blue-600 font-medium hover:underline"
-  >
-    Bekijk
-  </button>
+<td class="px-6 py-4">
+  ${c.company_name}
 </td>
 
+<td class="px-6 py-4">
+  ${c.participant_count || 0}
+</td>
 
-        <td class="px-6 py-4">
+<td class="px-6 py-4">
   <span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium 
     ${
       c.status === 'RESULTS_READY'
@@ -1035,6 +1028,15 @@ function renderCampaigns() {
     }">
     ${statusMapNL[c.status] || c.status}
   </span>
+</td>
+
+<td class="px-6 py-4 text-sm">
+  <button 
+    onclick="viewCampaign(${c.campaign_id})"
+    class="text-blue-600 font-medium hover:underline"
+  >
+    Bekijk
+  </button>
 </td>
 
       </tr>
