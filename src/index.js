@@ -10,11 +10,11 @@ from "./middleware/auth.js";
 import OpenAI from "openai";
 dotenv.config();
 const openai = new OpenAI({
-  baseURL: "https://maturity-tool-ai-resource.services.ai.azure.com/openai/v1",
+  baseURL: "https://maturity-tool-ai-resource.services.ai.azure.com/api/projects/maturity-tool-ai",
   apiKey: process.env.AZURE_OPENAI_KEY
 });
 
-const MODEL = "gpt-5.4";
+const MODEL = "gpt-4o";
 
 
 
@@ -1132,9 +1132,9 @@ app.post("/api/test-ai", async (req, res) => {
     };
 
     // 🔥 AI CALL
-    const response = await openai.responses.create({
-  model: "gpt-5.4",
-  input: [
+    const response = await openai.chat.completions.create({
+  model: MODEL,
+  messages: [
     {
       role: "system",
       content: `
@@ -1453,10 +1453,11 @@ Schrijf daarom een geïntegreerd adviesrapport dat leest als het werk van een er
       role: "user",
       content: JSON.stringify(aiInput)
     }
-  ]
+  ],
+  temperature: 0.2,
 });
 
-    const report = response.output[0].content[0].text;
+    const report = response.choices[0].message.content;
 
     // ✅ GEEN DB UPDATE → alleen teruggeven
     res.json({
@@ -1541,7 +1542,7 @@ async function generateCampaignReport(campaign_id) {
 
     // 4. AI CALL
     const response = await openai.chat.completions.create({
-      model: "gpt-5.4",
+      model: MODEL,
       messages: [
         {
   role: "system",
@@ -1606,10 +1607,11 @@ Gebruik de data zoals gegeven — maak geen aannames buiten de data.
           role: "user",
           content: JSON.stringify(aiInput)
         }
-      ]
+      ],
+      temperature: 0.2,
     });
 
-    const report = response.output[0].content[0].text;
+    const report = response.choices[0].message.content;
 
 
     // 5. Opslaan
