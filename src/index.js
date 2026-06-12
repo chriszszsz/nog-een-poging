@@ -14,7 +14,7 @@ const openai = new OpenAI({
   apiKey: process.env.AZURE_OPENAI_KEY
 });
 
-const MODEL = "gpt-4o";
+const MODEL = "gpt-5.4";
 
 dotenv.config();
 
