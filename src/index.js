@@ -1168,28 +1168,6 @@ app.post("/api/test-ai", async (req, res) => {
 });
 
 /* =========================
-   404 HANDLER
-========================= */
-
-app.use((req, res) => {
-
-  res.status(404).json({
-    error: "Route niet gevonden",
-  });
-
-});
-
-/* =========================
-   SERVER START
-========================= */
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server draait op poort ${PORT}`);
-});
-
-/* =========================
    AI RAPPORT GENEREREN
 ========================= */
 async function generateCampaignReport(campaign_id) {
@@ -1265,7 +1243,7 @@ Je taak is om een diepgaande analyse te maken op basis van assessment data van m
 
 BELANGRIJK:
 - Gebruik GEEN namen (privacy)
-- Gebruik de data zoals gegeven (scores 1–5)
+- Gebruik de data zoals gegeven (scores a t/m e. Zet det deze om naar 1 - 5 schaal)
 - Analyseer verschillen tussen rollen en perspectieven
 - Zoek naar onderliggende oorzaken van verschillen
 - Leg verbanden tussen onderwerpen (bijv. governance ↔ operatie)
@@ -1303,6 +1281,14 @@ Belangrijk:
 - vermijd algemene zinnen
 - schrijf alsof je een adviesrapport oplevert aan directie
 
+EXTRA ANALYSE INSTRUCTIES:
+
+- Als scores buiten het bereik 1-5 verschijnen, negeer deze en gebruik alleen 1-5 schaal.
+- Verklaar verschillen tussen rollen (WHY), niet alleen beschrijven (WHAT).
+- Interpreteer ontbrekende of slechte antwoorden (zoals lege velden of irrelevante tekst) als signalen over organisatiegedrag (bijv. betrokkenheid, kennisniveau of cultuur).
+- Trek conclusies over alignment tussen strategie en operatie.
+- Benoem implicaties voor governance, besluitvorming en risico’s.
+
 
 Gebruik de data zoals gegeven — maak geen aannames buiten de data.
 `
@@ -1339,3 +1325,26 @@ Gebruik de data zoals gegeven — maak geen aannames buiten de data.
   }
 
 }
+
+/* =========================
+   404 HANDLER
+========================= */
+
+app.use((req, res) => {
+
+  res.status(404).json({
+    error: "Route niet gevonden",
+  });
+
+});
+
+/* =========================
+   SERVER START
+========================= */
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server draait op poort ${PORT}`);
+});
+
