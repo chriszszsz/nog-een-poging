@@ -883,6 +883,129 @@ app.get("/api/campaigns", async (req, res) => {
 
 });
 
+app.get("/api/campaigns/:id/details", async (req, res) => {
+  try {
+    const campaign_id = req.params.id;
+
+    /* =========================
+       1. CAMPAIGN INFO
+    ========================= */
+
+    const campaignResult = await pool.query(`
+      SELECT
+        c.campaign_id,
+        c.title,
+        c.created_at,
+        c.report,
+        co.company_name
+      FROM assessment_campaigns c
+      JOIN companies co ON c.company_id = co.company_id
+      WHERE c.campaign_id = $1
+    `, [campaign_id]);
+
+    if (campaignResult.rows.length === 0) {
+      return res.status(404).json({ error: "Campaign niet gevonden" });
+    }
+
+    const campaign = campaignResult.rows[0];
+
+    /* =========================
+       2. ASSESSMENTS (tabel)
+    ========================= */
+
+    const assessmentsResult = await pool.query(`
+      SELECT
+        s.assessment_session_id,
+        s.average_score,
+        s.assessment_date,
+        s.status,
+        u.first_name,
+        u.last_name
+      FROM assessment_sessions s
+      JOIN users u ON s.user_id = u.user_id
+      WHERE s.campaign_id = $1
+      ORDER BY s.assessment_date DESC
+    `, [campaign_id]);
+
+    const assessments = assessmentsResult.rows;
+
+    /* =========================
+       3. AGGREGATED SCORE
+    ========================= */
+
+    let average_score = null;
+
+    if (assessments.length > 0) {
+      const total = assessments.reduce((sum, a) => sum + Number(a.average_score || 0), 0);
+      average_score = (total / assessments.length).toFixed(1);
+    }
+
+    /* =========================
+       4. AGGREGATED SPIDERCHART
+    ========================= */
+
+    const spiderResult = await pool.query(`
+      SELECT spider_scores
+      FROM assessment_sessions
+      WHERE campaign_id = $1
+    `, [campaign_id]);
+
+    let aggregatedSpider = {};
+
+    spiderResult.rows.forEach(row => {
+
+      const scores = typeof row.spider_scores === "string"
+  ? JSON.parse(row.spider_scores)
+  : row.spider_scores;
+
+      if (!scores) return;
+
+      Object.entries(scores).forEach(([key, value]) => {
+
+        if (!aggregatedSpider[key]) {
+          aggregatedSpider[key] = {
+            total: 0,
+            count: 0
+          };
+        }
+
+        aggregatedSpider[key].total += Number(value);
+        aggregatedSpider[key].count += 1;
+
+      });
+
+    });
+
+    const spider_scores = {};
+
+    Object.entries(aggregatedSpider).forEach(([key, val]) => {
+      spider_scores[key] = Number((val.total / val.count).toFixed(2));
+    });
+
+    /* =========================
+       RESPONSE
+    ========================= */
+
+    res.json({
+      campaign,
+      assessments,
+      aggregated: {
+        average_score,
+        spider_scores
+      }
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+});
+
 /* =========================
    GET LATEST RESULT
 ========================= */

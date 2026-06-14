@@ -1375,46 +1375,158 @@ function closeCompanyModal() {
 
 }
 
-function viewCampaign(title) {
+async function viewCampaign(id) {
 
-  const campaign = campaigns.find(c => c.title === title);
-  if (!campaign) return;
+  const res = await fetch(`${defaultConfig.backend_url}/api/campaigns/${id}/details`);
+  const data = await res.json();
+
+  const { campaign, assessments, aggregated } = data;
 
   document.getElementById('dashboard-view').classList.add('hidden');
-
   document.getElementById('assessment-detail-screen').classList.remove('hidden');
 
   document.getElementById('assessment-detail-screen').innerHTML = `
-    <div class="mb-6">
-      <button onclick="closeDetail()" class="text-blue-600 mb-4">← Terug</button>
 
-      <h2 class="text-2xl font-semibold text-slate-900">
-        ${campaign.title}
-      </h2>
+    <!-- TERUG -->
+    <button onclick="closeDetail()" class="text-blue-600 mb-6">
+      ← Terug
+    </button>
 
-      <p class="text-sm text-slate-600">
-        ${campaign.company_name}
-      </p>
-    </div>
-
+    <!-- TOP GRID -->
     <div class="grid gap-6 md:grid-cols-3">
 
-      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <p class="text-sm text-slate-600">Deelnemers</p>
-        <p class="text-3xl font-bold text-slate-900">
-          ${campaign.participant_count || 0}
-        </p>
+      <!-- SPIDERCHART -->
+      <div class="md:col-span-2 bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200">
+
+        <h3 class="text-lg font-semibold mb-4">
+          Spiderchart
+        </h3>
+
+        <div id="campaign-spider-chart"></div>
+
       </div>
 
-      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <p class="text-sm text-slate-600">Status</p>
-        <p class="text-3xl font-bold text-slate-900">
-          ${statusMapNL[campaign.status] || campaign.status}
-        </p>
+      <!-- SUMMARY -->
+      <div class="bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200">
+
+        <h3 class="font-semibold text-lg mb-4">
+          Details
+        </h3>
+
+        <div class="space-y-2 text-sm">
+
+          <div class="flex justify-between">
+            <span>Titel</span>
+            <span class="font-semibold">${campaign.title}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span>Bedrijf</span>
+            <span class="font-semibold">${campaign.company_name}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span>Deelnemers</span>
+            <span class="font-semibold">${assessments.length}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span>Gemiddelde score</span>
+            <span class="font-semibold">${aggregated.average_score || '-'}</span>
+          </div>
+
+        </div>
+
       </div>
 
     </div>
+
+    <!-- ASSESSMENT TABEL -->
+    <div class="mt-8 bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 overflow-hidden">
+
+      <table class="w-full">
+
+        <thead class="bg-slate-100 text-xs uppercase text-slate-600">
+          <tr>
+            <th class="p-4 text-left">Naam</th>
+            <th class="p-4 text-left">Datum</th>
+            <th class="p-4 text-left">Score</th>
+            <th class="p-4 text-left">Status</th>
+            <th class="p-4 text-left">Acties</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          ${assessments.map(a => `
+            <tr class="border-t">
+
+              <td class="p-4">
+                ${a.first_name} ${a.last_name}
+              </td>
+
+              <td class="p-4">
+                ${a.assessment_date 
+                  ? new Date(a.assessment_date).toLocaleDateString('nl-NL') 
+                  : '-'}
+              </td>
+
+              <td class="p-4 text-emerald-600 font-semibold">
+                ${a.average_score}
+              </td>
+
+              <td class="p-4">
+                ${statusMapNL[a.status] || a.status}
+              </td>
+
+              <td class="p-4">
+                <button onclick="viewAssessment(${a.assessment_session_id})" class="text-blue-600">
+                  Bekijk
+                </button>
+              </td>
+
+            </tr>
+          `).join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <!-- RAPPORT -->
+    <div class="mt-8 bg-white p-6 rounded-2xl shadow-sm ring-1 ring-slate-200">
+
+      <h3 class="font-semibold text-lg mb-4">
+        Adviesrapport
+      </h3>
+
+      <textarea
+        id="reportEditor"
+        class="w-full border rounded-lg p-4"
+        style="height:300px;"
+      >${campaign.report || ""}</textarea>
+
+      <div class="mt-4 flex gap-3">
+
+        <button onclick="saveReport(${id})"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+          Opslaan
+        </button>
+
+        <button onclick="sendReport(${id})"
+          class="px-4 py-2 bg-emerald-600 text-white rounded-lg">
+          Versturen
+        </button>
+
+      </div>
+
+    </div>
+
   `;
+
+  /* ✅ SPIDERCHART RENDER */
+  renderSpiderChart(aggregated.spider_scores, "campaign-spider-chart");
 }
 
     function renderCompanyDetail() {
@@ -1691,9 +1803,11 @@ function viewCampaign(title) {
       selectedCompany = null;
     }
 
-    function renderSpiderChart(scores) {
-      const chart = document.getElementById('spider-chart');
-      if (!chart) return;
+    function renderSpiderChart(scores, elementId = "spider-chart") {
+
+  const chart = document.getElementById('spider-chart');
+
+  if (!chart) return;
       const labels = Object.keys(scores);
       const values = Object.values(scores);
       const size = 520;
