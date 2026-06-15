@@ -1,6 +1,6 @@
 SELECT
   campaign_id,
-  average_score,
-  spider_scores,
-  results_ready
-FROM assessment_campaigns;
+  title,
+  report
+FROM assessment_campaigns
+WHERE campaign_id = 3;
