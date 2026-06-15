@@ -1396,7 +1396,7 @@ async function viewCampaign(id) {
     <div class="grid gap-6 md:grid-cols-3">
 
       <!-- SPIDERCHART -->
-      <div class="bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200 h-full">
+      <div class="md:col-span-2 bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200 h-full">
 
         <h3 class="text-lg font-semibold mb-4">
           Spiderchart
@@ -1407,7 +1407,7 @@ async function viewCampaign(id) {
       </div>
 
       <!-- SUMMARY -->
-      <div class="bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200 h-fit">
+      <div class="md:col-span-1 bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200 h-fit">
 
         <h3 class="font-semibold text-lg mb-4">
           Details
@@ -1810,9 +1810,9 @@ async function viewCampaign(id) {
   if (!chart) return;
       const labels = Object.keys(scores);
       const values = Object.values(scores);
-      const size = 400;
+      const size = 520;
       const center = size / 2;
-      const radius = 120;
+      const radius = 170;
       const maxLabelChars = 28;
       const lineSpacing = 10;
       const points = values.map((value, index) => {
