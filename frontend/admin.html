@@ -1341,7 +1341,7 @@
 
   }
 
-      async function viewAssessment(id) {
+     async function viewAssessment(id) {
 
   const backend =
     (window.elementSdk?.config?.backend_url || defaultConfig.backend_url)
@@ -1358,17 +1358,21 @@
         }
       });
 
-    if (response.status === 401) {
-      console.error("TOKEN ONGELDIG OF VERLOPEN");
-    }
-
-    if (!response.ok) {
-      throw new Error('Assessment niet gevonden');
-    }
+    if (!response.ok) throw new Error('Assessment niet gevonden');
 
     const data = await response.json();
 
-    selectedAssessment = data.session;
+    const fallback =
+      assessments.find(a => String(a.id) === String(id));
+
+    // ✅ combineer beide bronnen
+    selectedAssessment = {
+      ...data.session,
+      campaign_title: fallback?.campaign_title,
+      first_name: fallback?.first_name,
+      last_name: fallback?.last_name
+    };
+
     selectedAnswers = data.answers || [];
 
   } catch (error) {
@@ -1376,7 +1380,7 @@
     console.warn("Fallback naar lokale data");
 
     selectedAssessment =
-      assessments.find(item => String(item.id) === String(id)) || null;
+      assessments.find(a => String(a.id) === String(id)) || null;
 
     selectedAnswers = [];
 
@@ -1388,13 +1392,8 @@
 
   renderAssessmentDetail();
 
-  document
-    .getElementById('dashboard-view')
-    .classList.add('hidden');
-
-  document
-    .getElementById('assessment-detail-screen')
-    .classList.remove('hidden');
+  document.getElementById('dashboard-view').classList.add('hidden');
+  document.getElementById('assessment-detail-screen').classList.remove('hidden');
 }
 
       function viewCompany(companyId) {
@@ -2022,11 +2021,11 @@ function renderAnswers(answers) {
 
     let text = "";
 
-    if (a.score !== null) {
-      text = `Niveau ${a.score} – ${labels[a.score]}`;
-    } else if (a.comment) {
-      text = a.comment;
-    }
+    if (a.answer_text) {
+  text = `Score: ${a.score} – ${a.answer_text}`;
+} else if (a.comment) {
+  text = a.comment;
+}
 
     container.innerHTML += `
       <div class="border-b py-3">
