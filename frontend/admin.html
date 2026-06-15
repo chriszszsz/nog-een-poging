@@ -1349,9 +1349,12 @@
 
   try {
 
-    // ✅ juiste endpoint gebruiken
     const response =
-      await fetch(`${backend}/api/results/${id}`);
+      await fetch(`${backend}/api/results/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
 
     if (!response.ok) {
       throw new Error('Assessment niet gevonden');
@@ -1359,17 +1362,15 @@
 
     const data = await response.json();
 
-    // ✅ BELANGRIJK
     selectedAssessment = data.session;
     selectedAnswers = data.answers || [];
-
 
   } catch (error) {
 
     console.warn("Fallback naar lokale data");
 
     selectedAssessment =
-      assessments.find(item => item.id === id) || null;
+      assessments.find(item => item.id == id) || null;
 
     selectedAnswers = [];
 
@@ -1528,9 +1529,10 @@
                     : '-'}
                 </td>
 
-                <td class="p-4 text-emerald-600 font-semibold">
-                  ${a.average_score}
-                </td>
+                <td class="p-4 font-semibold">
+  ${a.average_score}
+</td>
+
 
                 <td class="p-4">
                   ${statusMapNL[a.status] || a.status}
@@ -1847,9 +1849,9 @@
 
             <div class="flex justify-between">
               <span>Maturity score</span>
-              <span class="font-semibold text-emerald-600">
-                ${assessment.average_score}
-              </span>
+              <span class="font-semibold">
+  ${assessment.average_score}
+</span>
             </div>
 
             <div class="flex justify-between">
@@ -1989,12 +1991,14 @@ function renderAnswers(answers) {
 
   if (!container) return;
 
-  if (!answers || answers.length === 0) {
+  if (!answers.length) {
+
     container.innerHTML = `
       <div class="text-sm text-slate-500">
         Geen antwoorden beschikbaar
       </div>
     `;
+
     return;
   }
 
