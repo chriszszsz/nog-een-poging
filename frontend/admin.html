@@ -2542,6 +2542,7 @@
     }
 
     alert("Rapport opgeslagen ✅");
+    await viewCampaign(campaignId);
 
   } catch (err) {
 
@@ -2549,7 +2550,6 @@
     alert("Serverfout");
 
   }
-  await viewCampaign(campaignId);
 }
 
     </script>
