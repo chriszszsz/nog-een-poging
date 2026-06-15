@@ -1,1444 +1,1446 @@
-<!doctype html>
-<html lang="nl" class="h-full">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Digital Maturity Assessment</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+  <!doctype html>
+  <html lang="nl" class="h-full">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Maturity Assessment</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+            }
           }
         }
       }
-    }
-  </script>
-  <style>
-    body { box-sizing: border-box; }
-    .drag-active {
-      border-color: #0d9488 !important;
-      background-color: #f0fdfa !important;
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .file-card { animation: slideIn 0.2s ease-out; }
-  </style>
-</head>
-<body class="h-full bg-slate-50 overflow-auto">
+    </script>
+    <style>
+      body { box-sizing: border-box; }
+      .drag-active {
+        border-color: #0d9488 !important;
+        background-color: #f0fdfa !important;
+      }
+      @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .file-card { animation: slideIn 0.2s ease-out; }
+    </style>
+  </head>
+  <body class="h-full bg-slate-50 overflow-auto">
 
-  <!-- ✅ HEADER -->
-  <div class="sticky top-0 z-50 bg-white shadow-sm ring-1 ring-slate-200">
-    <div class="px-6 md:px-10 py-4 flex items-center justify-between">
+    <!-- ✅ HEADER -->
+    <div class="sticky top-0 z-50 bg-white shadow-sm ring-1 ring-slate-200">
+      <div class="px-6 md:px-10 py-4 flex items-center justify-between">
 
-      <div class="flex items-center gap-4">
-        <img
-          src="https://seekvectorlogo.net/wp-content/uploads/2019/10/axians-vector-logo.png"
-          class="h-12 flex-shrink-0"
-        />
+        <div class="flex items-center gap-4">
+          <img
+            src="https://seekvectorlogo.net/wp-content/uploads/2019/10/axians-vector-logo.png"
+            class="h-12 flex-shrink-0"
+          />
 
-        <div class="border-l border-slate-200 pl-4">
-          <p class="text-sm font-semibold text-slate-900">
-            Digital Maturity Assessment
-          </p>
-        </div>
-      </div>
-
-      <button onclick="logout()"
-        class="rounded-xl bg-slate-800 px-5 py-2 text-sm font-semibold text-white">
-        Uitloggen
-      </button>
-
-    </div>
-  </div>
-
-  <!-- ✅ CONTENT -->
-  <div class="min-h-full p-6 md:p-10">
-    <div class="mx-auto max-w-7xl space-y-6">
-
-      <!-- ✅ HERO -->
-      <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-
-          <div>
-            <h1 class="text-3xl font-semibold tracking-tight text-blue-700">
+          <div class="border-l border-slate-200 pl-4">
+            <p class="text-sm font-semibold text-slate-900">
               Digital Maturity Assessment
-            </h1>
-            <p class="mt-2 text-sm text-slate-600">
-              Overzicht en beheer van assessments, resultaten en campagnes.
             </p>
           </div>
-
-          <div class="flex gap-3">
-
-  <!-- ✅ DYNAMISCHE ACTIES -->
-  <div id="hero-actions" class="flex gap-3"></div>
-
-  <!-- TABS -->
-  <button onclick="switchTab('overview')"
-    class="px-4 py-2 text-sm font-semibold text-white rounded-xl"
-    style="background:#A20067">
-    Overzicht
-  </button>
-
-  <button onclick="switchTab('companies')"
-    class="px-4 py-2 text-sm font-semibold text-white rounded-xl"
-    style="background:#005EB8">
-    Bedrijven
-  </button>
-
-</div>
         </div>
+
+        <button onclick="logout()"
+          class="rounded-xl bg-slate-800 px-5 py-2 text-sm font-semibold text-white">
+          Uitloggen
+        </button>
+
       </div>
+    </div>
 
-      <!-- ✅ DASHBOARD -->
-      <div id="dashboard-view">
+    <!-- ✅ CONTENT -->
+    <div class="min-h-full p-6 md:p-10">
+      <div class="mx-auto max-w-7xl space-y-6">
 
-        <!-- ✅ TABS -->
-        <div class="flex gap-6 border-b border-slate-200">
+        <!-- ✅ HERO -->
+        <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
+          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
-                <button onclick="switchTab('overview')" id="tab-overview"
-                  class="px-4 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600">
-                  Assessment Overzicht
-                </button>
+            <div>
+              <h1 class="text-3xl font-semibold tracking-tight text-blue-700">
+                Digital Maturity Assessment
+              </h1>
+              <p class="mt-2 text-sm text-slate-600">
+                Overzicht en beheer van assessments, resultaten en campagnes.
+              </p>
+            </div>
 
-                <button onclick="switchTab('companies')" id="tab-companies"
-                  class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600">
-                  Bedrijven
-                </button>
+            <div class="flex gap-3">
 
-                <button onclick="switchTab('campaigns')" id="tab-campaigns"
-                  class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600">
-                  Campagnes
-                </button>
+    <!-- ✅ DYNAMISCHE ACTIES -->
+    <div id="hero-actions" class="flex gap-3"></div>
 
+    <!-- TABS -->
+    <button onclick="switchTab('overview')"
+      class="px-4 py-2 text-sm font-semibold text-white rounded-xl"
+      style="background:#A20067">
+      Overzicht
+    </button>
 
+    <button onclick="switchTab('companies')"
+      class="px-4 py-2 text-sm font-semibold text-white rounded-xl"
+      style="background:#005EB8">
+      Bedrijven
+    </button>
+
+  </div>
+          </div>
         </div>
 
-        <!-- ✅ OVERVIEW TAB -->
-        <div id="overview-tab" class="mt-6 space-y-6">
+        <!-- ✅ DASHBOARD -->
+        <div id="dashboard-view">
 
-          <div class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
+          <!-- ✅ TABS -->
+          <div class="flex gap-6 border-b border-slate-200">
 
-  <table class="w-full">
+                  <button onclick="switchTab('overview')" id="tab-overview"
+                    class="px-4 py-3 text-sm font-semibold border-b-2 border-blue-600 text-blue-600">
+                    Assessment Overzicht
+                  </button>
 
-    
-<thead class="bg-slate-100 text-xs uppercase text-slate-600">
-  <tr>
-    <th class="p-4 text-left">Bedrijf</th>
-    <th class="p-4 text-left">Campagne</th>
-    <th class="p-4 text-left">Datum</th>
-    <th class="p-4 text-left">Score</th>
-    <th class="p-4 text-left">Gemaakt door</th>
-    <th class="p-4 text-left">Status</th>
-    <th class="p-4 text-left">Acties</th>
-  </tr>
-</thead>
+                  <button onclick="switchTab('companies')" id="tab-companies"
+                    class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600">
+                    Bedrijven
+                  </button>
+
+                  <button onclick="switchTab('campaigns')" id="tab-campaigns"
+                    class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-600">
+                    Campagnes
+                  </button>
 
 
-    <tbody id="assessments-table-body">
-      <tr>
-        <td colspan="7" class="p-6 text-center text-slate-500">
-          Geen assessments gevonden
-        </td>
-      </tr>
-    </tbody>
+          </div>
 
-  </table>
+          <!-- ✅ OVERVIEW TAB -->
+          <div id="overview-tab" class="mt-6 space-y-6">
 
-</div>
+            <div class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 overflow-hidden">
 
-        </div>
+    <table class="w-full">
 
-<div id="companies-tab" class="hidden space-y-6 mt-6">
+      
+  <thead class="bg-slate-100 text-xs uppercase text-slate-600">
+    <tr>
+      <th class="p-4 text-left">Bedrijf</th>
+      <th class="p-4 text-left">Campagne</th>
+      <th class="p-4 text-left">Datum</th>
+      <th class="p-4 text-left">Score</th>
+      <th class="p-4 text-left">Gemaakt door</th>
+      <th class="p-4 text-left">Status</th>
+      <th class="p-4 text-left">Acties</th>
+    </tr>
+  </thead>
 
-  <div id="company-cards" class="grid gap-4 md:grid-cols-2"></div>
 
-</div>
+      <tbody id="assessments-table-body">
+        <tr>
+          <td colspan="7" class="p-6 text-center text-slate-500">
+            Geen assessments gevonden
+          </td>
+        </tr>
+      </tbody>
 
-        <!-- ✅ CAMPAIGNS TAB -->
-        <div id="campaigns-tab" class="hidden mt-6 space-y-6">
+    </table>
 
-          <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-            <table class="w-full">
+  </div>
 
-              <thead class="bg-slate-100 text-xs uppercase text-slate-600">
+          </div>
+
+  <div id="companies-tab" class="hidden space-y-6 mt-6">
+
+    <div id="company-cards" class="grid gap-4 md:grid-cols-2"></div>
+
+  </div>
+
+          <!-- ✅ CAMPAIGNS TAB -->
+          <div id="campaigns-tab" class="hidden mt-6 space-y-6">
+
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+              <table class="w-full">
+
+                <thead class="bg-slate-100 text-xs uppercase text-slate-600">
+                    <tr>
+                      <th class="p-4 text-left">Campagne</th>
+                      <th class="p-4 text-left">Bedrijf</th>
+                      <th class="p-4 text-left">Deelnemers</th>
+                      <th class="p-4 text-left">Status</th>
+                      <th class="p-4 text-left">Acties</th>
+                    </tr>
+                  </thead>
+
+
+                <tbody id="campaigns-table-body">
                   <tr>
-                    <th class="p-4 text-left">Campagne</th>
-                    <th class="p-4 text-left">Bedrijf</th>
-                    <th class="p-4 text-left">Deelnemers</th>
-                    <th class="p-4 text-left">Status</th>
-                    <th class="p-4 text-left">Acties</th>
+                    <td colspan="5" class="p-6 text-center text-slate-500">
+                      Geen campagnes gevonden
+                    </td>
                   </tr>
-                </thead>
+                </tbody>
 
+              </table>
+            </div>
 
-              <tbody id="campaigns-table-body">
-                <tr>
-                  <td colspan="5" class="p-6 text-center text-slate-500">
-                    Geen campagnes gevonden
-                  </td>
-                </tr>
-              </tbody>
-
-            </table>
           </div>
 
         </div>
+        <div id="assessment-detail-screen" class="hidden p-6 md:p-10"></div>
+
+  <!-- ✅ HIER TOEVOEGEN -->
+  <div id="campaign-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+    <div class="bg-white p-6 rounded-2xl w-full max-w-lg space-y-4">
+
+      <h2 class="text-lg font-semibold">
+        Nieuwe campagne
+      </h2>
+
+      <!-- Titel -->
+      <input
+        id="campaign-title"
+        placeholder="Campagne titel"
+        class="w-full border p-2 rounded"
+      />
+
+      <!-- Bedrijf -->
+      <select
+        id="campaign-company"
+        class="w-full border p-2 rounded"
+      ></select>
+
+      <!-- Deelnemers -->
+      <div
+        id="participants-list"
+        class="space-y-2 max-h-40 overflow-y-auto"
+      ></div>
+
+      <!-- Knoppen -->
+      <div class="flex justify-end gap-3">
+
+        <button onclick="closeCampaignModal()"
+          class="px-4 py-2 bg-slate-200 rounded">
+          Annuleren
+        </button>
+
+        <button onclick="createCampaign()"
+          class="px-4 py-2 bg-emerald-600 text-white rounded">
+          Opslaan
+        </button>
 
       </div>
-      <div id="assessment-detail-screen" class="hidden p-6 md:p-10"></div>
-
-<!-- ✅ HIER TOEVOEGEN -->
-<div id="campaign-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-
-  <div class="bg-white p-6 rounded-2xl w-full max-w-lg space-y-4">
-
-    <h2 class="text-lg font-semibold">
-      Nieuwe campagne
-    </h2>
-
-    <!-- Titel -->
-    <input
-      id="campaign-title"
-      placeholder="Campagne titel"
-      class="w-full border p-2 rounded"
-    />
-
-    <!-- Bedrijf -->
-    <select
-      id="campaign-company"
-      class="w-full border p-2 rounded"
-    ></select>
-
-    <!-- Deelnemers -->
-    <div
-      id="participants-list"
-      class="space-y-2 max-h-40 overflow-y-auto"
-    ></div>
-
-    <!-- Knoppen -->
-    <div class="flex justify-end gap-3">
-
-      <button onclick="closeCampaignModal()"
-        class="px-4 py-2 bg-slate-200 rounded">
-        Annuleren
-      </button>
-
-      <button onclick="createCampaign()"
-        class="px-4 py-2 bg-emerald-600 text-white rounded">
-        Opslaan
-      </button>
 
     </div>
 
   </div>
 
-</div>
+  <!-- ✅ NIEUW BEDRIJF MODAL -->
+  <div id="company-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-<!-- ✅ NIEUW BEDRIJF MODAL -->
-<div id="company-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-2xl w-full max-w-lg space-y-4">
 
-  <div class="bg-white p-6 rounded-2xl w-full max-w-lg space-y-4">
+      <h2 class="text-lg font-semibold">
+        Nieuw bedrijf
+      </h2>
 
-    <h2 class="text-lg font-semibold">
-      Nieuw bedrijf
-    </h2>
+      <input id="company-name" placeholder="Bedrijfsnaam"
+        class="w-full border p-2 rounded" />
 
-    <input id="company-name" placeholder="Bedrijfsnaam"
-      class="w-full border p-2 rounded" />
+      <input id="company-address" placeholder="Adres"
+        class="w-full border p-2 rounded" />
 
-    <input id="company-address" placeholder="Adres"
-      class="w-full border p-2 rounded" />
+      <input id="company-city" placeholder="Plaats"
+        class="w-full border p-2 rounded" />
 
-    <input id="company-city" placeholder="Plaats"
-      class="w-full border p-2 rounded" />
+      <input id="company-postcode" placeholder="Postcode"
+        class="w-full border p-2 rounded" />
 
-    <input id="company-postcode" placeholder="Postcode"
-      class="w-full border p-2 rounded" />
+      <div class="flex justify-end gap-3">
 
-    <div class="flex justify-end gap-3">
+        <button onclick="closeCompanyModal()"
+          class="px-4 py-2 bg-slate-200 rounded">
+          Annuleren
+        </button>
 
-      <button onclick="closeCompanyModal()"
-        class="px-4 py-2 bg-slate-200 rounded">
-        Annuleren
-      </button>
+        <button onclick="createCompany()"
+          class="px-4 py-2 bg-blue-600 text-white rounded">
+          Opslaan
+        </button>
 
-      <button onclick="createCompany()"
-        class="px-4 py-2 bg-blue-600 text-white rounded">
-        Opslaan
-      </button>
+      </div>
 
     </div>
 
   </div>
 
-</div>
+  <div id="user-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-<div id="user-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl w-full max-w-md space-y-4">
 
-  <div class="bg-white p-6 rounded-xl w-full max-w-md space-y-4">
+      <h2 class="font-semibold">Nieuwe medewerker</h2>
 
-    <h2 class="font-semibold">Nieuwe medewerker</h2>
+      <input id="user-first" placeholder="Voornaam" class="w-full border p-2 rounded" />
+      <input id="user-last" placeholder="Achternaam" class="w-full border p-2 rounded" />
+      <input id="user-email" placeholder="Email" class="w-full border p-2 rounded" />
 
-    <input id="user-first" placeholder="Voornaam" class="w-full border p-2 rounded" />
-    <input id="user-last" placeholder="Achternaam" class="w-full border p-2 rounded" />
-    <input id="user-email" placeholder="Email" class="w-full border p-2 rounded" />
-
-    <input id="user-function" placeholder="Functie (bijv IT Manager)"
-  class="w-full border p-2 rounded" />
+      <input id="user-function" placeholder="Functie (bijv IT Manager)"
+    class="w-full border p-2 rounded" />
 
 
-    <div class="flex justify-end gap-2">
-      <button onclick="closeUserModal()">Annuleren</button>
-      <button onclick="createUser()" class="bg-blue-600 text-white px-4 py-2 rounded">
-        Opslaan
-      </button>
+      <div class="flex justify-end gap-2">
+        <button onclick="closeUserModal()">Annuleren</button>
+        <button onclick="createUser()" class="bg-blue-600 text-white px-4 py-2 rounded">
+          Opslaan
+        </button>
+      </div>
+
     </div>
 
   </div>
 
-</div>
+    <script>
+      const token =
+    localStorage.getItem("token");
 
-  <script>
-    const token =
-  localStorage.getItem("token");
+  const user =
+    JSON.parse(
+      localStorage.getItem("user")
+    );
 
-const user =
-  JSON.parse(
-    localStorage.getItem("user")
-  );
+  if (!token) {
 
-if (!token) {
+    window.location.href =
+      "./login.html";
 
-  window.location.href =
-    "./login.html";
+  }
 
-}
-
-if (!user || user.role !== "admin") {
-  window.location.href = "./index.html";
-}
+  if (!user || user.role !== "admin") {
+    window.location.href = "./index.html";
+  }
 
 
-    const defaultConfig = {
-      page_title: 'Digital Maturity Assessment',
-      backend_url: 'https://maturity-assessment-api-avh2h6cuf8acg5fk.westeurope-01.azurewebsites.net'
-    };
+      const defaultConfig = {
+        page_title: 'Digital Maturity Assessment',
+        backend_url: 'https://maturity-assessment-api-avh2h6cuf8acg5fk.westeurope-01.azurewebsites.net'
+      };
 
-    let assessments = [];
-    let selectedAssessment = null;
-    let selectedCompany = null;
-    let currentTab = 'overview';
-    let campaigns = [];
-    let overviewSearchTerm = '';
-    let companySearchTerm = '';
-    let overviewSortColumn = 'assessment_date';
-    let overviewSortDirection = 'desc';
+      let assessments = [];
+      let selectedAssessment = null;
+      let selectedCompany = null;
+      let currentTab = 'overview';
+      let campaigns = [];
+      let overviewSearchTerm = '';
+      let companySearchTerm = '';
+      let overviewSortColumn = 'assessment_date';
+      let overviewSortDirection = 'desc';
+      
+
+  // ✅ HIER TOEVOEGEN
+  const statusMapNL = {
+    'NOT_STARTED': 'Niet gestart',
+    'IN_PROGRESS': 'In uitvoering',
+    'WAITING_FOR_REPORT': 'Wacht op rapport',
+    'RESULTS_READY': 'Voltooid',
+    'COMPLETED': 'Afgerond'
+  };
+
+      const statusOrder = {
+        'Niet gestart': 1,
+        'In uitvoering': 2,
+        'In afwachting van rapport': 3,
+        'Afgerond': 4
+      };
+
+      const maturityLabels = {
+        1: 'Ad hoc',
+        2: 'Gestructureerd',
+        3: 'Effectief en aantoonbaar',
+        4: 'Periodiek beoordeeld',
+        5: 'Geoptimaliseerd'
+      };
+
+      const statusBadges = {
+        'Niet gestart': 'bg-slate-100 text-slate-700',
+        'In uitvoering': 'bg-blue-100 text-blue-700',
+        'In afwachting van rapport': 'bg-amber-100 text-amber-700',
+        'Afgerond': 'bg-teal-100 text-teal-700'
+      };
+
+      const companyAddresses = {
+        'VoltTech Industries': 'Beukenlaan 12, 1234 AB Arnhem',
+        'Nauta Consulting': 'Stationsplein 3, 1012 AB Amsterdam',
+        'Greenfield Energy': 'Parkweg 18, 6525 AR Nijmegen',
+        'Delta Health Solutions': 'Veldstraat 22, 5611 BT Eindhoven',
+        'Metro Logistics': 'Havenweg 10, 3071 NV Rotterdam',
+        'Urban Retail Group': 'Kruiskade 52, 3012 EH Rotterdam',
+        'AquaTech Solutions': 'Kanaaldijk 5, 7607 PE Almelo',
+        'SmartCity Partners': 'Marktstraat 8, 3511 EE Utrecht',
+        'FutureWorks Labs': 'Science Park 123, 1098 XG Amsterdam',
+        'EcoWave Systems': 'Scheepswerf 6, 4382 LA Vlissingen'
+      };
+
+      const mockAssessments = [
+        {
+          id: 'asm-001',
+          company_name: 'VoltTech Industries',
+          maturity_level: 4,
+          average_score: 4,
+          assessment_date: '2026-04-08',
+          status: 'Afgerond',
+          report_suggestion: 'Het AI-voorstel benadrukt verbetering in datagedreven besluitvorming en procesautomatisering voor snellere compliance.',
+          spider_scores: {
+            Strategie: 4,
+            Beleid: 4,
+            'Planning / Roadmap': 4,
+            Architectuur: 4,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 4,
+            'Functiescheiding': 3,
+            'Certificering, training en scholing': 4,
+            'Afhankelijkheid van individuen': 3,
+            'Super Users': 3,
+            'Service level overeenkomst': 4,
+            'Service level beheer': 4,
+            'Risicobeheer van leveranciers': 4,
+            'Interne beheersing bij derden': 3,
+            'Bedrijfscontinuïteits-planning': 4,
+            'Testen van Disaster recovery': 3,
+            'Crisisbeheer': 3
+          },
+          details: 'Deze organisatie werkt aan een gedocumenteerde aanpak en heeft een duidelijke roadmap voor verbetering.',
+          last_updated: '2026-04-10'
+        },
+        {
+          id: 'asm-002',
+          company_name: 'Nauta Consulting',
+          maturity_level: 3,
+          average_score: 3,
+          assessment_date: '2026-03-26',
+          status: 'In uitvoering',
+          report_suggestion: 'AI raadt een validatie van IT-beveiliging en gebruikersacceptatie aan om de maturitycyclus te versnellen.',
+          spider_scores: {
+            Strategie: 3,
+            Beleid: 3,
+            'Planning / Roadmap': 3,
+            Architectuur: 3,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
+            'Functiescheiding': 2,
+            'Certificering, training en scholing': 3,
+            'Afhankelijkheid van individuen': 2,
+            'Super Users': 3,
+            'Service level overeenkomst': 3,
+            'Service level beheer': 3,
+            'Risicobeheer van leveranciers': 3,
+            'Interne beheersing bij derden': 2,
+            'Bedrijfscontinuïteits-planning': 3,
+            'Testen van Disaster recovery': 2,
+            'Crisisbeheer': 2
+          },
+          details: 'De kernprocessen zijn aanwezig maar er is nog onvoldoende structuur rondom risicoacceptatie en rapportage.',
+          last_updated: '2026-03-29'
+        },
+        {
+          id: 'asm-011',
+          company_name: 'Nauta Consulting',
+          maturity_level: 2,
+          average_score: 2,
+          assessment_date: '2026-03-18',
+          status: 'In uitvoering',
+          report_suggestion: 'Nauta Consulting heeft stappen gezet richting procesdefinitie maar nog niet naar evidence-based governance.',
+          spider_scores: {
+            Strategie: 2,
+            Beleid: 2,
+            'Planning / Roadmap': 2,
+            Architectuur: 2,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
+            'Functiescheiding': 2,
+            'Certificering, training en scholing': 2,
+            'Afhankelijkheid van individuen': 2,
+            'Super Users': 2,
+            'Service level overeenkomst': 2,
+            'Service level beheer': 2,
+            'Risicobeheer van leveranciers': 2,
+            'Interne beheersing bij derden': 2,
+            'Bedrijfscontinuïteits-planning': 2,
+            'Testen van Disaster recovery': 2,
+            'Crisisbeheer': 2
+          },
+          details: 'Beginfase met kans om governance en risicobeheer te professionaliseren.',
+          last_updated: '2026-03-18'
+        },
+        {
+          id: 'asm-012',
+          company_name: 'Nauta Consulting',
+          maturity_level: 4,
+          average_score: 4,
+          assessment_date: '2026-04-02',
+          status: 'In afwachting van rapport',
+          report_suggestion: 'Het laatste assessment toont verbetering in procesborging maar vraagt verduidelijking in rollen en verantwoording.',
+          spider_scores: {
+            Strategie: 4,
+            Beleid: 4,
+            'Planning / Roadmap': 4,
+            Architectuur: 4,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 4,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 4,
+            'Functiescheiding': 3,
+            'Certificering, training en scholing': 4,
+            'Afhankelijkheid van individuen': 3,
+            'Super Users': 4,
+            'Service level overeenkomst': 4,
+            'Service level beheer': 4,
+            'Risicobeheer van leveranciers': 4,
+            'Interne beheersing bij derden': 3,
+            'Bedrijfscontinuïteits-planning': 4,
+            'Testen van Disaster recovery': 3,
+            'Crisisbeheer': 3
+          },
+          details: 'Verhoogde volwassenheid maar nog ruimte voor structurele borging.',
+          last_updated: '2026-04-02'
+        },
+        {
+          id: 'asm-013',
+          company_name: 'Greenfield Energy',
+          maturity_level: 1,
+          average_score: 1,
+          assessment_date: '2026-03-05',
+          status: 'Niet gestart',
+          report_suggestion: 'Greenfield Energy moet starten met basisprocessen en documentatie rondom risico en governance.',
+          spider_scores: {
+            Strategie: 1,
+            Beleid: 1,
+            'Planning / Roadmap': 1,
+            Architectuur: 1,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 1,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 1,
+            'Functiescheiding': 1,
+            'Certificering, training en scholing': 1,
+            'Afhankelijkheid van individuen': 1,
+            'Super Users': 1,
+            'Service level overeenkomst': 1,
+            'Service level beheer': 1,
+            'Risicobeheer van leveranciers': 1,
+            'Interne beheersing bij derden': 1,
+            'Bedrijfscontinuïteits-planning': 1,
+            'Testen van Disaster recovery': 1,
+            'Crisisbeheer': 1
+          },
+          details: 'Het bedrijf staat nog aan het begin van de maturityreis.',
+          last_updated: '2026-03-05'
+        },
+        {
+          id: 'asm-014',
+          company_name: 'Greenfield Energy',
+          maturity_level: 2,
+          average_score: 2,
+          assessment_date: '2026-03-19',
+          status: 'In uitvoering',
+          report_suggestion: 'De organisatie bouwt langzaam een stabiele basis maar moet focus houden op risico-acceptatie.',
+          spider_scores: {
+            Strategie: 2,
+            Beleid: 2,
+            'Planning / Roadmap': 2,
+            Architectuur: 2,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
+            'Functiescheiding': 2,
+            'Certificering, training en scholing': 2,
+            'Afhankelijkheid van individuen': 1,
+            'Super Users': 2,
+            'Service level overeenkomst': 2,
+            'Service level beheer': 2,
+            'Risicobeheer van leveranciers': 2,
+            'Interne beheersing bij derden': 2,
+            'Bedrijfscontinuïteits-planning': 2,
+            'Testen van Disaster recovery': 2,
+            'Crisisbeheer': 1
+          },
+          details: 'Het management heeft een begin gemaakt met planned governance.',
+          last_updated: '2026-03-19'
+        },
+        {
+          id: 'asm-015',
+          company_name: 'Greenfield Energy',
+          maturity_level: 3,
+          average_score: 3,
+          assessment_date: '2026-04-01',
+          status: 'In afwachting van rapport',
+          report_suggestion: 'De groei is zichtbaar, nu nog meer focus op leveranciersrisico en continuïteit.',
+          spider_scores: {
+            Strategie: 3,
+            Beleid: 3,
+            'Planning / Roadmap': 3,
+            Architectuur: 3,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
+            'Functiescheiding': 2,
+            'Certificering, training en scholing': 3,
+            'Afhankelijkheid van individuen': 2,
+            'Super Users': 3,
+            'Service level overeenkomst': 3,
+            'Service level beheer': 3,
+            'Risicobeheer van leveranciers': 3,
+            'Interne beheersing bij derden': 2,
+            'Bedrijfscontinuïteits-planning': 3,
+            'Testen van Disaster recovery': 2,
+            'Crisisbeheer': 2
+          },
+          details: 'Er is vooruitgang, maar de organisatie blijft afhankelijk van individuele kennis.',
+          last_updated: '2026-04-01'
+        },
+        {
+          id: 'asm-016',
+          company_name: 'AquaTech Solutions',
+          maturity_level: 1,
+          average_score: 1,
+          assessment_date: '2026-03-10',
+          status: 'Niet gestart',
+          report_suggestion: 'AquaTech start met basis governance en documentatie.',
+          spider_scores: {
+            Strategie: 1,
+            Beleid: 1,
+            'Planning / Roadmap': 1,
+            Architectuur: 1,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 1,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 1,
+            'Functiescheiding': 1,
+            'Certificering, training en scholing': 1,
+            'Afhankelijkheid van individuen': 1,
+            'Super Users': 1,
+            'Service level overeenkomst': 1,
+            'Service level beheer': 1,
+            'Risicobeheer van leveranciers': 1,
+            'Interne beheersing bij derden': 1,
+            'Bedrijfscontinuïteits-planning': 1,
+            'Testen van Disaster recovery': 1,
+            'Crisisbeheer': 1
+          },
+          details: 'Een laag volwassen bedrijf dat nog moet starten met basale controlemaatregelen.',
+          last_updated: '2026-03-10'
+        },
+        {
+          id: 'asm-017',
+          company_name: 'AquaTech Solutions',
+          maturity_level: 2,
+          average_score: 2,
+          assessment_date: '2026-03-25',
+          status: 'In uitvoering',
+          report_suggestion: 'AquaTech ontwikkelt langzaam een eerste risicobeheerstrategie.',
+          spider_scores: {
+            Strategie: 2,
+            Beleid: 2,
+            'Planning / Roadmap': 2,
+            Architectuur: 2,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
+            'Functiescheiding': 2,
+            'Certificering, training en scholing': 2,
+            'Afhankelijkheid van individuen': 1,
+            'Super Users': 2,
+            'Service level overeenkomst': 2,
+            'Service level beheer': 2,
+            'Risicobeheer van leveranciers': 2,
+            'Interne beheersing bij derden': 2,
+            'Bedrijfscontinuïteits-planning': 2,
+            'Testen van Disaster recovery': 2,
+            'Crisisbeheer': 1
+          },
+          details: 'Huidige voortgang boven de basis maar er is nog weinig consistentie.',
+          last_updated: '2026-03-25'
+        },
+        {
+          id: 'asm-018',
+          company_name: 'AquaTech Solutions',
+          maturity_level: 3,
+          average_score: 3,
+          assessment_date: '2026-04-06',
+          status: 'In afwachting van rapport',
+          report_suggestion: 'AquaTech toont progressie in processen en moet nu sturen op continuïteit.',
+          spider_scores: {
+            Strategie: 3,
+            Beleid: 3,
+            'Planning / Roadmap': 3,
+            Architectuur: 3,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
+            'Functiescheiding': 2,
+            'Certificering, training en scholing': 3,
+            'Afhankelijkheid van individuen': 2,
+            'Super Users': 3,
+            'Service level overeenkomst': 3,
+            'Service level beheer': 3,
+            'Risicobeheer van leveranciers': 3,
+            'Interne beheersing bij derden': 2,
+            'Bedrijfscontinuïteits-planning': 3,
+            'Testen van Disaster recovery': 2,
+            'Crisisbeheer': 2
+          },
+          details: 'De organisatie maakt duidelijke stappen richting een volwassen aanpak.',
+          last_updated: '2026-04-06'
+        },
+        {
+          id: 'asm-003',
+          company_name: 'Greenfield Energy',
+          maturity_level: 2,
+          average_score: 2,
+          assessment_date: '2026-04-12',
+          status: 'In afwachting van rapport',
+          report_suggestion: 'Het AI-rapport stelt een roadmap voor naar meer maturity in security en stakeholder governance.',
+          spider_scores: {
+            Strategie: 2,
+            Beleid: 2,
+            'Planning / Roadmap': 2,
+            Architectuur: 2,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
+            'Functiescheiding': 2,
+            'Certificering, training en scholing': 2,
+            'Afhankelijkheid van individuen': 1,
+            'Super Users': 2,
+            'Service level overeenkomst': 2,
+            'Service level beheer': 2,
+            'Risicobeheer van leveranciers': 2,
+            'Interne beheersing bij derden': 1,
+            'Bedrijfscontinuïteits-planning': 2,
+            'Testen van Disaster recovery': 1,
+            'Crisisbeheer': 1
+          },
+          details: 'Er zijn veel kansen voor verbetering in planning, certificering en risicobeheer van leveranciers.',
+          last_updated: '2026-04-12'
+        },
+        {
+          id: 'asm-004',
+          company_name: 'Delta Health Solutions',
+          maturity_level: 1,
+          average_score: 1,
+          assessment_date: '2026-04-02',
+          status: 'Niet gestart',
+          report_suggestion: 'De AI analyse stelt voor te starten met basisprocessen en governancedocumentatie.',
+          spider_scores: {
+            Strategie: 1,
+            Beleid: 1,
+            'Planning / Roadmap': 1,
+            Architectuur: 1,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 1,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 1,
+            'Functiescheiding': 1,
+            'Certificering, training en scholing': 1,
+            'Afhankelijkheid van individuen': 1,
+            'Super Users': 1,
+            'Service level overeenkomst': 1,
+            'Service level beheer': 1,
+            'Risicobeheer van leveranciers': 1,
+            'Interne beheersing bij derden': 1,
+            'Bedrijfscontinuïteits-planning': 1,
+            'Testen van Disaster recovery': 1,
+            'Crisisbeheer': 1
+          },
+          details: 'Startend met maturity, veel ruimte voor basisverbeteringen in processen en governance.',
+          last_updated: '2026-04-02'
+        },
+        {
+          id: 'asm-005',
+          company_name: 'Metro Logistics',
+          maturity_level: 5,
+          average_score: 5,
+          assessment_date: '2026-04-14',
+          status: 'Afgerond',
+          report_suggestion: 'AI bevestigt een geoptimaliseerde aanpak met sterke processen en continue verbetering.',
+          spider_scores: {
+            Strategie: 5,
+            Beleid: 5,
+            'Planning / Roadmap': 5,
+            Architectuur: 5,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 5,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 5,
+            'Functiescheiding': 5,
+            'Certificering, training en scholing': 5,
+            'Afhankelijkheid van individuen': 5,
+            'Super Users': 5,
+            'Service level overeenkomst': 5,
+            'Service level beheer': 5,
+            'Risicobeheer van leveranciers': 5,
+            'Interne beheersing bij derden': 5,
+            'Bedrijfscontinuïteits-planning': 5,
+            'Testen van Disaster recovery': 5,
+            'Crisisbeheer': 5
+          },
+          details: 'Een volwassen organisatie met goede governance en een duidelijke continuïteitsstrategie.',
+          last_updated: '2026-04-14'
+        },
+        {
+          id: 'asm-006',
+          company_name: 'Urban Retail Group',
+          maturity_level: 3,
+          average_score: 3,
+          assessment_date: '2026-03-31',
+          status: 'In uitvoering',
+          report_suggestion: 'AI raadt versterking van service level beheer en risicobeoordeling aan.',
+          spider_scores: {
+            Strategie: 3,
+            Beleid: 3,
+            'Planning / Roadmap': 3,
+            Architectuur: 3,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
+            'Functiescheiding': 3,
+            'Certificering, training en scholing': 3,
+            'Afhankelijkheid van individuen': 3,
+            'Super Users': 3,
+            'Service level overeenkomst': 3,
+            'Service level beheer': 3,
+            'Risicobeheer van leveranciers': 3,
+            'Interne beheersing bij derden': 3,
+            'Bedrijfscontinuïteits-planning': 3,
+            'Testen van Disaster recovery': 3,
+            'Crisisbeheer': 2
+          },
+          details: 'Sterke basis, maar er is behoefte aan meer consistentie in controleprocessen.',
+          last_updated: '2026-04-01'
+        },
+        {
+          id: 'asm-007',
+          company_name: 'AquaTech Solutions',
+          maturity_level: 2,
+          average_score: 2,
+          assessment_date: '2026-04-05',
+          status: 'In afwachting van rapport',
+          report_suggestion: 'AI adviseert verdere uitwerking van governance en risicoacceptatie voor verbeterde sturing.',
+          spider_scores: {
+            Strategie: 2,
+            Beleid: 2,
+            'Planning / Roadmap': 2,
+            Architectuur: 2,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
+            'Functiescheiding': 2,
+            'Certificering, training en scholing': 2,
+            'Afhankelijkheid van individuen': 1,
+            'Super Users': 2,
+            'Service level overeenkomst': 2,
+            'Service level beheer': 2,
+            'Risicobeheer van leveranciers': 2,
+            'Interne beheersing bij derden': 2,
+            'Bedrijfscontinuïteits-planning': 2,
+            'Testen van Disaster recovery': 2,
+            'Crisisbeheer': 1
+          },
+          details: 'Een groeiend bedrijf dat de transitie maakt van ad-hoc naar meer gestructureerde processen.',
+          last_updated: '2026-04-05'
+        },
+        {
+          id: 'asm-008',
+          company_name: 'SmartCity Partners',
+          maturity_level: 4,
+          average_score: 4,
+          assessment_date: '2026-04-11',
+          status: 'Afgerond',
+          report_suggestion: 'Het AI-rapport onderstreept de kracht van de bestaande roadmap en de doorlopende evaluatie.',
+          spider_scores: {
+            Strategie: 4,
+            Beleid: 4,
+            'Planning / Roadmap': 4,
+            Architectuur: 4,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 4,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 4,
+            'Functiescheiding': 4,
+            'Certificering, training en scholing': 4,
+            'Afhankelijkheid van individuen': 3,
+            'Super Users': 4,
+            'Service level overeenkomst': 4,
+            'Service level beheer': 4,
+            'Risicobeheer van leveranciers': 4,
+            'Interne beheersing bij derden': 4,
+            'Bedrijfscontinuïteits-planning': 4,
+            'Testen van Disaster recovery': 3,
+            'Crisisbeheer': 3
+          },
+          details: 'Een solide assessment met veel aandacht voor architectuur en continuïteitsplanning.',
+          last_updated: '2026-04-11'
+        },
+        {
+          id: 'asm-009',
+          company_name: 'FutureWorks Labs',
+          maturity_level: 3,
+          average_score: 3,
+          assessment_date: '2026-04-09',
+          status: 'In uitvoering',
+          report_suggestion: 'AI ziet kansen voor verbetering in certificering en het borgen van processen.',
+          spider_scores: {
+            Strategie: 3,
+            Beleid: 3,
+            'Planning / Roadmap': 3,
+            Architectuur: 3,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
+            'Functiescheiding': 3,
+            'Certificering, training en scholing': 3,
+            'Afhankelijkheid van individuen': 2,
+            'Super Users': 3,
+            'Service level overeenkomst': 3,
+            'Service level beheer': 3,
+            'Risicobeheer van leveranciers': 3,
+            'Interne beheersing bij derden': 3,
+            'Bedrijfscontinuïteits-planning': 4,
+            'Testen van Disaster recovery': 3,
+            'Crisisbeheer': 2
+          },
+          details: 'De organisatie heeft basismaatregelen op orde, maar mist nog gedetailleerde governance.',
+          last_updated: '2026-04-10'
+        },
+        {
+          id: 'asm-010',
+          company_name: 'EcoWave Systems',
+          maturity_level: 2,
+          average_score: 2,
+          assessment_date: '2026-04-07',
+          status: 'In afwachting van rapport',
+          report_suggestion: 'AI adviseert het versterken van risicobeheer en interne controles.',
+          spider_scores: {
+            Strategie: 2,
+            Beleid: 2,
+            'Planning / Roadmap': 2,
+            Architectuur: 2,
+            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
+            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
+            'Functiescheiding': 2,
+            'Certificering, training en scholing': 2,
+            'Afhankelijkheid van individuen': 2,
+            'Super Users': 2,
+            'Service level overeenkomst': 2,
+            'Service level beheer': 2,
+            'Risicobeheer van leveranciers': 2,
+            'Interne beheersing bij derden': 2,
+            'Bedrijfscontinuïteits-planning': 2,
+            'Testen van Disaster recovery': 2,
+            'Crisisbeheer': 2
+          },
+          details: 'Een jonge organisatie die goed kan profiteren van structuur in risico- en procesbeheer.',
+          last_updated: '2026-04-07'
+        }
+      ];
+
+      async function initialize() {
+
+    await fetchCompanies();
+
+    await fetchUsers();
+
+    await fetchAssessments();
+
+    await fetchCampaigns();
+
+    switchTab('overview');
+
+    renderHeroActions();
+
+  }
+  async function fetchCampaigns() {
+
+    try {
+
+      const response =
+        await fetch(`${defaultConfig.backend_url}/api/campaigns`);
+
+      if (!response.ok) throw new Error('geen campaigns');
+
+      campaigns = await response.json();
+
+    } catch (err) {
+
+      console.warn('fallback campaigns');
+
+      campaigns = [
+        {
+          title: "AI Assessment 2026",
+          company_name: "Axians",
+          participant_count: 3,
+          status: "IN_PROGRESS"
+        }
+      ];
+
+    }
+
+    renderCampaigns();
+  }
+
+
+  function renderCampaigns() {
+
+    const tbody =
+      document.getElementById("campaigns-table-body");
+
+    if (!tbody) return;
+
+    if (!campaigns.length) {
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="p-6 text-center text-slate-500">
+            Geen campagnes gevonden
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
     
 
-// ✅ HIER TOEVOEGEN
-const statusMapNL = {
-  'NOT_STARTED': 'Niet gestart',
-  'IN_PROGRESS': 'In uitvoering',
-  'WAITING_FOR_REPORT': 'Wacht op rapport',
-  'RESULTS_READY': 'Voltooid',
-  'COMPLETED': 'Afgerond'
-};
+    tbody.innerHTML =
+      campaigns.map(c => `
+        <tr class="border-t">
 
-    const statusOrder = {
-      'Niet gestart': 1,
-      'In uitvoering': 2,
-      'In afwachting van rapport': 3,
-      'Afgerond': 4
-    };
+          
+  <td class="px-6 py-4 text-sm font-medium">
+    ${c.title}
+  </td>
 
-    const maturityLabels = {
-      1: 'Ad hoc',
-      2: 'Gestructureerd',
-      3: 'Effectief en aantoonbaar',
-      4: 'Periodiek beoordeeld',
-      5: 'Geoptimaliseerd'
-    };
+  <td class="px-6 py-4">
+    ${c.company_name}
+  </td>
 
-    const statusBadges = {
-      'Niet gestart': 'bg-slate-100 text-slate-700',
-      'In uitvoering': 'bg-blue-100 text-blue-700',
-      'In afwachting van rapport': 'bg-amber-100 text-amber-700',
-      'Afgerond': 'bg-teal-100 text-teal-700'
-    };
+  <td class="px-6 py-4">
+    ${c.participant_count || 0}
+  </td>
 
-    const companyAddresses = {
-      'VoltTech Industries': 'Beukenlaan 12, 1234 AB Arnhem',
-      'Nauta Consulting': 'Stationsplein 3, 1012 AB Amsterdam',
-      'Greenfield Energy': 'Parkweg 18, 6525 AR Nijmegen',
-      'Delta Health Solutions': 'Veldstraat 22, 5611 BT Eindhoven',
-      'Metro Logistics': 'Havenweg 10, 3071 NV Rotterdam',
-      'Urban Retail Group': 'Kruiskade 52, 3012 EH Rotterdam',
-      'AquaTech Solutions': 'Kanaaldijk 5, 7607 PE Almelo',
-      'SmartCity Partners': 'Marktstraat 8, 3511 EE Utrecht',
-      'FutureWorks Labs': 'Science Park 123, 1098 XG Amsterdam',
-      'EcoWave Systems': 'Scheepswerf 6, 4382 LA Vlissingen'
-    };
+  <td class="px-6 py-4">
+    <span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium 
+      ${
+        c.status === 'RESULTS_READY'
+          ? 'bg-teal-100 text-teal-700'
+          : c.status === 'IN_PROGRESS'
+          ? 'bg-blue-100 text-blue-700'
+          : c.status === 'WAITING_FOR_REPORT'
+          ? 'bg-amber-100 text-amber-700'
+          : 'bg-slate-100 text-slate-700'
+      }">
+      ${statusMapNL[c.status] || c.status}
+    </span>
+  </td>
 
-    const mockAssessments = [
-      {
-        id: 'asm-001',
-        company_name: 'VoltTech Industries',
-        maturity_level: 4,
-        average_score: 4,
-        assessment_date: '2026-04-08',
-        status: 'Afgerond',
-        report_suggestion: 'Het AI-voorstel benadrukt verbetering in datagedreven besluitvorming en procesautomatisering voor snellere compliance.',
-        spider_scores: {
-          Strategie: 4,
-          Beleid: 4,
-          'Planning / Roadmap': 4,
-          Architectuur: 4,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 4,
-          'Functiescheiding': 3,
-          'Certificering, training en scholing': 4,
-          'Afhankelijkheid van individuen': 3,
-          'Super Users': 3,
-          'Service level overeenkomst': 4,
-          'Service level beheer': 4,
-          'Risicobeheer van leveranciers': 4,
-          'Interne beheersing bij derden': 3,
-          'Bedrijfscontinuïteits-planning': 4,
-          'Testen van Disaster recovery': 3,
-          'Crisisbeheer': 3
-        },
-        details: 'Deze organisatie werkt aan een gedocumenteerde aanpak en heeft een duidelijke roadmap voor verbetering.',
-        last_updated: '2026-04-10'
-      },
-      {
-        id: 'asm-002',
-        company_name: 'Nauta Consulting',
-        maturity_level: 3,
-        average_score: 3,
-        assessment_date: '2026-03-26',
-        status: 'In uitvoering',
-        report_suggestion: 'AI raadt een validatie van IT-beveiliging en gebruikersacceptatie aan om de maturitycyclus te versnellen.',
-        spider_scores: {
-          Strategie: 3,
-          Beleid: 3,
-          'Planning / Roadmap': 3,
-          Architectuur: 3,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
-          'Functiescheiding': 2,
-          'Certificering, training en scholing': 3,
-          'Afhankelijkheid van individuen': 2,
-          'Super Users': 3,
-          'Service level overeenkomst': 3,
-          'Service level beheer': 3,
-          'Risicobeheer van leveranciers': 3,
-          'Interne beheersing bij derden': 2,
-          'Bedrijfscontinuïteits-planning': 3,
-          'Testen van Disaster recovery': 2,
-          'Crisisbeheer': 2
-        },
-        details: 'De kernprocessen zijn aanwezig maar er is nog onvoldoende structuur rondom risicoacceptatie en rapportage.',
-        last_updated: '2026-03-29'
-      },
-      {
-        id: 'asm-011',
-        company_name: 'Nauta Consulting',
-        maturity_level: 2,
-        average_score: 2,
-        assessment_date: '2026-03-18',
-        status: 'In uitvoering',
-        report_suggestion: 'Nauta Consulting heeft stappen gezet richting procesdefinitie maar nog niet naar evidence-based governance.',
-        spider_scores: {
-          Strategie: 2,
-          Beleid: 2,
-          'Planning / Roadmap': 2,
-          Architectuur: 2,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-          'Functiescheiding': 2,
-          'Certificering, training en scholing': 2,
-          'Afhankelijkheid van individuen': 2,
-          'Super Users': 2,
-          'Service level overeenkomst': 2,
-          'Service level beheer': 2,
-          'Risicobeheer van leveranciers': 2,
-          'Interne beheersing bij derden': 2,
-          'Bedrijfscontinuïteits-planning': 2,
-          'Testen van Disaster recovery': 2,
-          'Crisisbeheer': 2
-        },
-        details: 'Beginfase met kans om governance en risicobeheer te professionaliseren.',
-        last_updated: '2026-03-18'
-      },
-      {
-        id: 'asm-012',
-        company_name: 'Nauta Consulting',
-        maturity_level: 4,
-        average_score: 4,
-        assessment_date: '2026-04-02',
-        status: 'In afwachting van rapport',
-        report_suggestion: 'Het laatste assessment toont verbetering in procesborging maar vraagt verduidelijking in rollen en verantwoording.',
-        spider_scores: {
-          Strategie: 4,
-          Beleid: 4,
-          'Planning / Roadmap': 4,
-          Architectuur: 4,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 4,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 4,
-          'Functiescheiding': 3,
-          'Certificering, training en scholing': 4,
-          'Afhankelijkheid van individuen': 3,
-          'Super Users': 4,
-          'Service level overeenkomst': 4,
-          'Service level beheer': 4,
-          'Risicobeheer van leveranciers': 4,
-          'Interne beheersing bij derden': 3,
-          'Bedrijfscontinuïteits-planning': 4,
-          'Testen van Disaster recovery': 3,
-          'Crisisbeheer': 3
-        },
-        details: 'Verhoogde volwassenheid maar nog ruimte voor structurele borging.',
-        last_updated: '2026-04-02'
-      },
-      {
-        id: 'asm-013',
-        company_name: 'Greenfield Energy',
-        maturity_level: 1,
-        average_score: 1,
-        assessment_date: '2026-03-05',
-        status: 'Niet gestart',
-        report_suggestion: 'Greenfield Energy moet starten met basisprocessen en documentatie rondom risico en governance.',
-        spider_scores: {
-          Strategie: 1,
-          Beleid: 1,
-          'Planning / Roadmap': 1,
-          Architectuur: 1,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 1,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 1,
-          'Functiescheiding': 1,
-          'Certificering, training en scholing': 1,
-          'Afhankelijkheid van individuen': 1,
-          'Super Users': 1,
-          'Service level overeenkomst': 1,
-          'Service level beheer': 1,
-          'Risicobeheer van leveranciers': 1,
-          'Interne beheersing bij derden': 1,
-          'Bedrijfscontinuïteits-planning': 1,
-          'Testen van Disaster recovery': 1,
-          'Crisisbeheer': 1
-        },
-        details: 'Het bedrijf staat nog aan het begin van de maturityreis.',
-        last_updated: '2026-03-05'
-      },
-      {
-        id: 'asm-014',
-        company_name: 'Greenfield Energy',
-        maturity_level: 2,
-        average_score: 2,
-        assessment_date: '2026-03-19',
-        status: 'In uitvoering',
-        report_suggestion: 'De organisatie bouwt langzaam een stabiele basis maar moet focus houden op risico-acceptatie.',
-        spider_scores: {
-          Strategie: 2,
-          Beleid: 2,
-          'Planning / Roadmap': 2,
-          Architectuur: 2,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-          'Functiescheiding': 2,
-          'Certificering, training en scholing': 2,
-          'Afhankelijkheid van individuen': 1,
-          'Super Users': 2,
-          'Service level overeenkomst': 2,
-          'Service level beheer': 2,
-          'Risicobeheer van leveranciers': 2,
-          'Interne beheersing bij derden': 2,
-          'Bedrijfscontinuïteits-planning': 2,
-          'Testen van Disaster recovery': 2,
-          'Crisisbeheer': 1
-        },
-        details: 'Het management heeft een begin gemaakt met planned governance.',
-        last_updated: '2026-03-19'
-      },
-      {
-        id: 'asm-015',
-        company_name: 'Greenfield Energy',
-        maturity_level: 3,
-        average_score: 3,
-        assessment_date: '2026-04-01',
-        status: 'In afwachting van rapport',
-        report_suggestion: 'De groei is zichtbaar, nu nog meer focus op leveranciersrisico en continuïteit.',
-        spider_scores: {
-          Strategie: 3,
-          Beleid: 3,
-          'Planning / Roadmap': 3,
-          Architectuur: 3,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
-          'Functiescheiding': 2,
-          'Certificering, training en scholing': 3,
-          'Afhankelijkheid van individuen': 2,
-          'Super Users': 3,
-          'Service level overeenkomst': 3,
-          'Service level beheer': 3,
-          'Risicobeheer van leveranciers': 3,
-          'Interne beheersing bij derden': 2,
-          'Bedrijfscontinuïteits-planning': 3,
-          'Testen van Disaster recovery': 2,
-          'Crisisbeheer': 2
-        },
-        details: 'Er is vooruitgang, maar de organisatie blijft afhankelijk van individuele kennis.',
-        last_updated: '2026-04-01'
-      },
-      {
-        id: 'asm-016',
-        company_name: 'AquaTech Solutions',
-        maturity_level: 1,
-        average_score: 1,
-        assessment_date: '2026-03-10',
-        status: 'Niet gestart',
-        report_suggestion: 'AquaTech start met basis governance en documentatie.',
-        spider_scores: {
-          Strategie: 1,
-          Beleid: 1,
-          'Planning / Roadmap': 1,
-          Architectuur: 1,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 1,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 1,
-          'Functiescheiding': 1,
-          'Certificering, training en scholing': 1,
-          'Afhankelijkheid van individuen': 1,
-          'Super Users': 1,
-          'Service level overeenkomst': 1,
-          'Service level beheer': 1,
-          'Risicobeheer van leveranciers': 1,
-          'Interne beheersing bij derden': 1,
-          'Bedrijfscontinuïteits-planning': 1,
-          'Testen van Disaster recovery': 1,
-          'Crisisbeheer': 1
-        },
-        details: 'Een laag volwassen bedrijf dat nog moet starten met basale controlemaatregelen.',
-        last_updated: '2026-03-10'
-      },
-      {
-        id: 'asm-017',
-        company_name: 'AquaTech Solutions',
-        maturity_level: 2,
-        average_score: 2,
-        assessment_date: '2026-03-25',
-        status: 'In uitvoering',
-        report_suggestion: 'AquaTech ontwikkelt langzaam een eerste risicobeheerstrategie.',
-        spider_scores: {
-          Strategie: 2,
-          Beleid: 2,
-          'Planning / Roadmap': 2,
-          Architectuur: 2,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-          'Functiescheiding': 2,
-          'Certificering, training en scholing': 2,
-          'Afhankelijkheid van individuen': 1,
-          'Super Users': 2,
-          'Service level overeenkomst': 2,
-          'Service level beheer': 2,
-          'Risicobeheer van leveranciers': 2,
-          'Interne beheersing bij derden': 2,
-          'Bedrijfscontinuïteits-planning': 2,
-          'Testen van Disaster recovery': 2,
-          'Crisisbeheer': 1
-        },
-        details: 'Huidige voortgang boven de basis maar er is nog weinig consistentie.',
-        last_updated: '2026-03-25'
-      },
-      {
-        id: 'asm-018',
-        company_name: 'AquaTech Solutions',
-        maturity_level: 3,
-        average_score: 3,
-        assessment_date: '2026-04-06',
-        status: 'In afwachting van rapport',
-        report_suggestion: 'AquaTech toont progressie in processen en moet nu sturen op continuïteit.',
-        spider_scores: {
-          Strategie: 3,
-          Beleid: 3,
-          'Planning / Roadmap': 3,
-          Architectuur: 3,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
-          'Functiescheiding': 2,
-          'Certificering, training en scholing': 3,
-          'Afhankelijkheid van individuen': 2,
-          'Super Users': 3,
-          'Service level overeenkomst': 3,
-          'Service level beheer': 3,
-          'Risicobeheer van leveranciers': 3,
-          'Interne beheersing bij derden': 2,
-          'Bedrijfscontinuïteits-planning': 3,
-          'Testen van Disaster recovery': 2,
-          'Crisisbeheer': 2
-        },
-        details: 'De organisatie maakt duidelijke stappen richting een volwassen aanpak.',
-        last_updated: '2026-04-06'
-      },
-      {
-        id: 'asm-003',
-        company_name: 'Greenfield Energy',
-        maturity_level: 2,
-        average_score: 2,
-        assessment_date: '2026-04-12',
-        status: 'In afwachting van rapport',
-        report_suggestion: 'Het AI-rapport stelt een roadmap voor naar meer maturity in security en stakeholder governance.',
-        spider_scores: {
-          Strategie: 2,
-          Beleid: 2,
-          'Planning / Roadmap': 2,
-          Architectuur: 2,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-          'Functiescheiding': 2,
-          'Certificering, training en scholing': 2,
-          'Afhankelijkheid van individuen': 1,
-          'Super Users': 2,
-          'Service level overeenkomst': 2,
-          'Service level beheer': 2,
-          'Risicobeheer van leveranciers': 2,
-          'Interne beheersing bij derden': 1,
-          'Bedrijfscontinuïteits-planning': 2,
-          'Testen van Disaster recovery': 1,
-          'Crisisbeheer': 1
-        },
-        details: 'Er zijn veel kansen voor verbetering in planning, certificering en risicobeheer van leveranciers.',
-        last_updated: '2026-04-12'
-      },
-      {
-        id: 'asm-004',
-        company_name: 'Delta Health Solutions',
-        maturity_level: 1,
-        average_score: 1,
-        assessment_date: '2026-04-02',
-        status: 'Niet gestart',
-        report_suggestion: 'De AI analyse stelt voor te starten met basisprocessen en governancedocumentatie.',
-        spider_scores: {
-          Strategie: 1,
-          Beleid: 1,
-          'Planning / Roadmap': 1,
-          Architectuur: 1,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 1,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 1,
-          'Functiescheiding': 1,
-          'Certificering, training en scholing': 1,
-          'Afhankelijkheid van individuen': 1,
-          'Super Users': 1,
-          'Service level overeenkomst': 1,
-          'Service level beheer': 1,
-          'Risicobeheer van leveranciers': 1,
-          'Interne beheersing bij derden': 1,
-          'Bedrijfscontinuïteits-planning': 1,
-          'Testen van Disaster recovery': 1,
-          'Crisisbeheer': 1
-        },
-        details: 'Startend met maturity, veel ruimte voor basisverbeteringen in processen en governance.',
-        last_updated: '2026-04-02'
-      },
-      {
-        id: 'asm-005',
-        company_name: 'Metro Logistics',
-        maturity_level: 5,
-        average_score: 5,
-        assessment_date: '2026-04-14',
-        status: 'Afgerond',
-        report_suggestion: 'AI bevestigt een geoptimaliseerde aanpak met sterke processen en continue verbetering.',
-        spider_scores: {
-          Strategie: 5,
-          Beleid: 5,
-          'Planning / Roadmap': 5,
-          Architectuur: 5,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 5,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 5,
-          'Functiescheiding': 5,
-          'Certificering, training en scholing': 5,
-          'Afhankelijkheid van individuen': 5,
-          'Super Users': 5,
-          'Service level overeenkomst': 5,
-          'Service level beheer': 5,
-          'Risicobeheer van leveranciers': 5,
-          'Interne beheersing bij derden': 5,
-          'Bedrijfscontinuïteits-planning': 5,
-          'Testen van Disaster recovery': 5,
-          'Crisisbeheer': 5
-        },
-        details: 'Een volwassen organisatie met goede governance en een duidelijke continuïteitsstrategie.',
-        last_updated: '2026-04-14'
-      },
-      {
-        id: 'asm-006',
-        company_name: 'Urban Retail Group',
-        maturity_level: 3,
-        average_score: 3,
-        assessment_date: '2026-03-31',
-        status: 'In uitvoering',
-        report_suggestion: 'AI raadt versterking van service level beheer en risicobeoordeling aan.',
-        spider_scores: {
-          Strategie: 3,
-          Beleid: 3,
-          'Planning / Roadmap': 3,
-          Architectuur: 3,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
-          'Functiescheiding': 3,
-          'Certificering, training en scholing': 3,
-          'Afhankelijkheid van individuen': 3,
-          'Super Users': 3,
-          'Service level overeenkomst': 3,
-          'Service level beheer': 3,
-          'Risicobeheer van leveranciers': 3,
-          'Interne beheersing bij derden': 3,
-          'Bedrijfscontinuïteits-planning': 3,
-          'Testen van Disaster recovery': 3,
-          'Crisisbeheer': 2
-        },
-        details: 'Sterke basis, maar er is behoefte aan meer consistentie in controleprocessen.',
-        last_updated: '2026-04-01'
-      },
-      {
-        id: 'asm-007',
-        company_name: 'AquaTech Solutions',
-        maturity_level: 2,
-        average_score: 2,
-        assessment_date: '2026-04-05',
-        status: 'In afwachting van rapport',
-        report_suggestion: 'AI adviseert verdere uitwerking van governance en risicoacceptatie voor verbeterde sturing.',
-        spider_scores: {
-          Strategie: 2,
-          Beleid: 2,
-          'Planning / Roadmap': 2,
-          Architectuur: 2,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-          'Functiescheiding': 2,
-          'Certificering, training en scholing': 2,
-          'Afhankelijkheid van individuen': 1,
-          'Super Users': 2,
-          'Service level overeenkomst': 2,
-          'Service level beheer': 2,
-          'Risicobeheer van leveranciers': 2,
-          'Interne beheersing bij derden': 2,
-          'Bedrijfscontinuïteits-planning': 2,
-          'Testen van Disaster recovery': 2,
-          'Crisisbeheer': 1
-        },
-        details: 'Een groeiend bedrijf dat de transitie maakt van ad-hoc naar meer gestructureerde processen.',
-        last_updated: '2026-04-05'
-      },
-      {
-        id: 'asm-008',
-        company_name: 'SmartCity Partners',
-        maturity_level: 4,
-        average_score: 4,
-        assessment_date: '2026-04-11',
-        status: 'Afgerond',
-        report_suggestion: 'Het AI-rapport onderstreept de kracht van de bestaande roadmap en de doorlopende evaluatie.',
-        spider_scores: {
-          Strategie: 4,
-          Beleid: 4,
-          'Planning / Roadmap': 4,
-          Architectuur: 4,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 4,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 4,
-          'Functiescheiding': 4,
-          'Certificering, training en scholing': 4,
-          'Afhankelijkheid van individuen': 3,
-          'Super Users': 4,
-          'Service level overeenkomst': 4,
-          'Service level beheer': 4,
-          'Risicobeheer van leveranciers': 4,
-          'Interne beheersing bij derden': 4,
-          'Bedrijfscontinuïteits-planning': 4,
-          'Testen van Disaster recovery': 3,
-          'Crisisbeheer': 3
-        },
-        details: 'Een solide assessment met veel aandacht voor architectuur en continuïteitsplanning.',
-        last_updated: '2026-04-11'
-      },
-      {
-        id: 'asm-009',
-        company_name: 'FutureWorks Labs',
-        maturity_level: 3,
-        average_score: 3,
-        assessment_date: '2026-04-09',
-        status: 'In uitvoering',
-        report_suggestion: 'AI ziet kansen voor verbetering in certificering en het borgen van processen.',
-        spider_scores: {
-          Strategie: 3,
-          Beleid: 3,
-          'Planning / Roadmap': 3,
-          Architectuur: 3,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
-          'Functiescheiding': 3,
-          'Certificering, training en scholing': 3,
-          'Afhankelijkheid van individuen': 2,
-          'Super Users': 3,
-          'Service level overeenkomst': 3,
-          'Service level beheer': 3,
-          'Risicobeheer van leveranciers': 3,
-          'Interne beheersing bij derden': 3,
-          'Bedrijfscontinuïteits-planning': 4,
-          'Testen van Disaster recovery': 3,
-          'Crisisbeheer': 2
-        },
-        details: 'De organisatie heeft basismaatregelen op orde, maar mist nog gedetailleerde governance.',
-        last_updated: '2026-04-10'
-      },
-      {
-        id: 'asm-010',
-        company_name: 'EcoWave Systems',
-        maturity_level: 2,
-        average_score: 2,
-        assessment_date: '2026-04-07',
-        status: 'In afwachting van rapport',
-        report_suggestion: 'AI adviseert het versterken van risicobeheer en interne controles.',
-        spider_scores: {
-          Strategie: 2,
-          Beleid: 2,
-          'Planning / Roadmap': 2,
-          Architectuur: 2,
-          "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-          'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-          'Functiescheiding': 2,
-          'Certificering, training en scholing': 2,
-          'Afhankelijkheid van individuen': 2,
-          'Super Users': 2,
-          'Service level overeenkomst': 2,
-          'Service level beheer': 2,
-          'Risicobeheer van leveranciers': 2,
-          'Interne beheersing bij derden': 2,
-          'Bedrijfscontinuïteits-planning': 2,
-          'Testen van Disaster recovery': 2,
-          'Crisisbeheer': 2
-        },
-        details: 'Een jonge organisatie die goed kan profiteren van structuur in risico- en procesbeheer.',
-        last_updated: '2026-04-07'
-      }
-    ];
+  <td class="px-6 py-4 text-sm">
+    <button 
+      onclick="viewCampaign(${c.campaign_id})"
+      class="text-blue-600 font-medium"
+    >
+      Bekijk
+    </button>
+  </td>
 
-    async function initialize() {
 
-  await fetchCompanies();
-
-  await fetchUsers();
-
-  await fetchAssessments();
-
-  await fetchCampaigns();
-
-  switchTab('overview');
-
-  renderHeroActions();
-
-}
-async function fetchCampaigns() {
-
-  try {
-
-    const response =
-      await fetch(`${defaultConfig.backend_url}/api/campaigns`);
-
-    if (!response.ok) throw new Error('geen campaigns');
-
-    campaigns = await response.json();
-
-  } catch (err) {
-
-    console.warn('fallback campaigns');
-
-    campaigns = [
-      {
-        title: "AI Assessment 2026",
-        company_name: "Axians",
-        participant_count: 3,
-        status: "IN_PROGRESS"
-      }
-    ];
+        </tr>
+      `).join('');
 
   }
 
-  renderCampaigns();
-}
+      async function fetchAssessments() {
+        const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
+        try {
+          const response = await fetch(`${backend}/api/assessments`);
+          if (!response.ok) throw new Error('Backend niet bereikbaar');
+          const data = await response.json();
+          if (!Array.isArray(data) || data.length === 0) throw new Error('Geen assessments beschikbaar');
+          assessments = data;
+        } catch (error) {
+          console.warn('Fallback naar mock data:', error.message);
+          assessments = mockAssessments;
+        }
+        renderOverviewCards();
+        renderAssessmentsTable();
+        renderCompanyCards();
+      }
+      function switchTab(tab) {
+
+    currentTab = tab;
+
+    const overviewBtn = document.getElementById('tab-overview');
+    const companiesBtn = document.getElementById('tab-companies');
+    const campaignsBtn = document.getElementById('tab-campaigns');
+
+    const overviewTab = document.getElementById('overview-tab');
+    const companiesTab = document.getElementById('companies-tab');
+    const campaignsTab = document.getElementById('campaigns-tab');
+
+    // TOGGLE CONTENT
+    overviewTab?.classList.toggle('hidden', tab !== 'overview');
+    companiesTab?.classList.toggle('hidden', tab !== 'companies');
+    campaignsTab?.classList.toggle('hidden', tab !== 'campaigns');
+
+    // RESET ALLE TABS
+    [overviewBtn, companiesBtn, campaignsBtn].forEach(btn => {
+      btn.classList.remove('border-blue-600', 'text-blue-600');
+      btn.classList.add('border-transparent', 'text-slate-600');
+    });
+
+    // ACTIVE TAB
+    const activeBtn = document.getElementById(`tab-${tab}`);
+    if (activeBtn) {
+      activeBtn.classList.add('border-blue-600', 'text-blue-600');
+      activeBtn.classList.remove('border-transparent', 'text-slate-600');
+    }
+
+    // RENDER
+    if (tab === 'overview') {
+      renderOverviewCards();
+      renderAssessmentsTable();
+    }
+
+    if (tab === 'companies') {
+      renderCompanyCards();
+    }
+
+    if (tab === 'campaigns') {
+      renderCampaigns();
+    }
+    renderHeroActions();
+  }
+
+  function renderHeroActions() {
+
+    const container = document.getElementById("hero-actions");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (currentTab === "campaigns") {
+      container.innerHTML = `
+        <button onclick="openCampaignModal()"
+          class="px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-xl">
+          + Nieuwe campagne
+        </button>
+      `;
+    }
+
+    if (currentTab === "companies") {
+      container.innerHTML = `
+        <button onclick="openCompanyModal()"
+          class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-xl">
+          + Nieuw bedrijf
+        </button>
+      `;
+    }
+
+  }
 
 
-function renderCampaigns() {
 
-  const tbody =
-    document.getElementById("campaigns-table-body");
+  function openCompanyModal() {
+    document.getElementById("company-modal").classList.remove("hidden");
+  }
 
-  if (!tbody) return;
+  function closeCompanyModal() {
+    document.getElementById("company-modal").classList.add("hidden");
+  }
 
-  if (!campaigns.length) {
 
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" class="p-6 text-center text-slate-500">
-          Geen campagnes gevonden
+
+
+      function getMaturityLabel(score) {
+        return maturityLabels[score] || 'Onbekend';
+      }
+
+      function getStatusBadge(status) {
+        return statusBadges[status] || 'bg-slate-100 text-slate-700';
+      }
+
+      function filterOverviewSearch() {
+        overviewSearchTerm = document.getElementById('overview-search').value.trim().toLowerCase();
+        renderAssessmentsTable();
+      }
+
+      function filterCompanySearch() {
+        companySearchTerm = document.getElementById('company-search').value.trim().toLowerCase();
+        renderCompanyCards();
+      }
+
+      function setOverviewSort(column) {
+        if (overviewSortColumn === column) {
+          overviewSortDirection = overviewSortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+          overviewSortColumn = column;
+          overviewSortDirection = 'asc';
+        }
+        renderAssessmentsTable();
+      }
+
+      function sortAssessments(items) {
+        return [...items].sort((a, b) => {
+          const direction = overviewSortDirection === 'asc' ? 1 : -1;
+          if (overviewSortColumn === 'company_name') {
+            return a.company_name.localeCompare(b.company_name) * direction;
+          }
+          if (overviewSortColumn === 'average_score') {
+            return (Number(a.average_score) - Number(b.average_score)) * direction;
+          }
+          if (overviewSortColumn === 'assessment_date') {
+            return (new Date(a.assessment_date) - new Date(b.assessment_date)) * direction;
+          }
+          if (overviewSortColumn === 'status') {
+            return ((statusOrder[a.status] || 0) - (statusOrder[b.status] || 0)) * direction;
+          }
+          return 0;
+        });
+      }
+
+      function formatDutchDate(dateString) {
+        return dateString ? new Date(dateString).toLocaleDateString('nl-NL') : '-';
+      }
+
+      function renderOverviewCards() {
+
+    const el1 = document.getElementById('stat-assessments');
+    if (!el1) return; // ✅ STOP als niet aanwezig
+
+    const total = assessments.length;
+
+    const average =
+      total === 0
+        ? 0
+        : (
+            assessments.reduce((sum, item) => sum + Number(item.average_score), 0) / total
+          ).toFixed(1);
+
+    const completed =
+      assessments.filter(item => statusMapNL[item.status] === 'Afgerond').length;
+
+    const lastUpdate =
+      assessments.reduce(
+        (latest, item) =>
+          item.assessment_date > latest ? item.assessment_date : latest,
+        ''
+      );
+
+    document.getElementById('stat-assessments').textContent = total;
+    document.getElementById('stat-average').textContent = average;
+    document.getElementById('stat-completed').textContent = completed;
+    document.getElementById('stat-last-update').textContent =
+      lastUpdate ? new Date(lastUpdate).toLocaleDateString('nl-NL') : '-';
+  }
+
+      function renderAssessmentsTable() {
+        const tbody = document.getElementById('assessments-table-body');
+        if (!tbody) return;
+        const filtered = assessments.filter(item => item.company_name.toLowerCase().includes(overviewSearchTerm));
+        const sorted = sortAssessments(filtered);
+        if (sorted.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-500">Geen assessments gevonden</td></tr>';
+          return;
+        }
+        tbody.innerHTML = sorted.map(item => {
+
+
+    return `
+      <tr class="border-t hover:bg-slate-50">
+
+        <td class="px-6 py-4 text-sm font-medium">${item.company_name}</td>
+
+        <td class="px-6 py-4 text-sm">
+          ${item.campaign_title || '-'}
         </td>
-      </tr>
-    `;
-    return;
-  }
 
-  
+        <td class="px-6 py-4 text-sm">
+          ${new Date(item.assessment_date).toLocaleDateString('nl-NL')}
+        </td>
 
-  tbody.innerHTML =
-    campaigns.map(c => `
-      <tr class="border-t">
+        <td class="px-6 py-4 text-sm font-semibold text-emerald-600">
+          ${item.average_score}
+        </td>
 
-        
-<td class="px-6 py-4 text-sm font-medium">
-  ${c.title}
-</td>
+        <td class="px-6 py-4 text-sm">
+          ${item.first_name && item.last_name
+            ? `${item.first_name} ${item.last_name}`
+            : '-'}
+        </td>
 
-<td class="px-6 py-4">
-  ${c.company_name}
-</td>
-
-<td class="px-6 py-4">
-  ${c.participant_count || 0}
-</td>
-
-<td class="px-6 py-4">
-  <span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium 
+        <td class="px-6 py-4 text-sm">
+          <span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium
     ${
-      c.status === 'RESULTS_READY'
+      item.status === 'RESULTS_READY'
         ? 'bg-teal-100 text-teal-700'
-        : c.status === 'IN_PROGRESS'
+        : item.status === 'IN_PROGRESS'
         ? 'bg-blue-100 text-blue-700'
-        : c.status === 'WAITING_FOR_REPORT'
+        : item.status === 'WAITING_FOR_REPORT'
         ? 'bg-amber-100 text-amber-700'
         : 'bg-slate-100 text-slate-700'
     }">
-    ${statusMapNL[c.status] || c.status}
+    ${statusMapNL[item.status] || item.status}
   </span>
-</td>
+        </td>
 
-<td class="px-6 py-4 text-sm">
-  <button 
-    onclick="viewCampaign(${c.campaign_id})"
-    class="text-blue-600 font-medium"
-  >
-    Bekijk
-  </button>
-</td>
-
+        <td class="px-6 py-4 text-sm">
+          <button onclick="viewAssessment('${item.id}')" class="text-blue-600 font-medium">
+            Bekijk
+          </button>
+        </td>
 
       </tr>
-    `).join('');
-
-}
-
-    async function fetchAssessments() {
-      const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
-      try {
-        const response = await fetch(`${backend}/api/assessments`);
-        if (!response.ok) throw new Error('Backend niet bereikbaar');
-        const data = await response.json();
-        if (!Array.isArray(data) || data.length === 0) throw new Error('Geen assessments beschikbaar');
-        assessments = data;
-      } catch (error) {
-        console.warn('Fallback naar mock data:', error.message);
-        assessments = mockAssessments;
-      }
-      renderOverviewCards();
-      renderAssessmentsTable();
-      renderCompanyCards();
-    }
-    function switchTab(tab) {
-
-  currentTab = tab;
-
-  const overviewBtn = document.getElementById('tab-overview');
-  const companiesBtn = document.getElementById('tab-companies');
-  const campaignsBtn = document.getElementById('tab-campaigns');
-
-  const overviewTab = document.getElementById('overview-tab');
-  const companiesTab = document.getElementById('companies-tab');
-  const campaignsTab = document.getElementById('campaigns-tab');
-
-  // TOGGLE CONTENT
-  overviewTab?.classList.toggle('hidden', tab !== 'overview');
-  companiesTab?.classList.toggle('hidden', tab !== 'companies');
-  campaignsTab?.classList.toggle('hidden', tab !== 'campaigns');
-
-  // RESET ALLE TABS
-  [overviewBtn, companiesBtn, campaignsBtn].forEach(btn => {
-    btn.classList.remove('border-blue-600', 'text-blue-600');
-    btn.classList.add('border-transparent', 'text-slate-600');
-  });
-
-  // ACTIVE TAB
-  const activeBtn = document.getElementById(`tab-${tab}`);
-  if (activeBtn) {
-    activeBtn.classList.add('border-blue-600', 'text-blue-600');
-    activeBtn.classList.remove('border-transparent', 'text-slate-600');
-  }
-
-  // RENDER
-  if (tab === 'overview') {
-    renderOverviewCards();
-    renderAssessmentsTable();
-  }
-
-  if (tab === 'companies') {
-    renderCompanyCards();
-  }
-
-  if (tab === 'campaigns') {
-    renderCampaigns();
-  }
-  renderHeroActions();
-}
-
-function renderHeroActions() {
-
-  const container = document.getElementById("hero-actions");
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  if (currentTab === "campaigns") {
-    container.innerHTML = `
-      <button onclick="openCampaignModal()"
-        class="px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-xl">
-        + Nieuwe campagne
-      </button>
     `;
-  }
-
-  if (currentTab === "companies") {
-    container.innerHTML = `
-      <button onclick="openCompanyModal()"
-        class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-xl">
-        + Nieuw bedrijf
-      </button>
-    `;
-  }
-
-}
-
-
-
-function openCompanyModal() {
-  document.getElementById("company-modal").classList.remove("hidden");
-}
-
-function closeCompanyModal() {
-  document.getElementById("company-modal").classList.add("hidden");
-}
-
-
-
-
-    function getMaturityLabel(score) {
-      return maturityLabels[score] || 'Onbekend';
-    }
-
-    function getStatusBadge(status) {
-      return statusBadges[status] || 'bg-slate-100 text-slate-700';
-    }
-
-    function filterOverviewSearch() {
-      overviewSearchTerm = document.getElementById('overview-search').value.trim().toLowerCase();
-      renderAssessmentsTable();
-    }
-
-    function filterCompanySearch() {
-      companySearchTerm = document.getElementById('company-search').value.trim().toLowerCase();
-      renderCompanyCards();
-    }
-
-    function setOverviewSort(column) {
-      if (overviewSortColumn === column) {
-        overviewSortDirection = overviewSortDirection === 'asc' ? 'desc' : 'asc';
-      } else {
-        overviewSortColumn = column;
-        overviewSortDirection = 'asc';
+  }).join('');
       }
-      renderAssessmentsTable();
+
+      function renderCompanyCards() {
+
+    const container =
+      document.getElementById('company-cards');
+
+    if (!container) return;
+
+    const filtered =
+      companies.filter(company =>
+        company.company_name
+          .toLowerCase()
+          .includes(companySearchTerm)
+      );
+
+    if (filtered.length === 0) {
+      container.innerHTML =
+        '<div class="col-span-full text-center text-slate-500">Geen bedrijven gevonden.</div>';
+      return;
     }
 
-    function sortAssessments(items) {
-      return [...items].sort((a, b) => {
-        const direction = overviewSortDirection === 'asc' ? 1 : -1;
-        if (overviewSortColumn === 'company_name') {
-          return a.company_name.localeCompare(b.company_name) * direction;
-        }
-        if (overviewSortColumn === 'average_score') {
-          return (Number(a.average_score) - Number(b.average_score)) * direction;
-        }
-        if (overviewSortColumn === 'assessment_date') {
-          return (new Date(a.assessment_date) - new Date(b.assessment_date)) * direction;
-        }
-        if (overviewSortColumn === 'status') {
-          return ((statusOrder[a.status] || 0) - (statusOrder[b.status] || 0)) * direction;
-        }
-        return 0;
-      });
-    }
-
-    function formatDutchDate(dateString) {
-      return dateString ? new Date(dateString).toLocaleDateString('nl-NL') : '-';
-    }
-
-    function renderOverviewCards() {
-
-  const el1 = document.getElementById('stat-assessments');
-  if (!el1) return; // ✅ STOP als niet aanwezig
-
-  const total = assessments.length;
-
-  const average =
-    total === 0
-      ? 0
-      : (
-          assessments.reduce((sum, item) => sum + Number(item.average_score), 0) / total
-        ).toFixed(1);
-
-  const completed =
-    assessments.filter(item => statusMapNL[item.status] === 'Afgerond').length;
-
-  const lastUpdate =
-    assessments.reduce(
-      (latest, item) =>
-        item.assessment_date > latest ? item.assessment_date : latest,
-      ''
-    );
-
-  document.getElementById('stat-assessments').textContent = total;
-  document.getElementById('stat-average').textContent = average;
-  document.getElementById('stat-completed').textContent = completed;
-  document.getElementById('stat-last-update').textContent =
-    lastUpdate ? new Date(lastUpdate).toLocaleDateString('nl-NL') : '-';
-}
-
-    function renderAssessmentsTable() {
-      const tbody = document.getElementById('assessments-table-body');
-      if (!tbody) return;
-      const filtered = assessments.filter(item => item.company_name.toLowerCase().includes(overviewSearchTerm));
-      const sorted = sortAssessments(filtered);
-      if (sorted.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-500">Geen assessments gevonden</td></tr>';
-        return;
-      }
-      tbody.innerHTML = sorted.map(item => {
-
-
-  return `
-    <tr class="border-t hover:bg-slate-50">
-
-      <td class="px-6 py-4 text-sm font-medium">${item.company_name}</td>
-
-      <td class="px-6 py-4 text-sm">
-        ${item.campaign_title || '-'}
-      </td>
-
-      <td class="px-6 py-4 text-sm">
-        ${new Date(item.assessment_date).toLocaleDateString('nl-NL')}
-      </td>
-
-      <td class="px-6 py-4 text-sm font-semibold text-emerald-600">
-        ${item.average_score}
-      </td>
-
-      <td class="px-6 py-4 text-sm">
-        ${item.first_name && item.last_name
-          ? `${item.first_name} ${item.last_name}`
-          : '-'}
-      </td>
-
-      <td class="px-6 py-4 text-sm">
-        <span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium
-  ${
-    item.status === 'RESULTS_READY'
-      ? 'bg-teal-100 text-teal-700'
-      : item.status === 'IN_PROGRESS'
-      ? 'bg-blue-100 text-blue-700'
-      : item.status === 'WAITING_FOR_REPORT'
-      ? 'bg-amber-100 text-amber-700'
-      : 'bg-slate-100 text-slate-700'
-  }">
-  ${statusMapNL[item.status] || item.status}
-</span>
-      </td>
-
-      <td class="px-6 py-4 text-sm">
-        <button onclick="viewAssessment('${item.id}')" class="text-blue-600 font-medium">
-          Bekijk
-        </button>
-      </td>
-
-    </tr>
-  `;
-}).join('');
-    }
-
-    function renderCompanyCards() {
-
-  const container =
-    document.getElementById('company-cards');
-
-  if (!container) return;
-
-  const filtered =
-    companies.filter(company =>
-      company.company_name
-        .toLowerCase()
-        .includes(companySearchTerm)
-    );
-
-  if (filtered.length === 0) {
     container.innerHTML =
-      '<div class="col-span-full text-center text-slate-500">Geen bedrijven gevonden.</div>';
-    return;
+      filtered.map(company => {
+
+        const address =
+          company.address
+            ? `${company.address}, ${company.city || ''}`
+            : 'Adres niet beschikbaar';
+
+        return `
+    <div 
+      onclick="viewCompany(${company.company_id})"
+      class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 cursor-pointer hover:shadow-md transition"
+    >
+
+      <h3 class="text-lg font-semibold">
+        ${company.company_name}
+      </h3>
+
+      <p class="text-sm text-slate-500">
+        ${address}
+      </p>
+
+    </div>
+  `;
+
+
+
+      }).join('');
+
   }
 
-  container.innerHTML =
-    filtered.map(company => {
-
-      const address =
-        company.address
-          ? `${company.address}, ${company.city || ''}`
-          : 'Adres niet beschikbaar';
-
-      return `
-  <div 
-    onclick="viewCompany(${company.company_id})"
-    class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 cursor-pointer hover:shadow-md transition"
-  >
-
-    <h3 class="text-lg font-semibold">
-      ${company.company_name}
-    </h3>
-
-    <p class="text-sm text-slate-500">
-      ${address}
-    </p>
-
-  </div>
-`;
-
-
-
-    }).join('');
-
-}
-
-    async function viewAssessment(id) {
-      const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
-      try {
-        const response = await fetch(`${backend}/api/assessments/${id}`);
-        if (!response.ok) throw new Error('Assessment niet gevonden');
-        selectedAssessment = await response.json();
-      } catch (error) {
-        selectedAssessment = assessments.find(item => item.id === id) || null;
+      async function viewAssessment(id) {
+        const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
+        try {
+          const response = await fetch(`${backend}/api/assessments/${id}`);
+          if (!response.ok) throw new Error('Assessment niet gevonden');
+          selectedAssessment = await response.json();
+        } catch (error) {
+          selectedAssessment = assessments.find(item => item.id === id) || null;
+        }
+        selectedCompany = null;
+        if (!selectedAssessment) return;
+        renderAssessmentDetail();
+        document.getElementById('dashboard-view').classList.add('hidden');
+        document.getElementById('assessment-detail-screen').classList.remove('hidden');
       }
-      selectedCompany = null;
-      if (!selectedAssessment) return;
-      renderAssessmentDetail();
-      document.getElementById('dashboard-view').classList.add('hidden');
-      document.getElementById('assessment-detail-screen').classList.remove('hidden');
-    }
 
-    function viewCompany(companyId) {
+      function viewCompany(companyId) {
 
-  if (!companyId) return; // ✅ voorkomt crash
+    if (!companyId) return; // ✅ voorkomt crash
 
-  const company =
-    companies.find(c => c.company_id == companyId);
+    const company =
+      companies.find(c => c.company_id == companyId);
 
-  if (!company) return;
+    if (!company) return;
 
-  selectedCompany = company;
+    selectedCompany = company;
 
-  renderCompanyDashboard();
+    renderCompanyDashboard();
 
-  document.getElementById('dashboard-view').classList.add('hidden');
-  document.getElementById('assessment-detail-screen').classList.remove('hidden');
+    document.getElementById('dashboard-view').classList.add('hidden');
+    document.getElementById('assessment-detail-screen').classList.remove('hidden');
 
-}
+  }
 
-async function viewCampaign(id) {
+  async function viewCampaign(id) {
 
-  const res = await fetch(`${defaultConfig.backend_url}/api/campaigns/${id}/details`);
-  const data = await res.json();
+    const res = await fetch(`${defaultConfig.backend_url}/api/campaigns/${id}/details`);
+    const data = await res.json();
 
-  const { campaign, assessments, aggregated } = data;
+    const { campaign, assessments, aggregated } = data;
 
-  document.getElementById('dashboard-view').classList.add('hidden');
-  document.getElementById('assessment-detail-screen').classList.remove('hidden');
+    document.getElementById('dashboard-view').classList.add('hidden');
+    document.getElementById('assessment-detail-screen').classList.remove('hidden');
 
-  document.getElementById('assessment-detail-screen').innerHTML = `
+    document.getElementById('assessment-detail-screen').innerHTML = `
 
-    <!-- TERUG -->
-    <button onclick="closeDetail()" class="text-blue-600 mb-6">
-      ← Terug
-    </button>
+      <!-- TERUG -->
+      <button onclick="closeDetail()" class="text-blue-600 mb-6">
+        ← Terug
+      </button>
 
-    <!-- TOP GRID -->
-    <div class="grid gap-6 md:grid-cols-3">
+      <!-- TOP GRID -->
+      <div class="grid gap-6 md:grid-cols-3">
 
-      <!-- SPIDERCHART -->
-      <div class="md:col-span-2 bg-white p-6 md:p-8 rounded-3xl shadow-sm ring-1 ring-slate-200 h-full">
+        <!-- SPIDERCHART -->
+        <div class="md:col-span-2 bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200">
 
 
-        <h3 class="text-lg font-semibold mb-4">
-          Spiderchart
-        </h3>
+          <h3 class="text-lg font-semibold mb-4">
+            Spiderchart
+          </h3>
 
-        <div class="flex justify-center">
-  <div id="campaign-spider-chart" class="w-full max-w-[550px]"></div>
-</div>
+          <div class="flex justify-center">
+    <div id="campaign-spider-chart" class="w-full max-w-[520px]"></div>
+  </div>
 
-      </div>
+        </div>
 
-      <!-- SUMMARY -->
-      <div class="md:col-span-1 bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200 h-fit">
+        <!-- SUMMARY -->
+        <div class="md:col-span-1 bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200 h-fit">
 
-        <h3 class="font-semibold text-lg mb-4">
-          Details
-        </h3>
+          <h3 class="font-semibold text-lg mb-4">
+            Details
+          </h3>
 
-        <div class="space-y-2 text-sm">
+          <div class="space-y-2 text-sm">
 
-          <div class="flex justify-between">
-            <span>Titel</span>
-            <span class="font-semibold">${campaign.title}</span>
-          </div>
+  <div class="flex justify-between">
+    <span>Titel</span>
+    <span class="font-semibold">${campaign.title}</span>
+  </div>
 
-          <div class="flex justify-between">
-            <span>Bedrijf</span>
-            <span class="font-semibold">${campaign.company_name}</span>
-          </div>
+  <div class="flex justify-between">
+    <span>Bedrijf</span>
+    <span class="font-semibold">${campaign.company_name}</span>
+  </div>
 
-          <div class="flex justify-between">
-            <span>Deelnemers</span>
-            <span class="font-semibold">${assessments.length}</span>
-          </div>
+  <div class="flex justify-between">
+    <span>Deelnemers</span>
+    <span class="font-semibold">${assessments.length}</span>
+  </div>
 
-          <div class="flex justify-between">
-            <span>Gemiddelde score</span>
-            <span class="font-semibold">${aggregated.average_score || '-'}</span>
-          </div>
+  <div class="flex justify-between">
+    <span>Gemiddelde score</span>
+    <span class="font-semibold">${aggregated.average_score || '-'}</span>
+  </div>
 
-        <div class="flex justify-between mt-5 pt-4 border-t">
+</div> <!-- ✅ DIT ONTBRAK -->
+
+<div class="flex justify-between mt-5 pt-4 border-t">
 
   <span class="text-sm text-slate-500">
     Status
@@ -1454,1067 +1456,1066 @@ async function viewCampaign(id) {
         ? 'bg-amber-100 text-amber-700'
         : 'bg-slate-100 text-slate-700'
     }">
-
-    ${statusMapNL[campaign.status] || campaign.status}
-
+    ${statusMapNL[campaign.status] || 'Onbekend'}
   </span>
 
 </div>
 
+        </div>
+
       </div>
 
-    </div>
+      <!-- ASSESSMENT TABEL -->
+      <div class="mt-8 bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 overflow-hidden">
 
-    <!-- ASSESSMENT TABEL -->
-    <div class="mt-8 bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 overflow-hidden">
+        <table class="w-full">
 
-      <table class="w-full">
-
-        <thead class="bg-slate-100 text-xs uppercase text-slate-600">
-          <tr>
-            <th class="p-4 text-left">Naam</th>
-            <th class="p-4 text-left">Datum</th>
-            <th class="p-4 text-left">Score</th>
-            <th class="p-4 text-left">Status</th>
-            <th class="p-4 text-left">Acties</th>
-          </tr>
-        </thead>
-
-        <tbody>
-
-          ${assessments.map(a => `
-            <tr class="border-t">
-
-              <td class="p-4">
-                ${a.first_name} ${a.last_name}
-              </td>
-
-              <td class="p-4">
-                ${a.assessment_date 
-                  ? new Date(a.assessment_date).toLocaleDateString('nl-NL') 
-                  : '-'}
-              </td>
-
-              <td class="p-4 text-emerald-600 font-semibold">
-                ${a.average_score}
-              </td>
-
-              <td class="p-4">
-                ${statusMapNL[a.status] || a.status}
-              </td>
-
-              <td class="p-4">
-                <button onclick="viewAssessment(${a.assessment_session_id})" class="text-blue-600">
-                  Bekijk
-                </button>
-              </td>
-
+          <thead class="bg-slate-100 text-xs uppercase text-slate-600">
+            <tr>
+              <th class="p-4 text-left">Naam</th>
+              <th class="p-4 text-left">Datum</th>
+              <th class="p-4 text-left">Score</th>
+              <th class="p-4 text-left">Status</th>
+              <th class="p-4 text-left">Acties</th>
             </tr>
-          `).join("")}
+          </thead>
 
-        </tbody>
+          <tbody>
 
-      </table>
+            ${assessments.map(a => `
+              <tr class="border-t">
 
-    </div>
+                <td class="p-4">
+                  ${a.first_name} ${a.last_name}
+                </td>
 
-    <!-- RAPPORT -->
-    <div class="mt-8 bg-white p-6 rounded-2xl shadow-sm ring-1 ring-slate-200">
+                <td class="p-4">
+                  ${a.assessment_date 
+                    ? new Date(a.assessment_date).toLocaleDateString('nl-NL') 
+                    : '-'}
+                </td>
 
-      <h3 class="font-semibold text-lg mb-4">
-        Adviesrapport
-      </h3>
+                <td class="p-4 text-emerald-600 font-semibold">
+                  ${a.average_score}
+                </td>
 
-      <textarea
-        id="reportEditor"
-        class="w-full border rounded-lg p-4"
-        style="height:300px;"
-      >${campaign.report || ""}</textarea>
+                <td class="p-4">
+                  ${statusMapNL[a.status] || a.status}
+                </td>
 
-      <div class="mt-4 flex gap-3">
+                <td class="p-4">
+                  <button onclick="viewAssessment(${a.assessment_session_id})" class="text-blue-600">
+                    Bekijk
+                  </button>
+                </td>
 
-        <button onclick="saveReport(${id})"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg">
-          Opslaan
-        </button>
+              </tr>
+            `).join("")}
 
-        <button onclick="sendReport(${id})"
-          class="px-4 py-2 bg-emerald-600 text-white rounded-lg">
-          Versturen
-        </button>
+          </tbody>
+
+        </table>
 
       </div>
 
-    </div>
+      <!-- RAPPORT -->
+      <div class="mt-8 bg-white p-6 rounded-2xl shadow-sm ring-1 ring-slate-200">
 
-  `;
+        <h3 class="font-semibold text-lg mb-4">
+          Adviesrapport
+        </h3>
 
-  /* ✅ SPIDERCHART RENDER */
-  renderSpiderChart(aggregated.spider_scores, "campaign-spider-chart");
-}
+        <textarea
+          id="reportEditor"
+          class="w-full border rounded-lg p-4"
+          style="height:300px;"
+        >${campaign.report || ""}</textarea>
 
-    function renderCompanyDetail() {
-      const companyAssessments = assessments.filter(item => item.company_name === selectedCompany).sort((a, b) => new Date(b.assessment_date) - new Date(a.assessment_date));
-      const latest = companyAssessments[0];
-      const earliest = companyAssessments[companyAssessments.length - 1];
-      const growth = latest && earliest ? latest.average_score - earliest.average_score : 0;
-      const growthLabel = growth > 0 ? `+${growth}` : `${growth}`;
-      const address = companyAddresses[selectedCompany] || 'Adres niet beschikbaar';
-      document.getElementById('assessment-detail-screen').innerHTML = `
-        <div class="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <button onclick="closeDetail()" class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:opacity-80 mb-3 md:mb-0">
+        <div class="mt-4 flex gap-3">
+
+          <button onclick="saveReport(${id})"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+            Opslaan
+          </button>
+
+          <button onclick="sendReport(${id})"
+            class="px-4 py-2 bg-emerald-600 text-white rounded-lg">
+            Versturen
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+    /* ✅ SPIDERCHART RENDER */
+    renderSpiderChart(aggregated.spider_scores, "campaign-spider-chart");
+  }
+
+      function renderCompanyDetail() {
+        const companyAssessments = assessments.filter(item => item.company_name === selectedCompany).sort((a, b) => new Date(b.assessment_date) - new Date(a.assessment_date));
+        const latest = companyAssessments[0];
+        const earliest = companyAssessments[companyAssessments.length - 1];
+        const growth = latest && earliest ? latest.average_score - earliest.average_score : 0;
+        const growthLabel = growth > 0 ? `+${growth}` : `${growth}`;
+        const address = companyAddresses[selectedCompany] || 'Adres niet beschikbaar';
+        document.getElementById('assessment-detail-screen').innerHTML = `
+          <div class="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <button onclick="closeDetail()" class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:opacity-80 mb-3 md:mb-0">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg> Terug
+              </button>
+              <h2 class="text-2xl font-semibold text-slate-900">${selectedCompany}</h2>
+              <p class="text-sm text-slate-600">${address}</p>
+            </div>
+          </div>
+
+          <div class="grid gap-6 xl:grid-cols-4">
+            <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+              <p class="text-sm text-slate-600">Aantal assessments</p>
+              <p class="mt-3 text-3xl font-bold text-slate-900">${companyAssessments.length}</p>
+            </div>
+            <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+              <p class="text-sm text-slate-600">Huidig niveau</p>
+              <p class="mt-3 text-3xl font-bold text-slate-900">${latest?.average_score || '-'}</p>
+            </div>
+            <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+              <p class="text-sm text-slate-600">Groei</p>
+              <p class="mt-3 text-3xl font-bold ${growth > 0 ? 'text-emerald-600' : growth < 0 ? 'text-rose-600' : 'text-slate-900'}">${growthLabel}</p>
+            </div>
+            <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+              <p class="text-sm text-slate-600">Laatste assessment</p>
+              <p class="mt-3 text-3xl font-bold text-slate-900">${latest ? new Date(latest.assessment_date).toLocaleDateString('nl-NL') : '-'}</p>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <h3 class="text-lg font-semibold text-slate-900">Gemaakte assessments</h3>
+          </div>
+          <div class="rounded-3xl bg-white shadow-sm ring-1 ring-slate-200 mt-3 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[900px]">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                  <tr class="text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                    <th onclick="setOverviewSort('company_name')" class="px-6 py-3 cursor-pointer">Bedrijf</th>
+                    <th onclick="setOverviewSort('average_score')" class="px-6 py-3 cursor-pointer">Maturity score</th>
+                    <th onclick="setOverviewSort('average_score')" class="px-6 py-3 cursor-pointer">Maturity Niveau</th>
+                    <th onclick="setOverviewSort('assessment_date')" class="px-6 py-3 cursor-pointer">Datum</th>
+                    <th onclick="setOverviewSort('status')" class="px-6 py-3 cursor-pointer">Status</th>
+                    <th class="px-6 py-3">Acties</th>
+                  </tr>
+                </thead>
+                <tbody id="company-assessments-table-body" class="divide-y divide-slate-200"></tbody>
+              </table>
+            </div>
+          </div>
+        `;
+        renderCompanyAssessmentsTable(companyAssessments);
+      }
+
+      function renderCompanyDashboard() {
+    
+        if (!selectedCompany) return;
+    
+        const company = selectedCompany;
+
+    const companyUsers =
+    Array.isArray(users)
+      ? users.filter(u => u.company_id == company.company_id)
+      : [];
+
+    const companyCampaigns =
+      campaigns.filter(c =>
+        c.company_name === company.company_name
+      );
+
+    const companyAssessments =
+      assessments.filter(a =>
+        a.company_name === company.company_name
+      );
+
+    const latest =
+      companyAssessments.sort((a,b) =>
+        new Date(b.assessment_date) - new Date(a.assessment_date)
+      )[0];
+
+    const maturity =
+      latest ? latest.average_score : "-";
+
+    document.getElementById('assessment-detail-screen').innerHTML = `
+      
+      <div class="mb-6">
+
+        <button onclick="closeDetail()" class="text-blue-600 mb-3">
+          ← Terug
+        </button>
+
+        <h2 class="text-2xl font-semibold">
+          ${company.company_name}
+        </h2>
+
+        <p class="text-sm text-slate-500">
+          ${company.address || ''} ${company.city || ''}
+        </p>
+
+      </div>
+
+      <div class="grid grid-cols-3 gap-4 mb-8">
+
+        <div class="bg-white p-4 rounded-xl">
+          <p class="text-sm text-slate-500">Maturity</p>
+          <p class="text-2xl font-bold">${maturity}</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl">
+          <p class="text-sm text-slate-500">Campagnes</p>
+          <p class="text-2xl font-bold">${companyCampaigns.length}</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl">
+          <p class="text-sm text-slate-500">Medewerkers</p>
+          <p class="text-2xl font-bold">${companyUsers.length}</p>
+        </div>
+
+      </div>
+
+      <div class="bg-white rounded-xl p-6 mb-6">
+
+        <h3 class="font-semibold mb-4">Campagnes</h3>
+
+        ${
+          companyCampaigns.map(c => `
+            <div class="border-t py-2">
+              ${c.title} (${statusMapNL[c.status] || c.status})
+            </div>
+          `).join('')
+        }
+
+      </div>
+
+      <div class="bg-white rounded-xl p-6">
+
+        <div class="flex justify-between items-center mb-4">
+    <h3 class="font-semibold">Medewerkers</h3>
+
+    <button onclick="openUserModal('${company.company_id}')"
+      class="px-3 py-2 bg-blue-600 text-white rounded">
+      + Toevoegen
+    </button>
+  </div>
+
+        ${
+          companyUsers.map(u => `
+            <div class="border-t py-2">
+              ${u.first_name} ${u.last_name}
+  <span class="text-xs text-slate-500">
+    (${u.role_description || 'Onbekend'})
+  </span>
+            </div>
+          `).join('')
+        }
+
+      </div>
+    `;
+  }
+
+
+      function renderCompanyAssessmentsTable(companyAssessments = null) {
+        const tbody = document.getElementById('company-assessments-table-body');
+        if (!tbody) return;
+        const rows = (companyAssessments || assessments.filter(item => item.company_name === selectedCompany));
+        const sorted = sortAssessments(rows);
+        if (sorted.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-500">Geen assessments gevonden</td></tr>';
+          return;
+        }
+        tbody.innerHTML = sorted.map(item => `
+          <tr class="border-t hover:bg-slate-50">
+            <td class="px-6 py-4 text-sm font-medium text-slate-900">${item.company_name}</td>
+            <td class="px-6 py-4 text-sm font-semibold text-emerald-600">${item.average_score}</td>
+            <td class="px-6 py-4 text-sm text-slate-600">${getMaturityLabel(item.average_score)}</td>
+            <td class="px-6 py-4 text-sm text-slate-600">${new Date(item.assessment_date).toLocaleDateString('nl-NL')}</td>
+            <td class="px-6 py-4 text-sm"><span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium ${getStatusBadge(item.status)}">${item.status}</span></td>
+            <td class="px-6 py-4 text-sm"><button onclick="viewAssessment('${item.id}')" class="text-blue-600 hover:text-blue-700 font-medium">Bekijk</button></td>
+          </tr>
+        `).join('');
+      }
+
+      function renderAssessmentDetail() {
+        const assessment = selectedAssessment;
+        const showReportSection =
+    !['NOT_STARTED', 'IN_PROGRESS'].includes(assessment.status);
+        let reportHTML = '';
+        if (showReportSection) {
+          let actionButtons = `<button onclick="downloadProposal('${assessment.id}')" class="rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">Download voorstel</button>`;
+          if (assessment.status === 'In afwachting van rapport') {
+            actionButtons += `<label class="cursor-pointer inline-flex items-center justify-center rounded-xl bg-amber-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-amber-700"><input type="file" accept=".pdf,.docx" onchange="uploadValidatedReport(event, '${assessment.id}')" class="hidden" />Upload rapport</label>`;
+          } else if (assessment.status === 'Afgerond') {
+            actionButtons += `<button onclick="downloadFinalReport('${assessment.id}')" class="rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-teal-700">Download eindrapport</button>`;
+          }
+          reportHTML = `
+              <div class="rounded-3xl bg-gradient-to-br from-blue-50 to-blue-100 p-6 shadow-sm ring-1 ring-blue-200">
+                <h3 class="text-lg font-semibold text-blue-900 mb-4">AI voorstel rapport</h3>
+                <p class="text-sm text-slate-700 leading-6">${assessment.report_suggestion}</p>
+                <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+                  ${actionButtons}
+                </div>
+              </div>`;
+        }
+        let summaryHTML = '';
+        if (showReportSection) {
+          summaryHTML = `
+              <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                <h3 class="text-lg font-semibold text-slate-900 mb-4">Samenvatting</h3>
+                <p class="text-sm text-slate-600 leading-6">${assessment.details || 'Geen extra details beschikbaar.'}</p>
+              </div>`;
+        }
+        document.getElementById('assessment-detail-screen').innerHTML = `
+          <div class="flex items-center gap-4 mb-4">
+            <button onclick="closeDetail()" class="flex items-center gap-2 text-sm font-semibold text-blue-600 hover:opacity-80">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg> Terug
             </button>
-            <h2 class="text-2xl font-semibold text-slate-900">${selectedCompany}</h2>
-            <p class="text-sm text-slate-600">${address}</p>
+            <div>
+              <h2 class="text-2xl font-semibold text-slate-900">${assessment.company_name}</h2>
+            </div>
           </div>
-        </div>
 
-        <div class="grid gap-6 xl:grid-cols-4">
-          <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <p class="text-sm text-slate-600">Aantal assessments</p>
-            <p class="mt-3 text-3xl font-bold text-slate-900">${companyAssessments.length}</p>
+          <div class="grid gap-6 xl:grid-cols-3">
+            <div class="xl:col-span-2 space-y-6">
+              <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <h3 class="text-lg font-semibold text-slate-900">Spiderchart</h3>
+                    <p class="text-sm text-slate-600">Visualiseer de maturity domeinen van dit assessment.</p>
+                  </div>
+                </div>
+                <div class="mt-6 flex justify-center">
+                  <div id="spider-chart" class="max-w-[420px] w-full"></div>
+                </div>
+              </div>
+              ${reportHTML}
+            </div>
+
+            <div class="space-y-6">
+              <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                <h3 class="text-lg font-semibold text-slate-900 mb-4">Details</h3>
+                <div class="space-y-3 text-sm text-slate-600">
+                  <div class="flex justify-between"><span>Status</span><span class="font-semibold text-slate-900">
+    ${statusMapNL[assessment.status] || assessment.status}
+  </span></div>
+                  <div class="flex justify-between"><span>Maturity score</span><span class="font-semibold text-slate-900">${assessment.average_score}</span></div>
+                  <div class="flex justify-between"><span>Maturity Niveau</span><span class="font-semibold text-slate-900">${getMaturityLabel(assessment.average_score)}</span></div>
+                  <div class="flex justify-between"><span>Datum</span><span class="font-semibold text-slate-900">${new Date(assessment.assessment_date).toLocaleDateString('nl-NL')}</span></div>
+                  <div class="flex justify-between"><span>Laatste update</span><span class="font-semibold text-slate-900">${formatDutchDate(assessment.last_updated)}</span></div>
+                </div>
+                <button onclick="startAssessmentQuestions('${assessment.id}')" class="mt-6 w-full py-2 px-4 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition">
+                  Beantwoord vragen
+                </button>
+              </div>
+              ${summaryHTML}
+            </div>
           </div>
-          <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <p class="text-sm text-slate-600">Huidig niveau</p>
-            <p class="mt-3 text-3xl font-bold text-slate-900">${latest?.average_score || '-'}</p>
-          </div>
-          <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <p class="text-sm text-slate-600">Groei</p>
-            <p class="mt-3 text-3xl font-bold ${growth > 0 ? 'text-emerald-600' : growth < 0 ? 'text-rose-600' : 'text-slate-900'}">${growthLabel}</p>
-          </div>
-          <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <p class="text-sm text-slate-600">Laatste assessment</p>
-            <p class="mt-3 text-3xl font-bold text-slate-900">${latest ? new Date(latest.assessment_date).toLocaleDateString('nl-NL') : '-'}</p>
-          </div>
-        </div>
-
-        <div class="mt-6">
-          <h3 class="text-lg font-semibold text-slate-900">Gemaakte assessments</h3>
-        </div>
-        <div class="rounded-3xl bg-white shadow-sm ring-1 ring-slate-200 mt-3 overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full min-w-[900px]">
-              <thead class="bg-slate-50 border-b border-slate-200">
-                <tr class="text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                  <th onclick="setOverviewSort('company_name')" class="px-6 py-3 cursor-pointer">Bedrijf</th>
-                  <th onclick="setOverviewSort('average_score')" class="px-6 py-3 cursor-pointer">Maturity score</th>
-                  <th onclick="setOverviewSort('average_score')" class="px-6 py-3 cursor-pointer">Maturity Niveau</th>
-                  <th onclick="setOverviewSort('assessment_date')" class="px-6 py-3 cursor-pointer">Datum</th>
-                  <th onclick="setOverviewSort('status')" class="px-6 py-3 cursor-pointer">Status</th>
-                  <th class="px-6 py-3">Acties</th>
-                </tr>
-              </thead>
-              <tbody id="company-assessments-table-body" class="divide-y divide-slate-200"></tbody>
-            </table>
-          </div>
-        </div>
-      `;
-      renderCompanyAssessmentsTable(companyAssessments);
-    }
-
-    function renderCompanyDashboard() {
-  
-      if (!selectedCompany) return;
-  
-      const company = selectedCompany;
-
-  const companyUsers =
-  Array.isArray(users)
-    ? users.filter(u => u.company_id == company.company_id)
-    : [];
-
-  const companyCampaigns =
-    campaigns.filter(c =>
-      c.company_name === company.company_name
-    );
-
-  const companyAssessments =
-    assessments.filter(a =>
-      a.company_name === company.company_name
-    );
-
-  const latest =
-    companyAssessments.sort((a,b) =>
-      new Date(b.assessment_date) - new Date(a.assessment_date)
-    )[0];
-
-  const maturity =
-    latest ? latest.average_score : "-";
-
-  document.getElementById('assessment-detail-screen').innerHTML = `
-    
-    <div class="mb-6">
-
-      <button onclick="closeDetail()" class="text-blue-600 mb-3">
-        ← Terug
-      </button>
-
-      <h2 class="text-2xl font-semibold">
-        ${company.company_name}
-      </h2>
-
-      <p class="text-sm text-slate-500">
-        ${company.address || ''} ${company.city || ''}
-      </p>
-
-    </div>
-
-    <div class="grid grid-cols-3 gap-4 mb-8">
-
-      <div class="bg-white p-4 rounded-xl">
-        <p class="text-sm text-slate-500">Maturity</p>
-        <p class="text-2xl font-bold">${maturity}</p>
-      </div>
-
-      <div class="bg-white p-4 rounded-xl">
-        <p class="text-sm text-slate-500">Campagnes</p>
-        <p class="text-2xl font-bold">${companyCampaigns.length}</p>
-      </div>
-
-      <div class="bg-white p-4 rounded-xl">
-        <p class="text-sm text-slate-500">Medewerkers</p>
-        <p class="text-2xl font-bold">${companyUsers.length}</p>
-      </div>
-
-    </div>
-
-    <div class="bg-white rounded-xl p-6 mb-6">
-
-      <h3 class="font-semibold mb-4">Campagnes</h3>
-
-      ${
-        companyCampaigns.map(c => `
-          <div class="border-t py-2">
-            ${c.title} (${statusMapNL[c.status] || c.status})
-          </div>
-        `).join('')
+        `;
+        renderSpiderChart(assessment.spider_scores);
       }
 
-    </div>
-
-    <div class="bg-white rounded-xl p-6">
-
-      <div class="flex justify-between items-center mb-4">
-  <h3 class="font-semibold">Medewerkers</h3>
-
-  <button onclick="openUserModal('${company.company_id}')"
-    class="px-3 py-2 bg-blue-600 text-white rounded">
-    + Toevoegen
-  </button>
-</div>
-
-      ${
-        companyUsers.map(u => `
-          <div class="border-t py-2">
-            ${u.first_name} ${u.last_name}
-<span class="text-xs text-slate-500">
-  (${u.role_description || 'Onbekend'})
-</span>
-          </div>
-        `).join('')
+      function closeDetail() {
+        document.getElementById('dashboard-view').classList.remove('hidden');
+        document.getElementById('assessment-detail-screen').classList.add('hidden');
+        selectedAssessment = null;
+        selectedCompany = null;
       }
 
-    </div>
-  `;
-}
+      function renderSpiderChart(scores, elementId = "spider-chart") {
+
+    const chart = document.getElementById(elementId);
+
+    if (!chart) return;
+        const labels = Object.keys(scores);
+        const values = Object.values(scores);
+        const size = 520;
+        const center = size / 2;
+        const radius = 170;
+        const maxLabelChars = 28;
+        const lineSpacing = 10;
+        const points = values.map((value, index) => {
+          const angle = Math.PI / 2 + (index * 2 * Math.PI) / labels.length;
+          const distance = (value / 5) * radius;
+          return [center + Math.cos(angle) * distance, center - Math.sin(angle) * distance];
+        });
+        const wrapLabel = (text, maxChars = maxLabelChars) => {
+          const words = text.split(' ');
+          const lines = [];
+          let current = '';
+          words.forEach((word) => {
+            const next = current ? `${current} ${word}` : word;
+            if (next.length <= maxChars || !current) {
+              current = next;
+            } else {
+              lines.push(current);
+              current = word;
+            }
+          });
+          if (current) lines.push(current);
+          return lines;
+        };
+        chart.innerHTML = `
+          <svg
+    viewBox="0 0 ${size} ${size}" 
+    width="100%" 
+    preserveAspectRatio="xMidYMid meet"
+    overflow="visible"
+    class="mx-auto block"
+    style="max-height: 500px;"
+  >
 
 
-    function renderCompanyAssessmentsTable(companyAssessments = null) {
-      const tbody = document.getElementById('company-assessments-table-body');
-      if (!tbody) return;
-      const rows = (companyAssessments || assessments.filter(item => item.company_name === selectedCompany));
-      const sorted = sortAssessments(rows);
-      if (sorted.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-500">Geen assessments gevonden</td></tr>';
+            ${[1, 0.75, 0.5, 0.25].map(factor => {
+              const level = labels.map((_, index) => {
+                const angle = Math.PI / 2 + (index * 2 * Math.PI) / labels.length;
+                return [center + Math.cos(angle) * radius * factor, center - Math.sin(angle) * radius * factor].join(',');
+              }).join(' ');
+              return `<polygon points="${level}" fill="none" stroke="#cbd5e1" stroke-width="1" />`;
+            }).join('')}
+            ${labels.map((_, index) => {
+              const angle = Math.PI / 2 + (index * 2 * Math.PI) / labels.length;
+              const x = center + Math.cos(angle) * radius;
+              const y = center - Math.sin(angle) * radius;
+              return `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" stroke="#cbd5e1" stroke-width="1" />`;
+            }).join('')}
+            <polygon points="${points.map(p => p.join(',')).join(' ')}" fill="rgba(59,130,246,0.2)" stroke="#2563eb" stroke-width="2" />
+            ${points.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#2563eb" />`).join('')}
+            ${labels.map((label, index) => {
+              const angle = Math.PI / 2 + (index * 2 * Math.PI) / labels.length;
+              const x = center + Math.cos(angle) * (radius + 35);
+              const y = center - Math.sin(angle) * (radius + 35);
+              const anchor = Math.abs(Math.cos(angle)) < 0.1 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
+              const lines = wrapLabel(label);
+              return `<text x="${x}" y="${y}" text-anchor="${anchor}" dominant-baseline="middle" font-size="11" fill="#334155">${lines.map((line, lineIndex) => `<tspan x="${x}" dy="${lineIndex === 0 ? 0 : lineSpacing}">${line}</tspan>`).join('')}</text>`;
+            }).join('')}
+          </svg>
+        `;
+      }
+
+      function downloadProposal(id) {
+        const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
+        window.location.href = `${backend}/api/assessments/${id}/report/download`;
+      }
+
+      function uploadValidatedReport(event, id) {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        console.log(`Geüpload gevalideerd rapport voor ${id}:`, file.name);
+        alert(`Geüpload: ${file.name} (placeholder)`);
+        event.target.value = '';
+      }
+
+      function downloadFinalReport(id) {
+        const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
+        window.location.href = `${backend}/api/assessments/${id}/report/download?final=true`;
+      }
+
+      function onConfigChange(config) {
+        document.getElementById('page-title').textContent = config.page_title || defaultConfig.page_title;
+      }
+
+      // Assessment Question View State
+      let questionViewState = {
+        currentQuestion: 1,
+        totalQuestions: 12,
+        selectedLevel: null,
+        answers: {},
+        assessmentId: null
+      };
+
+      const questionsData = [
+        {
+          id: 1,
+          title: "In hoeverre is de strategie formeel vastgesteld, gecommuniceerd en periodiek geëvalueerd?",
+          description: "Beschrijf of er een formele strategie bestaat en hoe deze wordt gecommuniceerd",
+          domain: "Governance"
+        },
+        {
+          id: 2,
+          title: "Hoe is het beleid geformaliseerd en gedocumenteerd?",
+          description: "Beschrijf hoe beleidsregels zijn vastgesteld en voor iedereen toegankelijk zijn",
+          domain: "Governance"
+        },
+        {
+          id: 3,
+          title: "Is er een roadmap voor de komende jaren?",
+          description: "Beschrijf de planning en tijdlijn voor komende initiatieven",
+          domain: "Strategie"
+        },
+        {
+          id: 4,
+          title: "Hoe is de architectuur opgebouwd?",
+          description: "Beschrijf de technische en organisatorische architectuur",
+          domain: "Architectuur"
+        },
+        {
+          id: 5,
+          title: "Hoe worden risico's beheerd?",
+          description: "Beschrijf het risicobeheersingsproces",
+          domain: "Risicobeheer"
+        },
+        {
+          id: 6,
+          title: "Zijn rollen en verantwoordelijkheden duidelijk?",
+          description: "Beschrijf hoe eigenaarschap is georganiseerd",
+          domain: "Organisatie"
+        },
+        {
+          id: 7,
+          title: "Is er scheiding van taken?",
+          description: "Beschrijf hoe functiescheiding is geïmplementeerd",
+          domain: "Governance"
+        },
+        {
+          id: 8,
+          title: "Hoe is procesinitiatief georganiseerd?",
+          description: "Beschrijf de procesorganisatie",
+          domain: "Processen"
+        },
+        {
+          id: 9,
+          title: "Hoe worden besluiten genomen?",
+          description: "Beschrijf het besluitvormingsproces",
+          domain: "Governance"
+        },
+        {
+          id: 10,
+          title: "Hoe is communicatie georganiseerd?",
+          description: "Beschrijf interne en externe communicatiekanalen",
+          domain: "Communicatie"
+        },
+        {
+          id: 11,
+          title: "Hoe wordt voortgang gemeten?",
+          description: "Beschrijf de metingen en KPI's",
+          domain: "Monitoring"
+        },
+        {
+          id: 12,
+          title: "Hoe werkt continue verbetering?",
+          description: "Beschrijf het verbeteringsproces",
+          domain: "Verbetering"
+        }
+      ];
+
+      function startAssessmentQuestions(assessmentId) {
+        questionViewState.assessmentId = assessmentId;
+        questionViewState.currentQuestion = 1;
+        questionViewState.selectedLevel = null;
+        questionViewState.answers = {};
+        renderQuestionView();
+        document.getElementById('dashboard-view').classList.add('hidden');
+        document.getElementById('assessment-detail-screen').classList.add('hidden');
+        document.getElementById('assessment-question-view').classList.remove('hidden');
+      }
+
+      function renderQuestionView() {
+        const question = questionsData[questionViewState.currentQuestion - 1];
+        const answeredCount = Object.keys(questionViewState.answers).filter(key => !key.startsWith('notes-')).length;
+        const progress = (questionViewState.currentQuestion / questionViewState.totalQuestions) * 100;
+
+        document.getElementById('assessment-question-view').innerHTML = `
+          <style>
+            .assessment-bg {
+              background: linear-gradient(135deg, #0d1628 0%, #14223e 100%);
+            }
+            .gradient-blur {
+              position: absolute;
+              border-radius: 50%;
+              opacity: 0.1;
+            }
+            .gradient-blur-1 {
+              width: 600px;
+              height: 600px;
+              background: radial-gradient(circle, #3c66b9 0%, transparent 70%);
+              top: 10%;
+              right: -10%;
+              filter: blur(100px);
+            }
+            .gradient-blur-2 {
+              width: 700px;
+              height: 700px;
+              background: radial-gradient(circle, #5a8fd6 0%, transparent 70%);
+              top: 20%;
+              left: -15%;
+              filter: blur(100px);
+            }
+            .maturity-button {
+              transition: all 0.2s ease;
+              border-color: #213764;
+              background-color: #14223e;
+            }
+            .maturity-button:hover {
+              border-color: #3c66b9;
+              background-color: rgba(60, 102, 185, 0.1);
+              transform: translateY(-2px);
+            }
+            .maturity-button.selected {
+              border-color: #3c66b9;
+              background: linear-gradient(135deg, rgba(60, 102, 185, 0.2) 0%, rgba(60, 102, 185, 0.05) 100%);
+              box-shadow: 0 0 20px rgba(60, 102, 185, 0.3);
+            }
+            .progress-bar {
+              width: ${progress}%;
+              height: 100%;
+              background-color: #3c66b9;
+              border-radius: 999px;
+              transition: width 0.3s ease;
+            }
+          </style>
+
+          <div class="fixed inset-0 assessment-bg">
+            <div class="gradient-blur gradient-blur-1"></div>
+            <div class="gradient-blur gradient-blur-2"></div>
+            
+            <!-- Header -->
+            <div class="relative z-10 border-b border-slate-700 bg-slate-900/50 backdrop-blur">
+              <div class="px-32 py-5 flex items-center justify-between">
+                <div class="flex flex-col gap-1">
+                  <p class="text-xs font-medium text-slate-400">Vraag ${questionViewState.currentQuestion} van ${questionViewState.totalQuestions}</p>
+                  <p class="text-lg font-semibold text-white">Domein: ${question.domain}</p>
+                </div>
+                <button onclick="closeQuestionView()" class="px-4 py-2 rounded-lg border border-slate-700 bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition">
+                  Opslaan & later verder
+                </button>
+              </div>
+              <!-- Progress bar -->
+              <div class="px-32 pb-4">
+                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <div class="progress-bar"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main content -->
+            <div class="relative z-10 flex flex-col min-h-[calc(100vh-200px)] px-32 py-12 overflow-y-auto">
+              <div class="flex-1">
+                <!-- Question title -->
+                <div class="mb-8">
+                  <h1 class="text-2xl md:text-3xl font-semibold text-white leading-relaxed mb-3">
+                    ${question.title}
+                  </h1>
+                  <p class="text-base text-slate-300">
+                    ${question.description}
+                  </p>
+                </div>
+
+                <!-- Maturity level selector -->
+                <div class="mb-10">
+                  <label class="block text-sm font-medium text-white mb-4">Selecteer maturity niveau (1-5)</label>
+                  
+                  <div class="grid grid-cols-5 gap-4" id="maturity-buttons">
+                    ${[1, 2, 3, 4, 5].map(level => {
+                      const descriptions = [
+                        { name: 'Ad hoc', desc: 'Initieel, ad-hoc uitvoering' },
+                        { name: 'Gestructureerd', desc: 'Gestructureerd en gedocumenteerd' },
+                        { name: 'Effectief', desc: 'Effectief en aantoonbaar' },
+                        { name: 'Periodiek beoordeeld', desc: 'Periodiek gemeten en verbeterd' },
+                        { name: 'Geoptimaliseerd', desc: 'Continue optimalisatie' }
+                      ];
+                      const desc = descriptions[level - 1];
+                      const isSelected = questionViewState.selectedLevel === level ? 'selected' : '';
+                      return `
+                        <button class="maturity-button ${isSelected} p-6 rounded-2xl border-2 border-solid flex flex-col items-center justify-center transition" onclick="selectMaturityLevel(${level})" data-level="${level}">
+                          <p class="text-4xl font-bold text-white mb-2">${level}</p>
+                          <p class="text-sm font-medium text-white mb-2 text-center">${desc.name}</p>
+                          <p class="text-xs text-slate-400 text-center">${desc.desc}</p>
+                        </button>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+
+                <!-- Notes textarea -->
+                <div class="mb-12">
+                  <label class="block text-sm font-medium text-white mb-3">Toelichting / voorbeelden (optioneel)</label>
+                  <textarea id="notes-textarea" placeholder="Voeg hier aanvullende context of voorbeelden toe..." class="w-full h-32 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none">${questionViewState.answers[`notes-${questionViewState.currentQuestion}`] || ''}</textarea>
+                </div>
+              </div>
+
+              <!-- Navigation footer -->
+              <div class="border-t border-slate-700 pt-6 flex items-center justify-between pb-6">
+                <button onclick="previousQuestion()" ${questionViewState.currentQuestion === 1 ? 'disabled' : ''} class="px-6 py-3 rounded-lg border border-slate-700 bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                  ← Vorige
+                </button>
+                
+                <div class="flex items-center gap-2">
+                  <p class="text-sm text-slate-400">
+                    ${answeredCount} van ${questionViewState.totalQuestions} vragen beantwoord
+                  </p>
+                </div>
+
+                <button onclick="nextQuestion()" class="px-6 py-3 rounded-lg bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 transition">
+                  Volgende →
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Reattach event listeners
+        const textarea = document.getElementById('notes-textarea');
+        if (textarea) {
+          textarea.addEventListener('blur', () => {
+            questionViewState.answers[`notes-${questionViewState.currentQuestion}`] = textarea.value;
+          });
+        }
+      }
+
+      function selectMaturityLevel(level) {
+        questionViewState.selectedLevel = level;
+        questionViewState.answers[questionViewState.currentQuestion] = level;
+        renderQuestionView();
+      }
+
+      function nextQuestion() {
+        saveCurrentNotes();
+        if (questionViewState.currentQuestion < questionViewState.totalQuestions) {
+          questionViewState.currentQuestion++;
+          questionViewState.selectedLevel = questionViewState.answers[questionViewState.currentQuestion] || null;
+          renderQuestionView();
+        }
+      }
+
+      function previousQuestion() {
+        saveCurrentNotes();
+        if (questionViewState.currentQuestion > 1) {
+          questionViewState.currentQuestion--;
+          questionViewState.selectedLevel = questionViewState.answers[questionViewState.currentQuestion] || null;
+          renderQuestionView();
+        }
+      }
+
+      function saveCurrentNotes() {
+        const textarea = document.getElementById('notes-textarea');
+        if (textarea) {
+          questionViewState.answers[`notes-${questionViewState.currentQuestion}`] = textarea.value;
+        }
+      }
+
+      function closeQuestionView() {
+        saveCurrentNotes();
+        if (selectedAssessment) {
+          renderAssessmentDetail();
+          document.getElementById('dashboard-view').classList.add('hidden');
+          document.getElementById('assessment-detail-screen').classList.remove('hidden');
+          document.getElementById('assessment-question-view').classList.add('hidden');
+        } else {
+          closeDetail();
+        }
+      }
+
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange,
+          mapToCapabilities: () => ({ recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined }),
+          mapToEditPanelValues: (config) => new Map([['page_title', config.page_title || defaultConfig.page_title]])
+        });
+      }
+
+      let companies = [];
+  let users = [];
+
+  async function fetchCompanies() {
+
+    const response =
+      await fetch(
+        `${defaultConfig.backend_url}/api/companies`
+      );
+
+    companies = await response.json();
+
+  }
+
+  async function fetchUsers() {
+
+    try {
+
+      const response = await fetch(
+        `${defaultConfig.backend_url}/api/users`
+      );
+
+      if (!response.ok) {
+        console.warn("Users API error");
+        users = [];
         return;
       }
-      tbody.innerHTML = sorted.map(item => `
-        <tr class="border-t hover:bg-slate-50">
-          <td class="px-6 py-4 text-sm font-medium text-slate-900">${item.company_name}</td>
-          <td class="px-6 py-4 text-sm font-semibold text-emerald-600">${item.average_score}</td>
-          <td class="px-6 py-4 text-sm text-slate-600">${getMaturityLabel(item.average_score)}</td>
-          <td class="px-6 py-4 text-sm text-slate-600">${new Date(item.assessment_date).toLocaleDateString('nl-NL')}</td>
-          <td class="px-6 py-4 text-sm"><span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium ${getStatusBadge(item.status)}">${item.status}</span></td>
-          <td class="px-6 py-4 text-sm"><button onclick="viewAssessment('${item.id}')" class="text-blue-600 hover:text-blue-700 font-medium">Bekijk</button></td>
-        </tr>
-      `).join('');
-    }
 
-    function renderAssessmentDetail() {
-      const assessment = selectedAssessment;
-      const showReportSection =
-  !['NOT_STARTED', 'IN_PROGRESS'].includes(assessment.status);
-      let reportHTML = '';
-      if (showReportSection) {
-        let actionButtons = `<button onclick="downloadProposal('${assessment.id}')" class="rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">Download voorstel</button>`;
-        if (assessment.status === 'In afwachting van rapport') {
-          actionButtons += `<label class="cursor-pointer inline-flex items-center justify-center rounded-xl bg-amber-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-amber-700"><input type="file" accept=".pdf,.docx" onchange="uploadValidatedReport(event, '${assessment.id}')" class="hidden" />Upload rapport</label>`;
-        } else if (assessment.status === 'Afgerond') {
-          actionButtons += `<button onclick="downloadFinalReport('${assessment.id}')" class="rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-teal-700">Download eindrapport</button>`;
-        }
-        reportHTML = `
-            <div class="rounded-3xl bg-gradient-to-br from-blue-50 to-blue-100 p-6 shadow-sm ring-1 ring-blue-200">
-              <h3 class="text-lg font-semibold text-blue-900 mb-4">AI voorstel rapport</h3>
-              <p class="text-sm text-slate-700 leading-6">${assessment.report_suggestion}</p>
-              <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-                ${actionButtons}
-              </div>
-            </div>`;
-      }
-      let summaryHTML = '';
-      if (showReportSection) {
-        summaryHTML = `
-            <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-              <h3 class="text-lg font-semibold text-slate-900 mb-4">Samenvatting</h3>
-              <p class="text-sm text-slate-600 leading-6">${assessment.details || 'Geen extra details beschikbaar.'}</p>
-            </div>`;
-      }
-      document.getElementById('assessment-detail-screen').innerHTML = `
-        <div class="flex items-center gap-4 mb-4">
-          <button onclick="closeDetail()" class="flex items-center gap-2 text-sm font-semibold text-blue-600 hover:opacity-80">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg> Terug
-          </button>
-          <div>
-            <h2 class="text-2xl font-semibold text-slate-900">${assessment.company_name}</h2>
-          </div>
-        </div>
+      const data = await response.json();
 
-        <div class="grid gap-6 xl:grid-cols-3">
-          <div class="xl:col-span-2 space-y-6">
-            <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-              <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <h3 class="text-lg font-semibold text-slate-900">Spiderchart</h3>
-                  <p class="text-sm text-slate-600">Visualiseer de maturity domeinen van dit assessment.</p>
-                </div>
-              </div>
-              <div class="mt-6 flex justify-center">
-                <div id="spider-chart" class="max-w-[420px] w-full"></div>
-              </div>
-            </div>
-            ${reportHTML}
-          </div>
+      users = Array.isArray(data) ? data : [];
 
-          <div class="space-y-6">
-            <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-              <h3 class="text-lg font-semibold text-slate-900 mb-4">Details</h3>
-              <div class="space-y-3 text-sm text-slate-600">
-                <div class="flex justify-between"><span>Status</span><span class="font-semibold text-slate-900">
-  ${statusMapNL[assessment.status] || assessment.status}
-</span></div>
-                <div class="flex justify-between"><span>Maturity score</span><span class="font-semibold text-slate-900">${assessment.average_score}</span></div>
-                <div class="flex justify-between"><span>Maturity Niveau</span><span class="font-semibold text-slate-900">${getMaturityLabel(assessment.average_score)}</span></div>
-                <div class="flex justify-between"><span>Datum</span><span class="font-semibold text-slate-900">${new Date(assessment.assessment_date).toLocaleDateString('nl-NL')}</span></div>
-                <div class="flex justify-between"><span>Laatste update</span><span class="font-semibold text-slate-900">${formatDutchDate(assessment.last_updated)}</span></div>
-              </div>
-              <button onclick="startAssessmentQuestions('${assessment.id}')" class="mt-6 w-full py-2 px-4 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition">
-                Beantwoord vragen
-              </button>
-            </div>
-            ${summaryHTML}
-          </div>
-        </div>
-      `;
-      renderSpiderChart(assessment.spider_scores);
-    }
+    } catch (err) {
 
-    function closeDetail() {
-      document.getElementById('dashboard-view').classList.remove('hidden');
-      document.getElementById('assessment-detail-screen').classList.add('hidden');
-      selectedAssessment = null;
-      selectedCompany = null;
-    }
+      console.error("fetchUsers crash:", err);
 
-    function renderSpiderChart(scores, elementId = "spider-chart") {
-
-  const chart = document.getElementById(elementId);
-
-  if (!chart) return;
-      const labels = Object.keys(scores);
-      const values = Object.values(scores);
-      const size = 520;
-      const center = size / 2;
-      const radius = 170;
-      const maxLabelChars = 28;
-      const lineSpacing = 10;
-      const points = values.map((value, index) => {
-        const angle = Math.PI / 2 + (index * 2 * Math.PI) / labels.length;
-        const distance = (value / 5) * radius;
-        return [center + Math.cos(angle) * distance, center - Math.sin(angle) * distance];
-      });
-      const wrapLabel = (text, maxChars = maxLabelChars) => {
-        const words = text.split(' ');
-        const lines = [];
-        let current = '';
-        words.forEach((word) => {
-          const next = current ? `${current} ${word}` : word;
-          if (next.length <= maxChars || !current) {
-            current = next;
-          } else {
-            lines.push(current);
-            current = word;
-          }
-        });
-        if (current) lines.push(current);
-        return lines;
-      };
-      chart.innerHTML = `
-        <svg
-  viewBox="0 0 ${size} ${size}" 
-  width="100%" 
-  preserveAspectRatio="xMidYMid meet"
-  overflow="visible"
-  class="mx-auto block"
->
-
-
-          ${[1, 0.75, 0.5, 0.25].map(factor => {
-            const level = labels.map((_, index) => {
-              const angle = Math.PI / 2 + (index * 2 * Math.PI) / labels.length;
-              return [center + Math.cos(angle) * radius * factor, center - Math.sin(angle) * radius * factor].join(',');
-            }).join(' ');
-            return `<polygon points="${level}" fill="none" stroke="#cbd5e1" stroke-width="1" />`;
-          }).join('')}
-          ${labels.map((_, index) => {
-            const angle = Math.PI / 2 + (index * 2 * Math.PI) / labels.length;
-            const x = center + Math.cos(angle) * radius;
-            const y = center - Math.sin(angle) * radius;
-            return `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" stroke="#cbd5e1" stroke-width="1" />`;
-          }).join('')}
-          <polygon points="${points.map(p => p.join(',')).join(' ')}" fill="rgba(59,130,246,0.2)" stroke="#2563eb" stroke-width="2" />
-          ${points.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#2563eb" />`).join('')}
-          ${labels.map((label, index) => {
-            const angle = Math.PI / 2 + (index * 2 * Math.PI) / labels.length;
-            const x = center + Math.cos(angle) * (radius + 35);
-            const y = center - Math.sin(angle) * (radius + 35);
-            const anchor = Math.abs(Math.cos(angle)) < 0.1 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
-            const lines = wrapLabel(label);
-            return `<text x="${x}" y="${y}" text-anchor="${anchor}" dominant-baseline="middle" font-size="11" fill="#334155">${lines.map((line, lineIndex) => `<tspan x="${x}" dy="${lineIndex === 0 ? 0 : lineSpacing}">${line}</tspan>`).join('')}</text>`;
-          }).join('')}
-        </svg>
-      `;
-    }
-
-    function downloadProposal(id) {
-      const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
-      window.location.href = `${backend}/api/assessments/${id}/report/download`;
-    }
-
-    function uploadValidatedReport(event, id) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      console.log(`Geüpload gevalideerd rapport voor ${id}:`, file.name);
-      alert(`Geüpload: ${file.name} (placeholder)`);
-      event.target.value = '';
-    }
-
-    function downloadFinalReport(id) {
-      const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
-      window.location.href = `${backend}/api/assessments/${id}/report/download?final=true`;
-    }
-
-    function onConfigChange(config) {
-      document.getElementById('page-title').textContent = config.page_title || defaultConfig.page_title;
-    }
-
-    // Assessment Question View State
-    let questionViewState = {
-      currentQuestion: 1,
-      totalQuestions: 12,
-      selectedLevel: null,
-      answers: {},
-      assessmentId: null
-    };
-
-    const questionsData = [
-      {
-        id: 1,
-        title: "In hoeverre is de strategie formeel vastgesteld, gecommuniceerd en periodiek geëvalueerd?",
-        description: "Beschrijf of er een formele strategie bestaat en hoe deze wordt gecommuniceerd",
-        domain: "Governance"
-      },
-      {
-        id: 2,
-        title: "Hoe is het beleid geformaliseerd en gedocumenteerd?",
-        description: "Beschrijf hoe beleidsregels zijn vastgesteld en voor iedereen toegankelijk zijn",
-        domain: "Governance"
-      },
-      {
-        id: 3,
-        title: "Is er een roadmap voor de komende jaren?",
-        description: "Beschrijf de planning en tijdlijn voor komende initiatieven",
-        domain: "Strategie"
-      },
-      {
-        id: 4,
-        title: "Hoe is de architectuur opgebouwd?",
-        description: "Beschrijf de technische en organisatorische architectuur",
-        domain: "Architectuur"
-      },
-      {
-        id: 5,
-        title: "Hoe worden risico's beheerd?",
-        description: "Beschrijf het risicobeheersingsproces",
-        domain: "Risicobeheer"
-      },
-      {
-        id: 6,
-        title: "Zijn rollen en verantwoordelijkheden duidelijk?",
-        description: "Beschrijf hoe eigenaarschap is georganiseerd",
-        domain: "Organisatie"
-      },
-      {
-        id: 7,
-        title: "Is er scheiding van taken?",
-        description: "Beschrijf hoe functiescheiding is geïmplementeerd",
-        domain: "Governance"
-      },
-      {
-        id: 8,
-        title: "Hoe is procesinitiatief georganiseerd?",
-        description: "Beschrijf de procesorganisatie",
-        domain: "Processen"
-      },
-      {
-        id: 9,
-        title: "Hoe worden besluiten genomen?",
-        description: "Beschrijf het besluitvormingsproces",
-        domain: "Governance"
-      },
-      {
-        id: 10,
-        title: "Hoe is communicatie georganiseerd?",
-        description: "Beschrijf interne en externe communicatiekanalen",
-        domain: "Communicatie"
-      },
-      {
-        id: 11,
-        title: "Hoe wordt voortgang gemeten?",
-        description: "Beschrijf de metingen en KPI's",
-        domain: "Monitoring"
-      },
-      {
-        id: 12,
-        title: "Hoe werkt continue verbetering?",
-        description: "Beschrijf het verbeteringsproces",
-        domain: "Verbetering"
-      }
-    ];
-
-    function startAssessmentQuestions(assessmentId) {
-      questionViewState.assessmentId = assessmentId;
-      questionViewState.currentQuestion = 1;
-      questionViewState.selectedLevel = null;
-      questionViewState.answers = {};
-      renderQuestionView();
-      document.getElementById('dashboard-view').classList.add('hidden');
-      document.getElementById('assessment-detail-screen').classList.add('hidden');
-      document.getElementById('assessment-question-view').classList.remove('hidden');
-    }
-
-    function renderQuestionView() {
-      const question = questionsData[questionViewState.currentQuestion - 1];
-      const answeredCount = Object.keys(questionViewState.answers).filter(key => !key.startsWith('notes-')).length;
-      const progress = (questionViewState.currentQuestion / questionViewState.totalQuestions) * 100;
-
-      document.getElementById('assessment-question-view').innerHTML = `
-        <style>
-          .assessment-bg {
-            background: linear-gradient(135deg, #0d1628 0%, #14223e 100%);
-          }
-          .gradient-blur {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.1;
-          }
-          .gradient-blur-1 {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, #3c66b9 0%, transparent 70%);
-            top: 10%;
-            right: -10%;
-            filter: blur(100px);
-          }
-          .gradient-blur-2 {
-            width: 700px;
-            height: 700px;
-            background: radial-gradient(circle, #5a8fd6 0%, transparent 70%);
-            top: 20%;
-            left: -15%;
-            filter: blur(100px);
-          }
-          .maturity-button {
-            transition: all 0.2s ease;
-            border-color: #213764;
-            background-color: #14223e;
-          }
-          .maturity-button:hover {
-            border-color: #3c66b9;
-            background-color: rgba(60, 102, 185, 0.1);
-            transform: translateY(-2px);
-          }
-          .maturity-button.selected {
-            border-color: #3c66b9;
-            background: linear-gradient(135deg, rgba(60, 102, 185, 0.2) 0%, rgba(60, 102, 185, 0.05) 100%);
-            box-shadow: 0 0 20px rgba(60, 102, 185, 0.3);
-          }
-          .progress-bar {
-            width: ${progress}%;
-            height: 100%;
-            background-color: #3c66b9;
-            border-radius: 999px;
-            transition: width 0.3s ease;
-          }
-        </style>
-
-        <div class="fixed inset-0 assessment-bg">
-          <div class="gradient-blur gradient-blur-1"></div>
-          <div class="gradient-blur gradient-blur-2"></div>
-          
-          <!-- Header -->
-          <div class="relative z-10 border-b border-slate-700 bg-slate-900/50 backdrop-blur">
-            <div class="px-32 py-5 flex items-center justify-between">
-              <div class="flex flex-col gap-1">
-                <p class="text-xs font-medium text-slate-400">Vraag ${questionViewState.currentQuestion} van ${questionViewState.totalQuestions}</p>
-                <p class="text-lg font-semibold text-white">Domein: ${question.domain}</p>
-              </div>
-              <button onclick="closeQuestionView()" class="px-4 py-2 rounded-lg border border-slate-700 bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 transition">
-                Opslaan & later verder
-              </button>
-            </div>
-            <!-- Progress bar -->
-            <div class="px-32 pb-4">
-              <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                <div class="progress-bar"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Main content -->
-          <div class="relative z-10 flex flex-col min-h-[calc(100vh-200px)] px-32 py-12 overflow-y-auto">
-            <div class="flex-1">
-              <!-- Question title -->
-              <div class="mb-8">
-                <h1 class="text-2xl md:text-3xl font-semibold text-white leading-relaxed mb-3">
-                  ${question.title}
-                </h1>
-                <p class="text-base text-slate-300">
-                  ${question.description}
-                </p>
-              </div>
-
-              <!-- Maturity level selector -->
-              <div class="mb-10">
-                <label class="block text-sm font-medium text-white mb-4">Selecteer maturity niveau (1-5)</label>
-                
-                <div class="grid grid-cols-5 gap-4" id="maturity-buttons">
-                  ${[1, 2, 3, 4, 5].map(level => {
-                    const descriptions = [
-                      { name: 'Ad hoc', desc: 'Initieel, ad-hoc uitvoering' },
-                      { name: 'Gestructureerd', desc: 'Gestructureerd en gedocumenteerd' },
-                      { name: 'Effectief', desc: 'Effectief en aantoonbaar' },
-                      { name: 'Periodiek beoordeeld', desc: 'Periodiek gemeten en verbeterd' },
-                      { name: 'Geoptimaliseerd', desc: 'Continue optimalisatie' }
-                    ];
-                    const desc = descriptions[level - 1];
-                    const isSelected = questionViewState.selectedLevel === level ? 'selected' : '';
-                    return `
-                      <button class="maturity-button ${isSelected} p-6 rounded-2xl border-2 border-solid flex flex-col items-center justify-center transition" onclick="selectMaturityLevel(${level})" data-level="${level}">
-                        <p class="text-4xl font-bold text-white mb-2">${level}</p>
-                        <p class="text-sm font-medium text-white mb-2 text-center">${desc.name}</p>
-                        <p class="text-xs text-slate-400 text-center">${desc.desc}</p>
-                      </button>
-                    `;
-                  }).join('')}
-                </div>
-              </div>
-
-              <!-- Notes textarea -->
-              <div class="mb-12">
-                <label class="block text-sm font-medium text-white mb-3">Toelichting / voorbeelden (optioneel)</label>
-                <textarea id="notes-textarea" placeholder="Voeg hier aanvullende context of voorbeelden toe..." class="w-full h-32 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none">${questionViewState.answers[`notes-${questionViewState.currentQuestion}`] || ''}</textarea>
-              </div>
-            </div>
-
-            <!-- Navigation footer -->
-            <div class="border-t border-slate-700 pt-6 flex items-center justify-between pb-6">
-              <button onclick="previousQuestion()" ${questionViewState.currentQuestion === 1 ? 'disabled' : ''} class="px-6 py-3 rounded-lg border border-slate-700 bg-slate-900 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition">
-                ← Vorige
-              </button>
-              
-              <div class="flex items-center gap-2">
-                <p class="text-sm text-slate-400">
-                  ${answeredCount} van ${questionViewState.totalQuestions} vragen beantwoord
-                </p>
-              </div>
-
-              <button onclick="nextQuestion()" class="px-6 py-3 rounded-lg bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 transition">
-                Volgende →
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
-
-      // Reattach event listeners
-      const textarea = document.getElementById('notes-textarea');
-      if (textarea) {
-        textarea.addEventListener('blur', () => {
-          questionViewState.answers[`notes-${questionViewState.currentQuestion}`] = textarea.value;
-        });
-      }
-    }
-
-    function selectMaturityLevel(level) {
-      questionViewState.selectedLevel = level;
-      questionViewState.answers[questionViewState.currentQuestion] = level;
-      renderQuestionView();
-    }
-
-    function nextQuestion() {
-      saveCurrentNotes();
-      if (questionViewState.currentQuestion < questionViewState.totalQuestions) {
-        questionViewState.currentQuestion++;
-        questionViewState.selectedLevel = questionViewState.answers[questionViewState.currentQuestion] || null;
-        renderQuestionView();
-      }
-    }
-
-    function previousQuestion() {
-      saveCurrentNotes();
-      if (questionViewState.currentQuestion > 1) {
-        questionViewState.currentQuestion--;
-        questionViewState.selectedLevel = questionViewState.answers[questionViewState.currentQuestion] || null;
-        renderQuestionView();
-      }
-    }
-
-    function saveCurrentNotes() {
-      const textarea = document.getElementById('notes-textarea');
-      if (textarea) {
-        questionViewState.answers[`notes-${questionViewState.currentQuestion}`] = textarea.value;
-      }
-    }
-
-    function closeQuestionView() {
-      saveCurrentNotes();
-      if (selectedAssessment) {
-        renderAssessmentDetail();
-        document.getElementById('dashboard-view').classList.add('hidden');
-        document.getElementById('assessment-detail-screen').classList.remove('hidden');
-        document.getElementById('assessment-question-view').classList.add('hidden');
-      } else {
-        closeDetail();
-      }
-    }
-
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange,
-        mapToCapabilities: () => ({ recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined }),
-        mapToEditPanelValues: (config) => new Map([['page_title', config.page_title || defaultConfig.page_title]])
-      });
-    }
-
-    let companies = [];
-let users = [];
-
-async function fetchCompanies() {
-
-  const response =
-    await fetch(
-      `${defaultConfig.backend_url}/api/companies`
-    );
-
-  companies = await response.json();
-
-}
-
-async function fetchUsers() {
-
-  try {
-
-    const response = await fetch(
-      `${defaultConfig.backend_url}/api/users`
-    );
-
-    if (!response.ok) {
-      console.warn("Users API error");
       users = [];
-      return;
+
     }
-
-    const data = await response.json();
-
-    users = Array.isArray(data) ? data : [];
-
-  } catch (err) {
-
-    console.error("fetchUsers crash:", err);
-
-    users = [];
 
   }
 
-}
+
+  function openCampaignModal() {
+
+    renderCompanies();
+    renderParticipants();
+
+    document
+      .getElementById("campaign-modal")
+      .classList
+      .remove("hidden");
+
+  }
+
+  function closeCampaignModal() {
+
+    document
+      .getElementById("campaign-modal")
+      .classList
+      .add("hidden");
+
+  }
+
+  function renderCompanies() {
+
+    const select =
+      document.getElementById("campaign-company");
+
+    if (!select) return; // ✅ voorkomt crash
+
+    select.innerHTML =
+      companies.map(company => `
+        <option value="${company.company_id}">
+          ${company.company_name}
+        </option>
+      `).join("");
+
+  }
 
 
-function openCampaignModal() {
+  function renderParticipants() {
 
-  renderCompanies();
-  renderParticipants();
+    const container =
+      document.getElementById("participants-list");
 
-  document
-    .getElementById("campaign-modal")
-    .classList
-    .remove("hidden");
+    if (!container) return; // ✅ ook hier
 
-}
+    const participants =
+      users.filter(user => user.role === "participant");
 
-function closeCampaignModal() {
+    container.innerHTML =
+      participants.map(user => `
+        <label class="flex items-center gap-3">
+          <input type="checkbox" value="${user.user_id}" class="participant-checkbox" />
+          <span>${user.first_name} ${user.last_name}</span>
+        </label>
+      `).join("");
 
-  document
-    .getElementById("campaign-modal")
-    .classList
-    .add("hidden");
-
-}
-
-function renderCompanies() {
-
-  const select =
-    document.getElementById("campaign-company");
-
-  if (!select) return; // ✅ voorkomt crash
-
-  select.innerHTML =
-    companies.map(company => `
-      <option value="${company.company_id}">
-        ${company.company_name}
-      </option>
-    `).join("");
-
-}
+  }
 
 
-function renderParticipants() {
+  async function createCampaign() {
 
-  const container =
-    document.getElementById("participants-list");
+    try {
 
-  if (!container) return; // ✅ ook hier
-
-  const participants =
-    users.filter(user => user.role === "participant");
-
-  container.innerHTML =
-    participants.map(user => `
-      <label class="flex items-center gap-3">
-        <input type="checkbox" value="${user.user_id}" class="participant-checkbox" />
-        <span>${user.first_name} ${user.last_name}</span>
-      </label>
-    `).join("");
-
-}
-
-
-async function createCampaign() {
-
-  try {
-
-    const title =
-      document.getElementById(
-        "campaign-title"
-      ).value;
-
-    const company_id =
-      Number(
+      const title =
         document.getElementById(
-          "campaign-company"
-        ).value
-      );
+          "campaign-title"
+        ).value;
 
-    const participant_ids =
-      Array.from(
-        document.querySelectorAll(
-          ".participant-checkbox:checked"
-        )
-      ).map(el => Number(el.value));
+      const company_id =
+        Number(
+          document.getElementById(
+            "campaign-company"
+          ).value
+        );
 
-    const response =
-      await fetch(
-        `${defaultConfig.backend_url}/api/campaigns`,
-        {
-          method: "POST",
+      const participant_ids =
+        Array.from(
+          document.querySelectorAll(
+            ".participant-checkbox:checked"
+          )
+        ).map(el => Number(el.value));
 
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
+      const response =
+        await fetch(
+          `${defaultConfig.backend_url}/api/campaigns`,
+          {
+            method: "POST",
 
-          body: JSON.stringify({
-            title,
-            company_id,
-            participant_ids
-          })
-        }
-      );
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
 
-    const data =
-      await response.json();
+            body: JSON.stringify({
+              title,
+              company_id,
+              participant_ids
+            })
+          }
+        );
 
-    console.log(data);
+      const data =
+        await response.json();
 
-    if (!response.ok) {
+      console.log(data);
+
+      if (!response.ok) {
+
+        alert(
+          data.error ||
+          "Campaign aanmaken mislukt."
+        );
+
+        return;
+
+      }
 
       alert(
-        data.error ||
-        "Campaign aanmaken mislukt."
+        "Campaign aangemaakt ✅"
       );
 
-      return;
+      closeCampaignModal();
+
+      window.location.reload();
+
+    } catch (err) {
+
+      console.error(err);
+
+      alert(
+        "Serverfout bij aanmaken van campaign."
+      );
 
     }
 
-    alert(
-      "Campaign aangemaakt ✅"
-    );
+  }
 
-    closeCampaignModal();
+      initialize();
 
-    window.location.reload();
+      function logout() {
 
-  } catch (err) {
+    localStorage.removeItem("token");
 
-    console.error(err);
+    localStorage.removeItem("user");
 
-    alert(
-      "Serverfout bij aanmaken van campaign."
-    );
+    window.location.href =
+      "./login.html";
 
   }
 
-}
+  async function createCompany() {
 
-    initialize();
+    try {
 
-    function logout() {
+      const company_name =
+        document.getElementById("company-name").value;
 
-  localStorage.removeItem("token");
+      const address =
+        document.getElementById("company-address").value;
 
-  localStorage.removeItem("user");
+      const city =
+        document.getElementById("company-city").value;
 
-  window.location.href =
-    "./login.html";
+      const postcode =
+        document.getElementById("company-postcode").value;
 
-}
+      const response =
+        await fetch(
+          `${defaultConfig.backend_url}/api/companies`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              company_name,
+              address: address || null,
+              city: city || null,
+              postcode: postcode || null
+            })
+          }
+        );
 
-async function createCompany() {
+      const data = await response.json();
 
-  try {
+      if (!response.ok) {
+        alert(data.error || "Fout bij aanmaken bedrijf");
+        return;
+      }
 
-    const company_name =
-      document.getElementById("company-name").value;
+      alert("Bedrijf aangemaakt ✅");
 
-    const address =
-      document.getElementById("company-address").value;
+      closeCompanyModal();
 
-    const city =
-      document.getElementById("company-city").value;
+      await fetchCompanies();   // ✅ ophalen uit DB
+      renderCompanyCards();     // ✅ direct zichtbaar
 
-    const postcode =
-      document.getElementById("company-postcode").value;
+    } catch (err) {
 
-    const response =
-      await fetch(
-        `${defaultConfig.backend_url}/api/companies`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            company_name,
-            address: address || null,
-            city: city || null,
-            postcode: postcode || null
-          })
-        }
-      );
+      console.error(err);
+      alert("Serverfout bij aanmaken bedrijf");
 
-    const data = await response.json();
+    }
+
+  }
+  let selectedCompanyIdForUser = null;
+
+  function openUserModal(companyId) {
+    selectedCompanyIdForUser = companyId;
+    document.getElementById("user-modal").classList.remove("hidden");
+  }
+
+  function closeUserModal() {
+    document.getElementById("user-modal").classList.add("hidden");
+  }
+  async function createUser() {
+
+    const first_name = document.getElementById("user-first").value;
+    const last_name = document.getElementById("user-last").value;
+    const email = document.getElementById("user-email").value;
+    const role_description =
+    document.getElementById("user-function").value;
+
+    const response = await fetch(
+      `${defaultConfig.backend_url}/api/users`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          first_name,
+          last_name,
+          email,
+          role: "participant", // ✅ hardcoded
+          role_description,
+          company_id: selectedCompanyIdForUser
+        })
+      }
+    );
 
     if (!response.ok) {
-      alert(data.error || "Fout bij aanmaken bedrijf");
+      alert("Fout bij aanmaken medewerker");
       return;
     }
 
-    alert("Bedrijf aangemaakt ✅");
+    alert("Medewerker aangemaakt ✅");
 
-    closeCompanyModal();
+    closeUserModal();
 
-    await fetchCompanies();   // ✅ ophalen uit DB
-    renderCompanyCards();     // ✅ direct zichtbaar
-
-  } catch (err) {
-
-    console.error(err);
-    alert("Serverfout bij aanmaken bedrijf");
+    await fetchUsers();
+    renderCompanyDashboard();
 
   }
 
-}
-let selectedCompanyIdForUser = null;
-
-function openUserModal(companyId) {
-  selectedCompanyIdForUser = companyId;
-  document.getElementById("user-modal").classList.remove("hidden");
-}
-
-function closeUserModal() {
-  document.getElementById("user-modal").classList.add("hidden");
-}
-async function createUser() {
-
-  const first_name = document.getElementById("user-first").value;
-  const last_name = document.getElementById("user-last").value;
-  const email = document.getElementById("user-email").value;
-  const role_description =
-  document.getElementById("user-function").value;
-
-  const response = await fetch(
-    `${defaultConfig.backend_url}/api/users`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        first_name,
-        last_name,
-        email,
-        role: "participant", // ✅ hardcoded
-        role_description,
-        company_id: selectedCompanyIdForUser
-      })
-    }
-  );
-
-  if (!response.ok) {
-    alert("Fout bij aanmaken medewerker");
-    return;
-  }
-
-  alert("Medewerker aangemaakt ✅");
-
-  closeUserModal();
-
-  await fetchUsers();
-  renderCompanyDashboard();
-
-}
-
-  </script>
-</body>
-</html>
+    </script>
+  </body>
+  </html>
