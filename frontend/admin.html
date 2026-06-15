@@ -2516,6 +2516,42 @@
 
   }
 
+  async function saveReport(campaignId) {
+
+  try {
+
+    const report =
+      document.getElementById("reportEditor").value;
+
+    const response = await fetch(
+      `${defaultConfig.backend_url}/api/campaigns/${campaignId}/report`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ report })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || "Opslaan mislukt");
+      return;
+    }
+
+    alert("Rapport opgeslagen ✅");
+
+  } catch (err) {
+
+    console.error(err);
+    alert("Serverfout");
+
+  }
+  await viewCampaign(campaignId);
+}
+
     </script>
   </body>
   </html>
