@@ -335,7 +335,7 @@
       };
 
       let assessments = [];
-      let selectedAssessment = null;
+      let selectedAssessment = [];
       let selectedCompany = null;
       let currentTab = 'overview';
       let campaigns = [];
@@ -1342,20 +1342,53 @@
   }
 
       async function viewAssessment(id) {
-        const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
-        try {
-          const response = await fetch(`${backend}/api/assessments/${id}`);
-          if (!response.ok) throw new Error('Assessment niet gevonden');
-          selectedAssessment = await response.json();
-        } catch (error) {
-          selectedAssessment = assessments.find(item => item.id === id) || null;
-        }
-        selectedCompany = null;
-        if (!selectedAssessment) return;
-        renderAssessmentDetail();
-        document.getElementById('dashboard-view').classList.add('hidden');
-        document.getElementById('assessment-detail-screen').classList.remove('hidden');
-      }
+
+  const backend =
+    (window.elementSdk?.config?.backend_url || defaultConfig.backend_url)
+      .replace(/\/$/, '');
+
+  try {
+
+    // ✅ juiste endpoint gebruiken
+    const response =
+      await fetch(`${backend}/api/results/${id}`);
+
+    if (!response.ok) {
+      throw new Error('Assessment niet gevonden');
+    }
+
+    const data = await response.json();
+
+    // ✅ BELANGRIJK
+    selectedAssessment = data.session;
+    selectedAnswers = data.answers || [];
+
+
+  } catch (error) {
+
+    console.warn("Fallback naar lokale data");
+
+    selectedAssessment =
+      assessments.find(item => item.id === id) || null;
+
+    selectedAnswers = [];
+
+  }
+
+  selectedCompany = null;
+
+  if (!selectedAssessment) return;
+
+  renderAssessmentDetail();
+
+  document
+    .getElementById('dashboard-view')
+    .classList.add('hidden');
+
+  document
+    .getElementById('assessment-detail-screen')
+    .classList.remove('hidden');
+}
 
       function viewCompany(companyId) {
 
@@ -1743,82 +1776,134 @@
       }
 
       function renderAssessmentDetail() {
-        const assessment = selectedAssessment;
-        const showReportSection =
-    !['NOT_STARTED', 'IN_PROGRESS'].includes(assessment.status);
-        let reportHTML = '';
-        if (showReportSection) {
-          let actionButtons = `<button onclick="downloadProposal('${assessment.id}')" class="rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">Download voorstel</button>`;
-          if (assessment.status === 'In afwachting van rapport') {
-            actionButtons += `<label class="cursor-pointer inline-flex items-center justify-center rounded-xl bg-amber-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-amber-700"><input type="file" accept=".pdf,.docx" onchange="uploadValidatedReport(event, '${assessment.id}')" class="hidden" />Upload rapport</label>`;
-          } else if (assessment.status === 'Afgerond') {
-            actionButtons += `<button onclick="downloadFinalReport('${assessment.id}')" class="rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-teal-700">Download eindrapport</button>`;
-          }
-          reportHTML = `
-              <div class="rounded-3xl bg-gradient-to-br from-blue-50 to-blue-100 p-6 shadow-sm ring-1 ring-blue-200">
-                <h3 class="text-lg font-semibold text-blue-900 mb-4">AI voorstel rapport</h3>
-                <p class="text-sm text-slate-700 leading-6">${assessment.report_suggestion}</p>
-                <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-                  ${actionButtons}
-                </div>
-              </div>`;
-        }
-        let summaryHTML = '';
-        if (showReportSection) {
-          summaryHTML = `
-              <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <h3 class="text-lg font-semibold text-slate-900 mb-4">Samenvatting</h3>
-                <p class="text-sm text-slate-600 leading-6">${assessment.details || 'Geen extra details beschikbaar.'}</p>
-              </div>`;
-        }
-        document.getElementById('assessment-detail-screen').innerHTML = `
-          <div class="flex items-center gap-4 mb-4">
-            <button onclick="closeDetail()" class="flex items-center gap-2 text-sm font-semibold text-blue-600 hover:opacity-80">
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg> Terug
-            </button>
-            <div>
-              <h2 class="text-2xl font-semibold text-slate-900">${assessment.company_name}</h2>
-            </div>
+
+  const assessment = selectedAssessment;
+
+  document.getElementById('assessment-detail-screen').innerHTML = `
+    
+    <!-- TERUG -->
+    <div class="flex items-center gap-4 mb-4">
+      <button onclick="closeDetail()" class="flex items-center gap-2 text-sm font-semibold text-blue-600 hover:opacity-80">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Terug
+      </button>
+
+      <h2 class="text-2xl font-semibold text-slate-900">
+        ${assessment.company_name}
+      </h2>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid gap-6 xl:grid-cols-3">
+
+      <!-- LINKS -->
+      <div class="xl:col-span-2 space-y-6">
+
+        <!-- SPIDER -->
+        <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+
+          <h3 class="text-lg font-semibold mb-4">
+            Spiderchart
+          </h3>
+
+          <div class="flex justify-center">
+            <div id="spider-chart" class="max-w-[420px] w-full"></div>
           </div>
 
-          <div class="grid gap-6 xl:grid-cols-3">
-            <div class="xl:col-span-2 space-y-6">
-              <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <h3 class="text-lg font-semibold text-slate-900">Spiderchart</h3>
-                    <p class="text-sm text-slate-600">Visualiseer de maturity domeinen van dit assessment.</p>
-                  </div>
-                </div>
-                <div class="mt-6 flex justify-center">
-                  <div id="spider-chart" class="max-w-[420px] w-full"></div>
-                </div>
-              </div>
-              ${reportHTML}
+        </div>
+
+        <!-- ✅ ANTWOORDEN -->
+        <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+
+          <h3 class="text-lg font-semibold mb-4">
+            Gegeven antwoorden
+          </h3>
+
+          <div id="answers-container"></div>
+
+        </div>
+
+      </div>
+
+      <!-- RECHTS -->
+      <div>
+
+        <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+
+          <h3 class="text-lg font-semibold mb-4">
+            Details
+          </h3>
+
+          <div class="space-y-2 text-sm">
+
+            <div class="flex justify-between">
+              <span>Titel</span>
+              <span class="font-semibold">
+                ${assessment.campaign_title || '-'}
+              </span>
             </div>
 
-            <div class="space-y-6">
-              <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <h3 class="text-lg font-semibold text-slate-900 mb-4">Details</h3>
-                <div class="space-y-3 text-sm text-slate-600">
-                  <div class="flex justify-between"><span>Status</span><span class="font-semibold text-slate-900">
-    ${statusMapNL[assessment.status] || assessment.status}
-  </span></div>
-                  <div class="flex justify-between"><span>Maturity score</span><span class="font-semibold text-slate-900">${assessment.average_score}</span></div>
-                  <div class="flex justify-between"><span>Maturity Niveau</span><span class="font-semibold text-slate-900">${getMaturityLabel(assessment.average_score)}</span></div>
-                  <div class="flex justify-between"><span>Datum</span><span class="font-semibold text-slate-900">${new Date(assessment.assessment_date).toLocaleDateString('nl-NL')}</span></div>
-                  <div class="flex justify-between"><span>Laatste update</span><span class="font-semibold text-slate-900">${formatDutchDate(assessment.last_updated)}</span></div>
-                </div>
-                <button onclick="startAssessmentQuestions('${assessment.id}')" class="mt-6 w-full py-2 px-4 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition">
-                  Beantwoord vragen
-                </button>
-              </div>
-              ${summaryHTML}
+            <div class="flex justify-between">
+              <span>Maturity score</span>
+              <span class="font-semibold text-emerald-600">
+                ${assessment.average_score}
+              </span>
             </div>
+
+            <div class="flex justify-between">
+              <span>Naam</span>
+              <span class="font-semibold">
+                ${assessment.first_name || ''} ${assessment.last_name || ''}
+              </span>
+            </div>
+
+            <div class="flex justify-between">
+              <span>Datum</span>
+              <span class="font-semibold">
+                ${new Date(assessment.assessment_date).toLocaleDateString('nl-NL')}
+              </span>
+            </div>
+
+            <!-- STATUS ONDERAAN -->
+            <div class="flex justify-between mt-4 pt-3 border-t">
+
+              <span class="text-slate-500">Status</span>
+
+              <span class="inline-block px-2.5 py-1 text-xs font-medium rounded-full
+                ${
+                  assessment.status === 'RESULTS_READY'
+                    ? 'bg-teal-100 text-teal-700'
+                    : assessment.status === 'IN_PROGRESS'
+                    ? 'bg-blue-100 text-blue-700'
+                    : assessment.status === 'WAITING_FOR_REPORT'
+                    ? 'bg-amber-100 text-amber-700'
+                    : 'bg-slate-100 text-slate-700'
+                }">
+
+                ${statusMapNL[assessment.status] || assessment.status}
+
+              </span>
+
+            </div>
+
           </div>
-        `;
-        renderSpiderChart(assessment.spider_scores);
-      }
+
+        </div>
+
+      </div>
+
+    </div>
+  `;
+
+  // ✅ SPIDERCHART
+  renderSpiderChart(assessment.spider_scores);
+
+
+  // ✅ ANTWOORDEN RENDEREN
+  renderAnswers(selectedAnswers);
+}
 
       function closeDetail() {
         document.getElementById('dashboard-view').classList.remove('hidden');
@@ -1897,6 +1982,57 @@
           </svg>
         `;
       }
+
+function renderAnswers(answers) {
+
+  const container = document.getElementById("answers-container");
+
+  if (!container) return;
+
+  if (!answers || answers.length === 0) {
+    container.innerHTML = `
+      <div class="text-sm text-slate-500">
+        Geen antwoorden beschikbaar
+      </div>
+    `;
+    return;
+  }
+
+  const labels = {
+    1: "Ad hoc",
+    2: "Gestructureerd",
+    3: "Effectief",
+    4: "Periodiek beoordeeld",
+    5: "Geoptimaliseerd"
+  };
+
+  container.innerHTML = "";
+
+  answers.forEach(a => {
+
+    let text = "";
+
+    if (a.score !== null) {
+      text = `Niveau ${a.score} – ${labels[a.score]}`;
+    } else if (a.comment) {
+      text = a.comment;
+    }
+
+    container.innerHTML += `
+      <div class="border-b py-3">
+
+        <div class="text-sm font-medium text-slate-800">
+          Vraag ${a.question_id}: ${a.question_text}
+        </div>
+
+        <div class="text-sm text-slate-600 mt-1">
+          ${text}
+        </div>
+
+      </div>
+    `;
+  });
+}
 
       function downloadProposal(id) {
         const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
