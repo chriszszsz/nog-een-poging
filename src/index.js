@@ -1036,6 +1036,148 @@ app.put("/api/campaigns/:id/report", async (req, res) => {
 });
 
 /* =========================
+   DOWNLOAD REPORT
+========================= */
+
+app.get(
+  "/api/campaigns/:id/report/download",
+  authMiddleware,
+  async (req, res) => {
+
+    try {
+
+      const campaign_id = req.params.id;
+
+      const result = await pool.query(`
+        SELECT title, report
+        FROM assessment_campaigns
+        WHERE campaign_id = $1
+      `, [campaign_id]);
+
+      if (result.rows.length === 0) {
+        return res.status(404).send("Geen rapport");
+      }
+
+      const { title, report } = result.rows[0];
+
+      // ✅ download bestand triggeren
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${title || 'rapport'}.html"`
+      );
+
+      res.setHeader(
+        "Content-Type",
+        "text/html"
+      );
+
+      res.send(`
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>${title}</title>
+          <style>
+            body {
+              font-family: Arial;
+              padding: 40px;
+              line-height: 1.6;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>${title}</h1>
+          <div>${report.replace(/\n/g, "<br>")}</div>
+        </body>
+        </html>
+      `);
+
+    } catch (err) {
+
+      console.error(err);
+
+      res.status(500).send("Serverfout");
+
+    }
+
+  }
+);
+
+/* =========================
+   SEND CAMPAIGN REPORT
+========================= */
+
+app.post("/api/campaigns/:id/send", async (req, res) => {
+
+  try {
+
+    const campaign_id = req.params.id;
+
+    // ✅ Zet alle deelnemers op RESULTS_READY
+    await pool.query(`
+      UPDATE campaign_participants
+      SET status = 'RESULTS_READY'
+      WHERE campaign_id = $1
+    `, [campaign_id]);
+
+    res.json({
+      success: true
+    });
+
+  } catch (err) {
+
+    console.error("SEND REPORT ERROR:", err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
+});
+
+/* =========================
+   GET CAMPAIGN REPORT
+========================= */
+
+app.get(
+  "/api/campaigns/:id/report",
+  authMiddleware,
+  async (req, res) => {
+
+    try {
+
+      const campaign_id = req.params.id;
+
+      const result = await pool.query(`
+        SELECT
+          report,
+          title
+        FROM assessment_campaigns
+        WHERE campaign_id = $1
+      `, [campaign_id]);
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({
+          error: "Report niet gevonden"
+        });
+      }
+
+      res.json(result.rows[0]);
+
+    } catch (err) {
+
+      console.error(err);
+
+      res.status(500).json({
+        error: err.message
+      });
+
+    }
+
+  }
+);
+
+/* =========================
    GET LATEST RESULT
 ========================= */
 

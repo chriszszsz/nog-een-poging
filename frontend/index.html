@@ -584,7 +584,7 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
   <div class="page" id="page-resultaten">
     <div class="res-topbar">
       <div><div class="lbl">Assessment datum</div><div class="res-date">15 maart 2026</div></div>
-      <button class="btn btn-primary" style="margin-top:8px;">⬇ Download rapport</button>
+      <div id="download-container"></div>
     </div>
     <div class="res-stats">
       <div class="res-stat"><div class="rs-label">Gemiddelde score</div><div class="rs-val">2.7 <span>/ 5.0</span></div></div>
@@ -1109,6 +1109,19 @@ async function openResult(id) {
 
 }
 
+function downloadReport() {
+
+  if (!selectedResult) return;
+
+  const campaignId =
+    selectedResult.session.campaign_id;
+
+  window.location.href =
+    `${backend}/api/campaigns/${campaignId}/report/download`;
+
+}
+
+
 function renderResultDetail() {
 
   if (!selectedResult) return;
@@ -1163,7 +1176,7 @@ function renderResultDetail() {
 
     let text = "";
 
-    // ✅ GESLOTEN VRAAG → score + betekenis uit DB
+    // ✅ gesloten vraag
     if (a.score !== null) {
 
       text =
@@ -1171,7 +1184,7 @@ function renderResultDetail() {
 
     }
 
-    // ✅ OPEN VRAAG → alleen tekst
+    // ✅ open vraag
     else if (a.comment) {
 
       text = a.comment;
@@ -1191,10 +1204,35 @@ function renderResultDetail() {
 
   });
 
+  /* =========================================
+     ✅ DOWNLOAD BUTTON LOGIC
+  ========================================= */
+
+  const downloadContainer =
+  document.getElementById("download-container");
+
+if (!downloadContainer) return;
+
+if (session.status === "RESULTS_READY") {
+
+  downloadContainer.innerHTML = `
+    <button
+      class="btn btn-primary"
+      onclick="downloadReport()"
+    >
+      ⬇ Download rapport
+    </button>
+  `;
+
+} else {
+
+  downloadContainer.innerHTML = "";
+
+}
 }
 
 /* =========================================
-   RENDER RESULTSe
+   RENDER RESULTS
 ========================================= */
 
 function renderResults() {

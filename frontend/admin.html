@@ -2697,6 +2697,39 @@ function renderAnswers(answers) {
   }
 }
 
+async function sendReport(campaignId) {
+
+  try {
+
+    const response = await fetch(
+      `${defaultConfig.backend_url}/api/campaigns/${campaignId}/send`,
+      {
+        method: "POST"
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || "Versturen mislukt");
+      return;
+    }
+
+    alert("Rapport verstuurd ✅");
+
+    // ✅ opnieuw laden zodat status verandert
+    await viewCampaign(campaignId);
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Serverfout");
+
+  }
+
+}
+
     </script>
   </body>
   </html>
