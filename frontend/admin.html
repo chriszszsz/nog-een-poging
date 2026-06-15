@@ -1396,18 +1396,18 @@ async function viewCampaign(id) {
     <div class="grid gap-6 md:grid-cols-3">
 
       <!-- SPIDERCHART -->
-      <div class="md:col-span-2 bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200">
+      <div class="bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200 h-full">
 
         <h3 class="text-lg font-semibold mb-4">
           Spiderchart
         </h3>
 
-        <div id="campaign-spider-chart"></div>
+        <div id="campaign-spider-chart" class="flex justify-center"></div>
 
       </div>
 
       <!-- SUMMARY -->
-      <div class="bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200">
+      <div class="bg-white p-6 rounded-3xl shadow-sm ring-1 ring-slate-200 h-fit">
 
         <h3 class="font-semibold text-lg mb-4">
           Details
@@ -1432,9 +1432,7 @@ async function viewCampaign(id) {
 
           <div class="flex justify-between">
             <span>Gemiddelde score</span>
-            <span class="text-emerald-600 font-bold text-lg">
-  ${aggregated.average_score}
-</span>
+            <span class="font-semibold">${aggregated.average_score || '-'}</span>
           </div>
 
         </div>
@@ -1505,7 +1503,7 @@ async function viewCampaign(id) {
 
       <textarea
         id="reportEditor"
-        class="w-full border rounded-lg p-4 font-mono text-sm"
+        class="w-full border rounded-lg p-4"
         style="height:300px;"
       >${campaign.report || ""}</textarea>
 
@@ -1812,9 +1810,9 @@ async function viewCampaign(id) {
   if (!chart) return;
       const labels = Object.keys(scores);
       const values = Object.values(scores);
-      const size = 520;
+      const size = 400;
       const center = size / 2;
-      const radius = 170;
+      const radius = 120;
       const maxLabelChars = 28;
       const lineSpacing = 10;
       const points = values.map((value, index) => {
@@ -1857,8 +1855,8 @@ async function viewCampaign(id) {
           ${points.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#2563eb" />`).join('')}
           ${labels.map((label, index) => {
             const angle = Math.PI / 2 + (index * 2 * Math.PI) / labels.length;
-            const x = center + Math.cos(angle) * (radius + 42);
-            const y = center - Math.sin(angle) * (radius + 42);
+            const x = center + Math.cos(angle) * (radius + 25);
+            const y = center - Math.sin(angle) * (radius + 25);
             const anchor = Math.abs(Math.cos(angle)) < 0.1 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
             const lines = wrapLabel(label);
             return `<text x="${x}" y="${y}" text-anchor="${anchor}" dominant-baseline="middle" font-size="9" fill="#334155">${lines.map((line, lineIndex) => `<tspan x="${x}" dy="${lineIndex === 0 ? 0 : lineSpacing}">${line}</tspan>`).join('')}</text>`;
