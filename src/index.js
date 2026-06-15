@@ -1702,6 +1702,66 @@ Schrijf daarom een geïntegreerd adviesrapport dat leest als het werk van een er
 async function generateCampaignReport(campaign_id) {
 
   try {
+    // ✅ 0. Haal aggregated data uit sessions
+const sessionsResult = await pool.query(`
+  SELECT average_score, spider_scores
+  FROM assessment_sessions
+  WHERE campaign_id = $1
+`, [campaign_id]);
+
+const sessions = sessionsResult.rows;
+
+/* =========================
+   ✅ AGGREGATE AVERAGE
+========================= */
+
+let avg = 0;
+
+if (sessions.length > 0) {
+
+  const total =
+    sessions.reduce((sum, s) =>
+      sum + Number(s.average_score || 0), 0);
+
+  avg =
+    Number((total / sessions.length).toFixed(1));
+
+}
+
+/* =========================
+   ✅ AGGREGATE SPIDER
+========================= */
+
+const spiderMap = {};
+
+sessions.forEach(s => {
+
+  let scores =
+    typeof s.spider_scores === "string"
+      ? JSON.parse(s.spider_scores)
+      : s.spider_scores;
+
+  if (!scores) return;
+
+  Object.entries(scores).forEach(([key, value]) => {
+
+    if (!spiderMap[key]) {
+      spiderMap[key] = { total: 0, count: 0 };
+    }
+
+    spiderMap[key].total += Number(value);
+    spiderMap[key].count += 1;
+
+  });
+
+});
+
+const aggregatedSpider = {};
+
+Object.entries(spiderMap).forEach(([key, val]) => {
+  aggregatedSpider[key] =
+    Number((val.total / val.count).toFixed(2));
+});
 
     // 1. Haal ALLE antwoorden + rol
     const result = await pool.query(`
@@ -1833,12 +1893,21 @@ Gebruik de data zoals gegeven — maak geen aannames buiten de data.
     const report = response.choices[0].message.content;
 
 
-    // 5. Opslaan
-    await pool.query(`
-      UPDATE assessment_campaigns
-      SET report = $1
-      WHERE campaign_id = $2
-    `, [report, campaign_id]);
+    // ✅ 5. Opslaan (NIEUW)
+await pool.query(`
+  UPDATE assessment_campaigns
+  SET
+    report = $1,
+    average_score = $2,
+    spider_scores = $3,
+    results_ready = TRUE
+  WHERE campaign_id = $4
+`, [
+  report,
+  avg,
+  aggregatedSpider,
+  campaign_id
+]);
 
     // 6. Status update
     await pool.query(`
