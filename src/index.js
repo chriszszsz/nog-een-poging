@@ -910,37 +910,6 @@ app.get("/api/campaigns/:id/details", async (req, res) => {
     const campaign = campaignResult.rows[0];
 
 
-  /* =========================
-   SAVE CAMPAIGN REPORT
-========================= */
-
-app.put("/api/campaigns/:id/report", async (req, res) => {
-  try {
-    const campaign_id = req.params.id;
-    const { report } = req.body;
-
-    await pool.query(
-      `
-      UPDATE assessment_campaigns
-      SET report = $1
-      WHERE campaign_id = $2
-      `,
-      [report, campaign_id]
-    );
-
-    res.json({ success: true });
-
-  } catch (err) {
-
-    console.error(err);
-
-    res.status(500).json({
-      error: err.message
-    });
-
-  }
-});
-
     /* =========================
        2. ASSESSMENTS (tabel)
     ========================= */
@@ -1035,6 +1004,34 @@ app.put("/api/campaigns/:id/report", async (req, res) => {
       error: err.message
     });
 
+  }
+});
+
+/* =========================
+   SAVE CAMPAIGN REPORT
+========================= */
+
+app.put("/api/campaigns/:id/report", async (req, res) => {
+  try {
+    const campaign_id = req.params.id;
+    const { report } = req.body;
+
+    await pool.query(
+      `
+      UPDATE assessment_campaigns
+      SET report = $1
+      WHERE campaign_id = $2
+      `,
+      [report, campaign_id]
+    );
+
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: err.message
+    });
   }
 });
 
