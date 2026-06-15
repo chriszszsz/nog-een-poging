@@ -588,8 +588,8 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
     </div>
     <div class="res-stats">
       <div class="res-stat"><div class="rs-label">Gemiddelde score</div><div class="rs-val">2.7 <span>/ 5.0</span></div></div>
-      <div class="res-stat"><div class="rs-label">Hoog risico maturity-domeinen</div><div class="rs-val accent">6 <span>/ 17</span></div></div>
-      <div class="res-stat"><div class="rs-label">Maturity-domeinen gescoord</div><div class="rs-val">4 <span style="color:#4dd9a0;font-size:16px;">voltooid</span></div></div>
+      <div class="res-stat"><div class="rs-label">Hoog risico maturity-domeinen</div><div class="rs-val accent" id="high-risk"></div></div>
+      <div class="res-stat"><div class="rs-label">Maturity-domeinen gescoord</div><div class="rs-val" id="completed-domains"></div></div>
     </div>
     <div class="radar-card">
       <div class="radar-wrap"><canvas id="radarChart"></canvas></div>
@@ -684,9 +684,54 @@ const backend =
 'https://maturity-assessment-api-avh2h6cuf8acg5fk.westeurope-01.azurewebsites.net';
 let myCampaigns = [];
 
+
 let activeCampaign = null;
-let latestResult = null;
+let companyResult = null;
 let selectedResult = null;
+
+function renderCompanyResult() {
+
+  if (!companyResult) return;
+
+  const agg = companyResult.aggregated;
+  const assessments = companyResult.assessments;
+
+  if (!assessments || assessments.length === 0) return;
+
+  const last = assessments[0];
+
+  if (last?.assessment_date) {
+    document.querySelector(".summary-date").textContent =
+      new Date(last.assessment_date).toLocaleDateString("nl-NL", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+  }
+  document.querySelector(".score-num").textContent =
+    Number(agg.average_score || 0).toFixed(1);
+
+  const spider = agg.spider_scores || {};
+
+  function avg(domain) {
+    const values = Object.entries(spider)
+      .filter(([k]) => k.toLowerCase().includes(domain))
+      .map(([, v]) => Number(v));
+
+    if (!values.length) return 0;
+
+    return (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1);
+  }
+
+  // ✅ dit hoorde er OOK nog bij!
+  document.getElementById("score-governance").textContent = avg("governance");
+  document.getElementById("score-risico").textContent = avg("risico");
+  document.getElementById("score-organisatie").textContent = avg("organisatie");
+  document.getElementById("score-people").textContent = avg("people");
+  document.getElementById("score-keten").textContent = avg("keten");
+  document.getElementById("score-bcm").textContent = avg("continu");
+}
+
 
 async function loadMyCampaigns() {
 
@@ -713,10 +758,45 @@ async function loadMyCampaigns() {
 
     if (myCampaigns.length > 0) {
 
-      activeCampaign =
-        myCampaigns[0];
+      activeCampaign = myCampaigns.find(c =>
+  c.status === "IN_PROGRESS"
+) || myCampaigns.find(c =>
+  c.status === "NOT_STARTED"
+) || myCampaigns.find(c =>
+  c.status === "WAITING_FOR_REPORT"
+) || myCampaigns.find(c =>
+  c.status === "RESULTS_READY"
+);
 
     }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+}
+
+async function loadCompanyResult() {
+
+  if (!activeCampaign) return;
+
+  try {
+
+    const response =
+      await fetch(
+        `${backend}/api/campaigns/${activeCampaign.campaign_id}/details`
+      );
+
+    const data =
+      await response.json();
+
+    companyResult = data;
+
+    console.log("🏢 company result:", data);
+
+    renderCompanyResult();
 
   } catch (err) {
 
@@ -805,47 +885,6 @@ async function loadQuestions() {
     console.error(error);
 
     alert('Fout bij laden van vragen');
-
-  }
-
-}
-
-/* =========================================
-   LOAD LATEST RESULT
-========================================= */
-
-async function loadLatestResult() {
-
-  try {
-
-    const response =
-      await fetch(
-        `${backend}/api/latest-result`,
-        {
-          headers: {
-            Authorization:
-              `Bearer ${token}`
-          }
-        }
-      );
-
-    latestResult =
-      await response.json();
-
-    console.log(
-      "Latest result:",
-      latestResult
-    );
-
-    if (latestResult) {
-
-      renderResults();
-
-    }
-
-  } catch (err) {
-
-    console.error(err);
 
   }
 
@@ -1070,10 +1109,6 @@ function renderResultsHistory(data) {
 }
 
 
-/* =========================================
-   OPEN RESULT
-========================================= */
-
 async function openResult(id) {
 
   try {
@@ -1095,11 +1130,12 @@ async function openResult(id) {
 
     selectedResult = data;
 
-    // ✅ eerst navigeren
     showPage("resultaten");
 
-    // ✅ daarna renderen
-    renderResultDetail();
+    setTimeout(() => {
+  renderResultDetail();
+  initRadar();
+}, 50);
 
   } catch (err) {
 
@@ -1139,6 +1175,7 @@ function renderResultDetail() {
     Object.values(spider).map(v => Number(v));
 
   // ✅ datum
+  if (session.assessment_date) {
   document.querySelector(".res-date").textContent =
     new Date(session.assessment_date)
       .toLocaleDateString("nl-NL", {
@@ -1146,21 +1183,26 @@ function renderResultDetail() {
         month: "long",
         year: "numeric"
       });
+} else {
+  document.querySelector(".res-date").textContent = "-";
+}
 
   // ✅ gemiddelde score
-  document.querySelector(".rs-val").innerHTML =
+  document.querySelectorAll(".rs-val")[0].innerHTML =
     `${session.average_score} <span>/ 5.0</span>`;
 
-  // ✅ hoog risico (<3)
   const highRisk =
-    values.filter(v => v < 3).length;
+  values.filter(v => v < 3).length;
 
-  document.querySelectorAll(".rs-val")[1].innerHTML =
-    `${highRisk} <span>/ ${values.length}</span>`;
+document.getElementById("high-risk").innerHTML =
+  `${highRisk} <span>/ ${values.length}</span>`;
 
-  // ✅ alleen 5 = voltooid
-  const completed =
-    values.filter(v => v === 5).length;
+
+const completed =
+  values.filter(v => v === 5).length;
+
+document.getElementById("completed-domains").innerHTML =
+  `${completed} <span style="color:#4dd9a0;font-size:16px;">voltooid</span>`;
 
   document.querySelectorAll(".rs-val")[2].innerHTML =
     `${completed} <span style="color:#4dd9a0;font-size:16px;">voltooid</span>`;
@@ -1194,7 +1236,7 @@ function renderResultDetail() {
     container.innerHTML += `
       <div class="ans-item">
         <div class="ans-q">
-          Vraag ${a.question_id}: ${a.question_text}
+          ${a.question_text}
         </div>
         <div class="ans-a">
           ${text}
@@ -1203,6 +1245,8 @@ function renderResultDetail() {
     `;
 
   });
+
+}
 
   /* =========================================
      ✅ DOWNLOAD BUTTON LOGIC
@@ -1229,117 +1273,7 @@ if (session.status === "RESULTS_READY") {
   downloadContainer.innerHTML = "";
 
 }
-}
 
-/* =========================================
-   RENDER RESULTS
-========================================= */
-
-function renderResults() {
-
-  if (!latestResult) return;
-
-  const score =
-    latestResult.average_score || 0;
-
-  const date =
-    new Date(
-      latestResult.assessment_date
-    );
-
-  const formattedDate =
-    date.toLocaleDateString(
-      "nl-NL",
-      {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      }
-    );
-
-  document
-    .querySelector(".summary-date")
-    .textContent =
-      formattedDate;
-
-  document
-    .querySelector(".score-num")
-    .textContent =
-      score;
-
-  const spider =
-    latestResult.spider_scores || {};
-
-  function gemiddeldeVoor(domainNaam) {
-
-    const waardes =
-      Object.entries(spider)
-        .filter(([key]) => {
-
-          return key
-            .toLowerCase()
-            .includes(
-              domainNaam.toLowerCase()
-            );
-
-        })
-        .map(([, value]) =>
-          Number(value)
-        );
-
-    console.log(
-      domainNaam,
-      waardes
-    );
-
-    if (waardes.length === 0) {
-      return 0;
-    }
-
-    const avg =
-      waardes.reduce(
-        (a, b) => a + b,
-        0
-      ) / waardes.length;
-
-    return avg.toFixed(1);
-
-  }
-
-  document.getElementById(
-    "score-governance"
-  ).textContent =
-    gemiddeldeVoor("Governance");
-
-  document.getElementById(
-    "score-risico"
-  ).textContent =
-    gemiddeldeVoor("Risicomanagement");
-
-  document.getElementById(
-    "score-organisatie"
-  ).textContent =
-    gemiddeldeVoor("Organisatie");
-
-  document.getElementById(
-    "score-people"
-  ).textContent =
-    gemiddeldeVoor("People");
-
-  document.getElementById(
-    "score-keten"
-  ).textContent =
-    gemiddeldeVoor("Ketenbeheer");
-
-  document.getElementById(
-    "score-bcm"
-  ).textContent =
-    gemiddeldeVoor(
-      "Bedrijfscontinuïteit"
-    );
-
-
-}
 
 /* =========================================
    PAGE NAVIGATION
@@ -1403,7 +1337,7 @@ function showPage(name, navEl) {
 if (name === 'eerdere') {
 
   loadResultsHistory();
-
+  refreshData();
 }
 
   }
@@ -1579,6 +1513,7 @@ function updateAnsweredCount() {
 ========================================= */
 
 async function showVraag(resume = false) {
+  await refreshData();
 
   console.log(
     "Active campaign:",
@@ -2075,6 +2010,7 @@ async function saveAssessment() {
     alert(
       'Opslaan van assessment mislukt'
     );
+    await refreshData();
 
   }
 
@@ -2161,9 +2097,8 @@ async function saveAndExit() {
     .getElementById('page-overzicht')
     .classList.add('active');
 
-  await loadMyCampaigns();
+  await refreshData();
 
-  renderAssessmentCard();
 
 }
 
@@ -2338,15 +2273,26 @@ gradient.addColorStop(1, "rgba(172,0,109,0.4)");
 }
 
 
+
 async function init() {
 
   await loadMyCampaigns();
 
   renderAssessmentCard();
 
-  await loadLatestResult();
+  await loadCompanyResult();
 
 }
+
+async function refreshData() {
+  console.log("🔄 refresh data...");
+
+  await loadMyCampaigns();
+  renderAssessmentCard();
+
+  await loadCompanyResult();
+}
+``
 
 init();
 </script>

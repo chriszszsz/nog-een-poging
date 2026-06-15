@@ -852,7 +852,13 @@ app.get("/api/campaigns", async (req, res) => {
 
         COUNT(cp.user_id) AS participant_count,
 
-        MAX(cp.status) AS status
+        CASE
+          WHEN BOOL_OR(cp.status = 'IN_PROGRESS') THEN 'IN_PROGRESS'
+          WHEN BOOL_OR(cp.status = 'WAITING_FOR_REPORT') THEN 'WAITING_FOR_REPORT'
+          WHEN BOOL_OR(cp.status = 'RESULTS_READY') THEN 'RESULTS_READY'
+          WHEN BOOL_OR(cp.status = 'NOT_STARTED') THEN 'NOT_STARTED'
+          ELSE 'NOT_STARTED'
+        END AS status
 
       FROM assessment_campaigns c
 

@@ -343,6 +343,34 @@
       let companySearchTerm = '';
       let overviewSortColumn = 'assessment_date';
       let overviewSortDirection = 'desc';
+
+      let isRefreshing = false;
+
+async function refreshActiveView() {
+  if (isRefreshing) return;
+
+  isRefreshing = true;
+
+  console.log("🔄 refreshing:", currentTab);
+
+  try {
+    if (currentTab === "overview") {
+      await fetchAssessments();
+    }
+
+    if (currentTab === "campaigns") {
+      await fetchCampaigns();
+    }
+
+    if (currentTab === "companies") {
+      await fetchCompanies();
+    }
+  } catch (err) {
+    console.error("❌ refresh error", err);
+  }
+
+  isRefreshing = false;
+}
       
 
   // ✅ HIER TOEVOEGEN
@@ -389,549 +417,6 @@
         'EcoWave Systems': 'Scheepswerf 6, 4382 LA Vlissingen'
       };
 
-      const mockAssessments = [
-        {
-          id: 'asm-001',
-          company_name: 'VoltTech Industries',
-          maturity_level: 4,
-          average_score: 4,
-          assessment_date: '2026-04-08',
-          status: 'Afgerond',
-          report_suggestion: 'Het AI-voorstel benadrukt verbetering in datagedreven besluitvorming en procesautomatisering voor snellere compliance.',
-          spider_scores: {
-            Strategie: 4,
-            Beleid: 4,
-            'Planning / Roadmap': 4,
-            Architectuur: 4,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 4,
-            'Functiescheiding': 3,
-            'Certificering, training en scholing': 4,
-            'Afhankelijkheid van individuen': 3,
-            'Super Users': 3,
-            'Service level overeenkomst': 4,
-            'Service level beheer': 4,
-            'Risicobeheer van leveranciers': 4,
-            'Interne beheersing bij derden': 3,
-            'Bedrijfscontinuïteits-planning': 4,
-            'Testen van Disaster recovery': 3,
-            'Crisisbeheer': 3
-          },
-          details: 'Deze organisatie werkt aan een gedocumenteerde aanpak en heeft een duidelijke roadmap voor verbetering.',
-          last_updated: '2026-04-10'
-        },
-        {
-          id: 'asm-002',
-          company_name: 'Nauta Consulting',
-          maturity_level: 3,
-          average_score: 3,
-          assessment_date: '2026-03-26',
-          status: 'In uitvoering',
-          report_suggestion: 'AI raadt een validatie van IT-beveiliging en gebruikersacceptatie aan om de maturitycyclus te versnellen.',
-          spider_scores: {
-            Strategie: 3,
-            Beleid: 3,
-            'Planning / Roadmap': 3,
-            Architectuur: 3,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
-            'Functiescheiding': 2,
-            'Certificering, training en scholing': 3,
-            'Afhankelijkheid van individuen': 2,
-            'Super Users': 3,
-            'Service level overeenkomst': 3,
-            'Service level beheer': 3,
-            'Risicobeheer van leveranciers': 3,
-            'Interne beheersing bij derden': 2,
-            'Bedrijfscontinuïteits-planning': 3,
-            'Testen van Disaster recovery': 2,
-            'Crisisbeheer': 2
-          },
-          details: 'De kernprocessen zijn aanwezig maar er is nog onvoldoende structuur rondom risicoacceptatie en rapportage.',
-          last_updated: '2026-03-29'
-        },
-        {
-          id: 'asm-011',
-          company_name: 'Nauta Consulting',
-          maturity_level: 2,
-          average_score: 2,
-          assessment_date: '2026-03-18',
-          status: 'In uitvoering',
-          report_suggestion: 'Nauta Consulting heeft stappen gezet richting procesdefinitie maar nog niet naar evidence-based governance.',
-          spider_scores: {
-            Strategie: 2,
-            Beleid: 2,
-            'Planning / Roadmap': 2,
-            Architectuur: 2,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-            'Functiescheiding': 2,
-            'Certificering, training en scholing': 2,
-            'Afhankelijkheid van individuen': 2,
-            'Super Users': 2,
-            'Service level overeenkomst': 2,
-            'Service level beheer': 2,
-            'Risicobeheer van leveranciers': 2,
-            'Interne beheersing bij derden': 2,
-            'Bedrijfscontinuïteits-planning': 2,
-            'Testen van Disaster recovery': 2,
-            'Crisisbeheer': 2
-          },
-          details: 'Beginfase met kans om governance en risicobeheer te professionaliseren.',
-          last_updated: '2026-03-18'
-        },
-        {
-          id: 'asm-012',
-          company_name: 'Nauta Consulting',
-          maturity_level: 4,
-          average_score: 4,
-          assessment_date: '2026-04-02',
-          status: 'In afwachting van rapport',
-          report_suggestion: 'Het laatste assessment toont verbetering in procesborging maar vraagt verduidelijking in rollen en verantwoording.',
-          spider_scores: {
-            Strategie: 4,
-            Beleid: 4,
-            'Planning / Roadmap': 4,
-            Architectuur: 4,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 4,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 4,
-            'Functiescheiding': 3,
-            'Certificering, training en scholing': 4,
-            'Afhankelijkheid van individuen': 3,
-            'Super Users': 4,
-            'Service level overeenkomst': 4,
-            'Service level beheer': 4,
-            'Risicobeheer van leveranciers': 4,
-            'Interne beheersing bij derden': 3,
-            'Bedrijfscontinuïteits-planning': 4,
-            'Testen van Disaster recovery': 3,
-            'Crisisbeheer': 3
-          },
-          details: 'Verhoogde volwassenheid maar nog ruimte voor structurele borging.',
-          last_updated: '2026-04-02'
-        },
-        {
-          id: 'asm-013',
-          company_name: 'Greenfield Energy',
-          maturity_level: 1,
-          average_score: 1,
-          assessment_date: '2026-03-05',
-          status: 'Niet gestart',
-          report_suggestion: 'Greenfield Energy moet starten met basisprocessen en documentatie rondom risico en governance.',
-          spider_scores: {
-            Strategie: 1,
-            Beleid: 1,
-            'Planning / Roadmap': 1,
-            Architectuur: 1,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 1,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 1,
-            'Functiescheiding': 1,
-            'Certificering, training en scholing': 1,
-            'Afhankelijkheid van individuen': 1,
-            'Super Users': 1,
-            'Service level overeenkomst': 1,
-            'Service level beheer': 1,
-            'Risicobeheer van leveranciers': 1,
-            'Interne beheersing bij derden': 1,
-            'Bedrijfscontinuïteits-planning': 1,
-            'Testen van Disaster recovery': 1,
-            'Crisisbeheer': 1
-          },
-          details: 'Het bedrijf staat nog aan het begin van de maturityreis.',
-          last_updated: '2026-03-05'
-        },
-        {
-          id: 'asm-014',
-          company_name: 'Greenfield Energy',
-          maturity_level: 2,
-          average_score: 2,
-          assessment_date: '2026-03-19',
-          status: 'In uitvoering',
-          report_suggestion: 'De organisatie bouwt langzaam een stabiele basis maar moet focus houden op risico-acceptatie.',
-          spider_scores: {
-            Strategie: 2,
-            Beleid: 2,
-            'Planning / Roadmap': 2,
-            Architectuur: 2,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-            'Functiescheiding': 2,
-            'Certificering, training en scholing': 2,
-            'Afhankelijkheid van individuen': 1,
-            'Super Users': 2,
-            'Service level overeenkomst': 2,
-            'Service level beheer': 2,
-            'Risicobeheer van leveranciers': 2,
-            'Interne beheersing bij derden': 2,
-            'Bedrijfscontinuïteits-planning': 2,
-            'Testen van Disaster recovery': 2,
-            'Crisisbeheer': 1
-          },
-          details: 'Het management heeft een begin gemaakt met planned governance.',
-          last_updated: '2026-03-19'
-        },
-        {
-          id: 'asm-015',
-          company_name: 'Greenfield Energy',
-          maturity_level: 3,
-          average_score: 3,
-          assessment_date: '2026-04-01',
-          status: 'In afwachting van rapport',
-          report_suggestion: 'De groei is zichtbaar, nu nog meer focus op leveranciersrisico en continuïteit.',
-          spider_scores: {
-            Strategie: 3,
-            Beleid: 3,
-            'Planning / Roadmap': 3,
-            Architectuur: 3,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
-            'Functiescheiding': 2,
-            'Certificering, training en scholing': 3,
-            'Afhankelijkheid van individuen': 2,
-            'Super Users': 3,
-            'Service level overeenkomst': 3,
-            'Service level beheer': 3,
-            'Risicobeheer van leveranciers': 3,
-            'Interne beheersing bij derden': 2,
-            'Bedrijfscontinuïteits-planning': 3,
-            'Testen van Disaster recovery': 2,
-            'Crisisbeheer': 2
-          },
-          details: 'Er is vooruitgang, maar de organisatie blijft afhankelijk van individuele kennis.',
-          last_updated: '2026-04-01'
-        },
-        {
-          id: 'asm-016',
-          company_name: 'AquaTech Solutions',
-          maturity_level: 1,
-          average_score: 1,
-          assessment_date: '2026-03-10',
-          status: 'Niet gestart',
-          report_suggestion: 'AquaTech start met basis governance en documentatie.',
-          spider_scores: {
-            Strategie: 1,
-            Beleid: 1,
-            'Planning / Roadmap': 1,
-            Architectuur: 1,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 1,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 1,
-            'Functiescheiding': 1,
-            'Certificering, training en scholing': 1,
-            'Afhankelijkheid van individuen': 1,
-            'Super Users': 1,
-            'Service level overeenkomst': 1,
-            'Service level beheer': 1,
-            'Risicobeheer van leveranciers': 1,
-            'Interne beheersing bij derden': 1,
-            'Bedrijfscontinuïteits-planning': 1,
-            'Testen van Disaster recovery': 1,
-            'Crisisbeheer': 1
-          },
-          details: 'Een laag volwassen bedrijf dat nog moet starten met basale controlemaatregelen.',
-          last_updated: '2026-03-10'
-        },
-        {
-          id: 'asm-017',
-          company_name: 'AquaTech Solutions',
-          maturity_level: 2,
-          average_score: 2,
-          assessment_date: '2026-03-25',
-          status: 'In uitvoering',
-          report_suggestion: 'AquaTech ontwikkelt langzaam een eerste risicobeheerstrategie.',
-          spider_scores: {
-            Strategie: 2,
-            Beleid: 2,
-            'Planning / Roadmap': 2,
-            Architectuur: 2,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-            'Functiescheiding': 2,
-            'Certificering, training en scholing': 2,
-            'Afhankelijkheid van individuen': 1,
-            'Super Users': 2,
-            'Service level overeenkomst': 2,
-            'Service level beheer': 2,
-            'Risicobeheer van leveranciers': 2,
-            'Interne beheersing bij derden': 2,
-            'Bedrijfscontinuïteits-planning': 2,
-            'Testen van Disaster recovery': 2,
-            'Crisisbeheer': 1
-          },
-          details: 'Huidige voortgang boven de basis maar er is nog weinig consistentie.',
-          last_updated: '2026-03-25'
-        },
-        {
-          id: 'asm-018',
-          company_name: 'AquaTech Solutions',
-          maturity_level: 3,
-          average_score: 3,
-          assessment_date: '2026-04-06',
-          status: 'In afwachting van rapport',
-          report_suggestion: 'AquaTech toont progressie in processen en moet nu sturen op continuïteit.',
-          spider_scores: {
-            Strategie: 3,
-            Beleid: 3,
-            'Planning / Roadmap': 3,
-            Architectuur: 3,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
-            'Functiescheiding': 2,
-            'Certificering, training en scholing': 3,
-            'Afhankelijkheid van individuen': 2,
-            'Super Users': 3,
-            'Service level overeenkomst': 3,
-            'Service level beheer': 3,
-            'Risicobeheer van leveranciers': 3,
-            'Interne beheersing bij derden': 2,
-            'Bedrijfscontinuïteits-planning': 3,
-            'Testen van Disaster recovery': 2,
-            'Crisisbeheer': 2
-          },
-          details: 'De organisatie maakt duidelijke stappen richting een volwassen aanpak.',
-          last_updated: '2026-04-06'
-        },
-        {
-          id: 'asm-003',
-          company_name: 'Greenfield Energy',
-          maturity_level: 2,
-          average_score: 2,
-          assessment_date: '2026-04-12',
-          status: 'In afwachting van rapport',
-          report_suggestion: 'Het AI-rapport stelt een roadmap voor naar meer maturity in security en stakeholder governance.',
-          spider_scores: {
-            Strategie: 2,
-            Beleid: 2,
-            'Planning / Roadmap': 2,
-            Architectuur: 2,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-            'Functiescheiding': 2,
-            'Certificering, training en scholing': 2,
-            'Afhankelijkheid van individuen': 1,
-            'Super Users': 2,
-            'Service level overeenkomst': 2,
-            'Service level beheer': 2,
-            'Risicobeheer van leveranciers': 2,
-            'Interne beheersing bij derden': 1,
-            'Bedrijfscontinuïteits-planning': 2,
-            'Testen van Disaster recovery': 1,
-            'Crisisbeheer': 1
-          },
-          details: 'Er zijn veel kansen voor verbetering in planning, certificering en risicobeheer van leveranciers.',
-          last_updated: '2026-04-12'
-        },
-        {
-          id: 'asm-004',
-          company_name: 'Delta Health Solutions',
-          maturity_level: 1,
-          average_score: 1,
-          assessment_date: '2026-04-02',
-          status: 'Niet gestart',
-          report_suggestion: 'De AI analyse stelt voor te starten met basisprocessen en governancedocumentatie.',
-          spider_scores: {
-            Strategie: 1,
-            Beleid: 1,
-            'Planning / Roadmap': 1,
-            Architectuur: 1,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 1,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 1,
-            'Functiescheiding': 1,
-            'Certificering, training en scholing': 1,
-            'Afhankelijkheid van individuen': 1,
-            'Super Users': 1,
-            'Service level overeenkomst': 1,
-            'Service level beheer': 1,
-            'Risicobeheer van leveranciers': 1,
-            'Interne beheersing bij derden': 1,
-            'Bedrijfscontinuïteits-planning': 1,
-            'Testen van Disaster recovery': 1,
-            'Crisisbeheer': 1
-          },
-          details: 'Startend met maturity, veel ruimte voor basisverbeteringen in processen en governance.',
-          last_updated: '2026-04-02'
-        },
-        {
-          id: 'asm-005',
-          company_name: 'Metro Logistics',
-          maturity_level: 5,
-          average_score: 5,
-          assessment_date: '2026-04-14',
-          status: 'Afgerond',
-          report_suggestion: 'AI bevestigt een geoptimaliseerde aanpak met sterke processen en continue verbetering.',
-          spider_scores: {
-            Strategie: 5,
-            Beleid: 5,
-            'Planning / Roadmap': 5,
-            Architectuur: 5,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 5,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 5,
-            'Functiescheiding': 5,
-            'Certificering, training en scholing': 5,
-            'Afhankelijkheid van individuen': 5,
-            'Super Users': 5,
-            'Service level overeenkomst': 5,
-            'Service level beheer': 5,
-            'Risicobeheer van leveranciers': 5,
-            'Interne beheersing bij derden': 5,
-            'Bedrijfscontinuïteits-planning': 5,
-            'Testen van Disaster recovery': 5,
-            'Crisisbeheer': 5
-          },
-          details: 'Een volwassen organisatie met goede governance en een duidelijke continuïteitsstrategie.',
-          last_updated: '2026-04-14'
-        },
-        {
-          id: 'asm-006',
-          company_name: 'Urban Retail Group',
-          maturity_level: 3,
-          average_score: 3,
-          assessment_date: '2026-03-31',
-          status: 'In uitvoering',
-          report_suggestion: 'AI raadt versterking van service level beheer en risicobeoordeling aan.',
-          spider_scores: {
-            Strategie: 3,
-            Beleid: 3,
-            'Planning / Roadmap': 3,
-            Architectuur: 3,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
-            'Functiescheiding': 3,
-            'Certificering, training en scholing': 3,
-            'Afhankelijkheid van individuen': 3,
-            'Super Users': 3,
-            'Service level overeenkomst': 3,
-            'Service level beheer': 3,
-            'Risicobeheer van leveranciers': 3,
-            'Interne beheersing bij derden': 3,
-            'Bedrijfscontinuïteits-planning': 3,
-            'Testen van Disaster recovery': 3,
-            'Crisisbeheer': 2
-          },
-          details: 'Sterke basis, maar er is behoefte aan meer consistentie in controleprocessen.',
-          last_updated: '2026-04-01'
-        },
-        {
-          id: 'asm-007',
-          company_name: 'AquaTech Solutions',
-          maturity_level: 2,
-          average_score: 2,
-          assessment_date: '2026-04-05',
-          status: 'In afwachting van rapport',
-          report_suggestion: 'AI adviseert verdere uitwerking van governance en risicoacceptatie voor verbeterde sturing.',
-          spider_scores: {
-            Strategie: 2,
-            Beleid: 2,
-            'Planning / Roadmap': 2,
-            Architectuur: 2,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-            'Functiescheiding': 2,
-            'Certificering, training en scholing': 2,
-            'Afhankelijkheid van individuen': 1,
-            'Super Users': 2,
-            'Service level overeenkomst': 2,
-            'Service level beheer': 2,
-            'Risicobeheer van leveranciers': 2,
-            'Interne beheersing bij derden': 2,
-            'Bedrijfscontinuïteits-planning': 2,
-            'Testen van Disaster recovery': 2,
-            'Crisisbeheer': 1
-          },
-          details: 'Een groeiend bedrijf dat de transitie maakt van ad-hoc naar meer gestructureerde processen.',
-          last_updated: '2026-04-05'
-        },
-        {
-          id: 'asm-008',
-          company_name: 'SmartCity Partners',
-          maturity_level: 4,
-          average_score: 4,
-          assessment_date: '2026-04-11',
-          status: 'Afgerond',
-          report_suggestion: 'Het AI-rapport onderstreept de kracht van de bestaande roadmap en de doorlopende evaluatie.',
-          spider_scores: {
-            Strategie: 4,
-            Beleid: 4,
-            'Planning / Roadmap': 4,
-            Architectuur: 4,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 4,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 4,
-            'Functiescheiding': 4,
-            'Certificering, training en scholing': 4,
-            'Afhankelijkheid van individuen': 3,
-            'Super Users': 4,
-            'Service level overeenkomst': 4,
-            'Service level beheer': 4,
-            'Risicobeheer van leveranciers': 4,
-            'Interne beheersing bij derden': 4,
-            'Bedrijfscontinuïteits-planning': 4,
-            'Testen van Disaster recovery': 3,
-            'Crisisbeheer': 3
-          },
-          details: 'Een solide assessment met veel aandacht voor architectuur en continuïteitsplanning.',
-          last_updated: '2026-04-11'
-        },
-        {
-          id: 'asm-009',
-          company_name: 'FutureWorks Labs',
-          maturity_level: 3,
-          average_score: 3,
-          assessment_date: '2026-04-09',
-          status: 'In uitvoering',
-          report_suggestion: 'AI ziet kansen voor verbetering in certificering en het borgen van processen.',
-          spider_scores: {
-            Strategie: 3,
-            Beleid: 3,
-            'Planning / Roadmap': 3,
-            Architectuur: 3,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 3,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 3,
-            'Functiescheiding': 3,
-            'Certificering, training en scholing': 3,
-            'Afhankelijkheid van individuen': 2,
-            'Super Users': 3,
-            'Service level overeenkomst': 3,
-            'Service level beheer': 3,
-            'Risicobeheer van leveranciers': 3,
-            'Interne beheersing bij derden': 3,
-            'Bedrijfscontinuïteits-planning': 4,
-            'Testen van Disaster recovery': 3,
-            'Crisisbeheer': 2
-          },
-          details: 'De organisatie heeft basismaatregelen op orde, maar mist nog gedetailleerde governance.',
-          last_updated: '2026-04-10'
-        },
-        {
-          id: 'asm-010',
-          company_name: 'EcoWave Systems',
-          maturity_level: 2,
-          average_score: 2,
-          assessment_date: '2026-04-07',
-          status: 'In afwachting van rapport',
-          report_suggestion: 'AI adviseert het versterken van risicobeheer en interne controles.',
-          spider_scores: {
-            Strategie: 2,
-            Beleid: 2,
-            'Planning / Roadmap': 2,
-            Architectuur: 2,
-            "Plan voor behandeling en beperking van risico's (inclusief risicoacceptatie)": 2,
-            'Eigenaarschap, rollen, verantwoording en verantwoordelijkheid': 2,
-            'Functiescheiding': 2,
-            'Certificering, training en scholing': 2,
-            'Afhankelijkheid van individuen': 2,
-            'Super Users': 2,
-            'Service level overeenkomst': 2,
-            'Service level beheer': 2,
-            'Risicobeheer van leveranciers': 2,
-            'Interne beheersing bij derden': 2,
-            'Bedrijfscontinuïteits-planning': 2,
-            'Testen van Disaster recovery': 2,
-            'Crisisbeheer': 2
-          },
-          details: 'Een jonge organisatie die goed kan profiteren van structuur in risico- en procesbeheer.',
-          last_updated: '2026-04-07'
-        }
-      ];
-
       async function initialize() {
 
     await fetchCompanies();
@@ -959,19 +444,9 @@
       campaigns = await response.json();
 
     } catch (err) {
-
-      console.warn('fallback campaigns');
-
-      campaigns = [
-        {
-          title: "AI Assessment 2026",
-          company_name: "Axians",
-          participant_count: 3,
-          status: "IN_PROGRESS"
-        }
-      ];
-
-    }
+  console.error("Campaign fetch error:", err);
+  campaigns = [];
+}
 
     renderCampaigns();
   }
@@ -1004,15 +479,15 @@
 
           
   <td class="px-6 py-4 text-sm font-medium">
-    ${c.title}
+    ${c.title || '-'}
   </td>
 
   <td class="px-6 py-4">
-    ${c.company_name}
+    ${c.company_name || '-'}
   </td>
 
   <td class="px-6 py-4">
-    ${c.participant_count || 0}
+    ${c.participant_count ?? 0}
   </td>
 
   <td class="px-6 py-4">
@@ -1046,21 +521,30 @@
   }
 
       async function fetchAssessments() {
-        const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
-        try {
-          const response = await fetch(`${backend}/api/assessments`);
-          if (!response.ok) throw new Error('Backend niet bereikbaar');
-          const data = await response.json();
-          if (!Array.isArray(data) || data.length === 0) throw new Error('Geen assessments beschikbaar');
-          assessments = data;
-        } catch (error) {
-          console.warn('Fallback naar mock data:', error.message);
-          assessments = mockAssessments;
-        }
-        renderOverviewCards();
-        renderAssessmentsTable();
-        renderCompanyCards();
+  const backend = (window.elementSdk?.config?.backend_url || defaultConfig.backend_url).replace(/\/$/, '');
+
+  try {
+    const response = await fetch(`${backend}/api/assessments`, {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
+    });
+
+    if (!response.ok) {
+      throw new Error('Backend error');
+    }
+
+    assessments = await response.json();
+
+  } catch (error) {
+    console.error('❌ Assessments fetch error:', error);
+    assessments = []; 
+  }
+
+  renderOverviewCards();
+  renderAssessmentsTable();
+  renderCompanyCards();
+}
       function switchTab(tab) {
 
     currentTab = tab;
@@ -1105,6 +589,7 @@
       renderCampaigns();
     }
     renderHeroActions();
+    refreshActiveView();
   }
 
   function renderHeroActions() {
@@ -1349,14 +834,11 @@
 
   try {
 
-    const response =
-      await fetch(`${backend}/api/results/${id}`, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
+    const response = await fetch(url, {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+});
 
     if (!response.ok) throw new Error('Assessment niet gevonden');
 
@@ -1591,6 +1073,7 @@
 
     /* ✅ SPIDERCHART RENDER */
     renderSpiderChart(aggregated.spider_scores, "campaign-spider-chart");
+    await refreshActiveView();
   }
 
       function renderCompanyDetail() {
@@ -1917,6 +1400,7 @@
         document.getElementById('assessment-detail-screen').classList.add('hidden');
         selectedAssessment = null;
         selectedCompany = null;
+        refreshActiveView();
       }
 
       function renderSpiderChart(scores, elementId = "spider-chart") {
@@ -2540,8 +2024,10 @@ function renderAnswers(answers) {
       alert(
         "Serverfout bij aanmaken van campaign."
       );
-
+      
+      await refreshActiveView();
     }
+    
 
   }
 
@@ -2610,6 +2096,8 @@ function renderAnswers(answers) {
       console.error(err);
       alert("Serverfout bij aanmaken bedrijf");
 
+      await refreshActiveView();
+
     }
 
   }
@@ -2658,7 +2146,8 @@ function renderAnswers(answers) {
 
     await fetchUsers();
     renderCompanyDashboard();
-
+    await refreshActiveView();
+``
   }
 
   async function saveReport(campaignId) {
