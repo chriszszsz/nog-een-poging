@@ -1432,7 +1432,9 @@ async function viewCampaign(id) {
 
           <div class="flex justify-between">
             <span>Gemiddelde score</span>
-            <span class="font-semibold">${aggregated.average_score || '-'}</span>
+            <span class="text-emerald-600 font-bold text-lg">
+  ${aggregated.average_score}
+</span>
           </div>
 
         </div>
@@ -1503,7 +1505,7 @@ async function viewCampaign(id) {
 
       <textarea
         id="reportEditor"
-        class="w-full border rounded-lg p-4"
+        class="w-full border rounded-lg p-4 font-mono text-sm"
         style="height:300px;"
       >${campaign.report || ""}</textarea>
 
@@ -1805,7 +1807,7 @@ async function viewCampaign(id) {
 
     function renderSpiderChart(scores, elementId = "spider-chart") {
 
-  const chart = document.getElementById('spider-chart');
+  const chart = document.getElementById(elementId);
 
   if (!chart) return;
       const labels = Object.keys(scores);
