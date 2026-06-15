@@ -1245,14 +1245,8 @@ document.getElementById("completed-domains").innerHTML =
     `;
 
   });
-
-}
-
-  /* =========================================
-     ✅ DOWNLOAD BUTTON LOGIC
-  ========================================= */
-
-  const downloadContainer =
+// ✅ DOWNLOAD BUTTON LOGIC (MOET HIER STAAN)
+const downloadContainer =
   document.getElementById("download-container");
 
 if (!downloadContainer) return;
@@ -1273,6 +1267,8 @@ if (session.status === "RESULTS_READY") {
   downloadContainer.innerHTML = "";
 
 }
+}
+
 
 
 /* =========================================
