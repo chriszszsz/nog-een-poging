@@ -584,7 +584,7 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
       <thead>
         <tr>
           <th>Datum</th>
-          <th>Assessment</th>
+          <th>Campagne</th>
           <th>Maturity niveau</th>
           <th>Gemaakt door</th>
           <th>Status</th>
@@ -597,7 +597,7 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
 
   <!-- 🏢 CAMPAIGNS (MOET HIER BINNEN!!) -->
   <div class="table-card" style="margin-top:20px;">
-    <div class="table-title">Campaign resultaten (bedrijf)</div>
+    <div class="table-title">Campaign resultaten</div>
 
     <table id="campaign-table">
       <thead>
@@ -725,23 +725,23 @@ let activeCampaign = null;
 let companyResult = null;
 let selectedResult = null;
 
-async function openCampaignResult() {
+async function openCampaignResult(campaignId) {
 
-  if (!activeCampaign) return;
+  if (!campaignId) return;
 
   try {
 
     const res = await fetch(
-      `${backend}/api/campaigns/${activeCampaign.campaign_id}/details`
+      `${backend}/api/campaigns/${campaignId}/details`
     );
 
     const data = await res.json();
 
     companyResult = data;
 
-    // 👉 haal ook rapport op
+    // rapport ophalen
     const reportRes = await fetch(
-      `${backend}/api/campaigns/${activeCampaign.campaign_id}/report`,
+      `${backend}/api/campaigns/${campaignId}/report`,
       {
         headers: { Authorization: `Bearer ${token}` }
       }
@@ -1123,7 +1123,7 @@ function renderResultsHistory(data) {
     tbody.innerHTML =
       `<tr>
         <td colspan="6">
-          Geen resultaten beschikbaar
+          Nog geen assessments ingevuld
         </td>
       </tr>`;
 
