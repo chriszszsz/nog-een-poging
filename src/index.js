@@ -1374,6 +1374,92 @@ app.get(
   }
 );
 
+
+/* =========================
+   Mijn eigen resultaten
+========================= */
+
+app.get(
+  "/api/my-results",
+  authMiddleware,
+  async (req, res) => {
+
+    try {
+
+      const result = await pool.query(`
+        SELECT
+          s.assessment_session_id,
+          s.campaign_id,
+
+          s.average_score,
+          s.assessment_date,
+          s.status,
+
+          c.title AS campaign_title
+
+        FROM assessment_sessions s
+
+        JOIN assessment_campaigns c
+        ON s.campaign_id = c.campaign_id
+
+        WHERE s.user_id = $1   -- ✅ KEY CHANGE
+
+        ORDER BY s.assessment_date DESC
+      `, [req.user.user_id]);
+
+      res.json(result.rows);
+
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+
+  }
+);
+
+/* =========================
+   Company campaign resultaten
+========================= */
+app.get(
+  "/api/company-campaign-results",
+  authMiddleware,
+  async (req, res) => {
+
+    try {
+
+      const result = await pool.query(`
+        SELECT
+          c.campaign_id,
+          c.title,
+          c.created_at,
+
+          AVG(s.average_score) AS avg_score,
+          COUNT(s.assessment_session_id) AS participants
+
+        FROM assessment_campaigns c
+
+        LEFT JOIN assessment_sessions s
+        ON c.campaign_id = s.campaign_id
+
+        WHERE c.company_id = (
+          SELECT company_id
+          FROM users
+          WHERE user_id = $1
+        )
+
+        GROUP BY c.campaign_id
+
+        ORDER BY c.created_at DESC
+      `, [req.user.user_id]);
+
+      res.json(result.rows);
+
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+
+  }
+);
+
 /* =========================
    AI tester
 ========================= */

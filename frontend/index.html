@@ -556,31 +556,65 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
   </div>
 
   <!-- PAGE: EERDERE RESULTATEN -->
-  <div class="page" id="page-eerdere">
-    <h1 class="page-title">Eerdere resultaten</h1>
-    <div class="stats-row">
-      <div class="stat-card"><div class="lbl">Totaal assessments</div><div class="stat-val">0</div></div>
-      <div class="stat-card"><div class="lbl">Gemiddelde groei</div><div class="stat-val green">+0.0</div></div>
-      <div class="stat-card"><div class="lbl">Laatste assessment</div><div class="stat-val">-</div></div>
+<div class="page" id="page-eerdere">
+
+  <h1 class="page-title">Eerdere resultaten</h1>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="lbl">Totaal assessments</div>
+      <div class="stat-val">0</div>
     </div>
-    <div class="table-card">
-      <div class="table-title">Eerdere assessments</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Datum</th>
-            <th>Assessment</th>
-            <th>Maturity niveau</th>
-            <th>Gemaakt door</th>
-            <th>Status</th>
-            <th>Acties</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+
+    <div class="stat-card">
+      <div class="lbl">Gemiddelde groei</div>
+      <div class="stat-val green">+0.0</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="lbl">Laatste assessment</div>
+      <div class="stat-val">-</div>
     </div>
   </div>
+
+  <!-- 👤 JOUW RESULTATEN -->
+  <div class="table-card">
+    <div class="table-title">Eerdere assessments</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Assessment</th>
+          <th>Maturity niveau</th>
+          <th>Gemaakt door</th>
+          <th>Status</th>
+          <th>Acties</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- 🏢 CAMPAIGNS (MOET HIER BINNEN!!) -->
+  <div class="table-card" style="margin-top:20px;">
+    <div class="table-title">Campaign resultaten (bedrijf)</div>
+
+    <table id="campaign-table">
+      <thead>
+        <tr>
+          <th>Campagne</th>
+          <th>Gemiddelde score</th>
+          <th>Deelnemers</th>
+          <th>Acties</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+
+</div> <!-- ✅ SLUIT PAS HIER -->
 
   <!-- PAGE: RESULTATEN -->
   <div class="page" id="page-resultaten">
@@ -949,7 +983,7 @@ async function loadResultsHistory() {
 
     const response =
       await fetch(
-        `${backend}/api/results`,
+        `${backend}/api/my-results`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -1063,7 +1097,7 @@ function updateStats(data) {
 function renderResultsHistory(data) {
 
   const tbody =
-    document.querySelector("table tbody");
+  document.querySelector("#page-eerdere .table-card:first-of-type tbody");
 
   tbody.innerHTML = "";
 
@@ -1449,9 +1483,9 @@ function showPage(name, navEl) {
 
     // ✅ eerdere resultaten
     if (name === 'eerdere') {
-      loadResultsHistory();
-      refreshData();
-    }
+  loadResultsHistory();   // 👤 jouw data
+  loadCampaignTable();    // 🏢 company tabel
+}
   }
 }
 
@@ -2384,6 +2418,39 @@ async function refreshData() {
   await loadCompanyResult();
 }
 
+async function loadCampaignTable() {
+
+  const res = await fetch(
+    `${backend}/api/company-campaign-results`,
+    {
+      headers: { Authorization: `Bearer ${token}` }
+    }
+  );
+
+  const data = await res.json();
+
+  const tbody =
+    document.querySelector("#campaign-table tbody");
+
+  tbody.innerHTML = "";
+
+  data.forEach(c => {
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${c.title}</td>
+        <td>${Number(c.avg_score || 0).toFixed(1)}</td>
+        <td>${c.participants}</td>
+        <td>
+          <button class="btn-table"
+            onclick="openCampaignResult(${c.campaign_id})">
+            Bekijk →
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+}
 
 init();
 </script>
