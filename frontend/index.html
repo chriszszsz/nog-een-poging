@@ -721,7 +721,7 @@ async function openCampaignResult() {
 
     setTimeout(() => {
       renderCampaignResultPage();
-      initCampaignRadar();
+      initRadar();
     }, 50);
 
   } catch (err) {
@@ -740,9 +740,9 @@ function renderCompanyResult() {
 
   const last = assessments[0];
 
-  if (last) {
+if (last) {
   document.querySelector(".summary-date").innerHTML = `
-    <strong>${last.campaign_title || "-"}</strong><br>
+    <strong>${companyResult.campaign.title || activeCampaign?.campaign_title || "-"}</strong><br>
     <span style="font-size:13px;color:var(--txt2);">
       ${last.assessment_date
         ? new Date(last.assessment_date).toLocaleDateString("nl-NL", {
@@ -1438,8 +1438,11 @@ function showPage(name, navEl) {
 
   if (companyResult) {
     renderCampaignResultPage();
-    initCampaignRadar();
+  } else if (selectedResult) {
+    renderResultDetail();
   }
+
+  initRadar();
 
 }
 
@@ -2268,133 +2271,74 @@ var radarChartInstance = null;
 
 function initRadar() {
 
-  const canvas =
-    document.getElementById('radarChart');
-
+  const canvas = document.getElementById('radarChart');
   if (!canvas) return;
 
-  const ctx =
-    canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
 
-  // ✅ destroy oude chart
   if (radarChartInstance) {
     radarChartInstance.destroy();
   }
 
-  // ✅ gebruik selectedResult
-  if (!selectedResult || !selectedResult.session) {
-    console.warn("Geen selectedResult");
+  let spider = {};
+
+  // ✅ 1. Campaign-level (voorkeur)
+  if (companyResult?.aggregated?.spider_scores) {
+    spider = companyResult.aggregated.spider_scores;
+  }
+
+  // ✅ 2. Fallback naar individueel
+  else if (selectedResult?.session?.spider_scores) {
+    spider = selectedResult.session.spider_scores;
+  }
+
+  if (!spider || Object.keys(spider).length === 0) {
+    console.warn("Geen spider data");
     return;
   }
 
-  const spider =
-    companyResult.aggregated.spider_scores || {};
+  const labels = Object.keys(spider);
+  const values = Object.values(spider).map(v => Number(v));
 
-  const labels =
-    Object.keys(spider);
-
-  const values =
-    Object.values(spider).map(v => Number(v));
-
-  // ✅ gradient (zoals Figma)
   const gradient =
-  ctx.createRadialGradient(
-    ctx.canvas.width / 2,
-    ctx.canvas.height / 2,
-    50,
-    ctx.canvas.width / 2,
-    ctx.canvas.height / 2,
-    300
-  );
+    ctx.createRadialGradient(
+      ctx.canvas.width / 2,
+      ctx.canvas.height / 2,
+      50,
+      ctx.canvas.width / 2,
+      ctx.canvas.height / 2,
+      300
+    );
 
-gradient.addColorStop(0, "rgba(0,104,182,0.4)");
-gradient.addColorStop(1, "rgba(172,0,109,0.4)");
+  gradient.addColorStop(0, "rgba(0,104,182,0.4)");
+  gradient.addColorStop(1, "rgba(172,0,109,0.4)");
 
   radarChartInstance = new Chart(ctx, {
-
     type: 'radar',
-
     data: {
-
-      labels: labels,
-
-      datasets: [
-
-        {
-          label: 'Score',
-
-          data: values,
-
-          borderColor: "#AC006D",
-
-          backgroundColor: gradient,
-
-          pointBackgroundColor: "#AC006D",
-          pointBorderColor: "#ffffff",
-
-          pointRadius: 3,
-
-          borderWidth: 2,
-          borderColor: "#AC006D",
-
-          tension: 0.2
-        }
-
-      ]
-
+      labels,
+      datasets: [{
+        label: 'Score',
+        data: values,
+        borderColor: "#AC006D",
+        backgroundColor: gradient,
+        borderWidth: 2,
+        pointBackgroundColor: "#AC006D",
+        pointBorderColor: "#ffffff"
+      }]
     },
-
     options: {
-
       responsive: true,
-
-      maintainAspectRatio: false,
-
-      plugins: {
-
-        legend: {
-          display: false
-        }
-
-      },
-
       scales: {
-
         r: {
-
           min: 0,
-          max: 5,
-
-          ticks: {
-            stepSize: 1,
-            color: "rgba(255,255,255,0.4)",
-            backdropColor: "transparent"
-          },
-
-          grid: {
-            color: "rgba(255,255,255,0.15)"
-          },
-
-          angleLines: {
-            color: "rgba(255,255,255,0.08)"
-          },
-
-          pointLabels: {
-            color: "#cbd5f5",
-            font: {
-              size: 11
-            }
-          }
-
+          max: 5
         }
-
       }
-
     }
-
   });
-
 }
+
 
 
 
@@ -2416,7 +2360,7 @@ async function refreshData() {
 
   await loadCompanyResult();
 }
-``
+
 
 init();
 </script>
