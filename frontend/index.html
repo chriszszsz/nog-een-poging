@@ -2280,21 +2280,13 @@ function initRadar() {
     radarChartInstance.destroy();
   }
 
+  // ✅ ENIGE FIX: juiste data kiezen
   let spider = {};
 
-  // ✅ 1. Campaign-level (voorkeur)
-  if (companyResult?.aggregated?.spider_scores) {
-    spider = companyResult.aggregated.spider_scores;
-  }
-
-  // ✅ 2. Fallback naar individueel
-  else if (selectedResult?.session?.spider_scores) {
-    spider = selectedResult.session.spider_scores;
-  }
-
-  if (!spider || Object.keys(spider).length === 0) {
-    console.warn("Geen spider data");
-    return;
+  if (companyResult && companyResult.aggregated) {
+    spider = companyResult.aggregated.spider_scores || {};
+  } else if (selectedResult && selectedResult.session) {
+    spider = selectedResult.session.spider_scores || {};
   }
 
   const labels = Object.keys(spider);
@@ -2314,7 +2306,9 @@ function initRadar() {
   gradient.addColorStop(1, "rgba(172,0,109,0.4)");
 
   radarChartInstance = new Chart(ctx, {
+
     type: 'radar',
+
     data: {
       labels,
       datasets: [{
@@ -2322,20 +2316,49 @@ function initRadar() {
         data: values,
         borderColor: "#AC006D",
         backgroundColor: gradient,
-        borderWidth: 2,
         pointBackgroundColor: "#AC006D",
-        pointBorderColor: "#ffffff"
+        pointBorderColor: "#ffffff",
+        pointRadius: 3,
+        borderWidth: 2,
+        tension: 0.2
       }]
     },
+
     options: {
       responsive: true,
+      maintainAspectRatio: false,   // ✅ BELANGRIJK (had je eerst al goed)
+
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+
       scales: {
         r: {
           min: 0,
-          max: 5
+          max: 5,
+          ticks: {
+            stepSize: 1,
+            color: "rgba(255,255,255,0.4)",
+            backdropColor: "transparent"
+          },
+          grid: {
+            color: "rgba(255,255,255,0.15)"
+          },
+          angleLines: {
+            color: "rgba(255,255,255,0.08)"
+          },
+          pointLabels: {
+            color: "#cbd5f5",
+            font: {
+              size: 11
+            }
+          }
         }
       }
     }
+
   });
 }
 
