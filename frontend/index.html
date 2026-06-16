@@ -367,17 +367,14 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
 
       <div>
         <div class="lbl">
-          Laatste assessment
+          Laatste campagne
         </div>
 
         <div class="summary-date">-</div>
 
       </div>
 
-      <button
-        class="btn btn-primary"
-        onclick="showPage('resultaten')"
-      >
+      <button class="btn btn-primary" onclick="openCampaignResult()">
         Bekijk resultaten
       </button>
 
@@ -694,6 +691,44 @@ let activeCampaign = null;
 let companyResult = null;
 let selectedResult = null;
 
+async function openCampaignResult() {
+
+  if (!activeCampaign) return;
+
+  try {
+
+    const res = await fetch(
+      `${backend}/api/campaigns/${activeCampaign.campaign_id}/details`
+    );
+
+    const data = await res.json();
+
+    companyResult = data;
+
+    // 👉 haal ook rapport op
+    const reportRes = await fetch(
+      `${backend}/api/campaigns/${activeCampaign.campaign_id}/report`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    const reportData = await reportRes.json();
+
+    companyResult.campaign.report = reportData.report;
+
+    showPage("resultaten");
+
+    setTimeout(() => {
+      renderCampaignResultPage();
+      initCampaignRadar();
+    }, 50);
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 function renderCompanyResult() {
 
   if (!companyResult) return;
@@ -705,14 +740,21 @@ function renderCompanyResult() {
 
   const last = assessments[0];
 
-  if (last?.assessment_date) {
-    document.querySelector(".summary-date").textContent =
-      new Date(last.assessment_date).toLocaleDateString("nl-NL", {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      });
-  }
+  if (last) {
+  document.querySelector(".summary-date").innerHTML = `
+    <strong>${last.campaign_title || "-"}</strong><br>
+    <span style="font-size:13px;color:var(--txt2);">
+      ${last.assessment_date
+        ? new Date(last.assessment_date).toLocaleDateString("nl-NL", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+          })
+        : "-"
+      }
+    </span>
+  `;
+}
   document.querySelector(".score-num").textContent =
   agg.average_score
     ? Number(agg.average_score).toFixed(1)
@@ -1276,6 +1318,77 @@ if (session.status === "RESULTS_READY") {
 }
 }
 
+function renderCampaignResultPage() {
+
+  if (!companyResult) return;
+
+  const agg = companyResult.aggregated;
+  const last = companyResult.assessments?.[0];
+
+  /* =====================
+     DATUM
+  ===================== */
+  document.querySelector(".res-date").textContent =
+    last?.assessment_date
+      ? new Date(last.assessment_date).toLocaleDateString("nl-NL", {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        })
+      : "-";
+
+  /* =====================
+     GEMIDDELDE SCORE
+  ===================== */
+  document.querySelectorAll(".rs-val")[0].innerHTML =
+    `${agg.average_score || "-"} <span>/ 5.0</span>`;
+
+  const values =
+    Object.values(agg.spider_scores || {}).map(v => Number(v));
+
+  const highRisk =
+    values.filter(v => v < 3).length;
+
+  document.getElementById("high-risk").innerHTML =
+    `${highRisk} <span>/ ${values.length}</span>`;
+
+  const completed =
+    values.filter(v => v >= 4).length;
+
+  document.getElementById("completed-domains").innerHTML =
+    `${completed} <span style="color:#4dd9a0;font-size:16px;">voltooid</span>`;
+
+  /* =====================
+     ✅ AI RAPPORT (KEY FIX)
+  ===================== */
+
+  const container = document.querySelector(".answers-card");
+  const report = companyResult.campaign?.report;
+
+  if (report && report.length > 20) {
+
+    container.innerHTML = `
+      <div class="ans-header">AI Adviesrapport</div>
+      <div style="
+        font-size:13px;
+        line-height:1.7;
+        color:var(--txt2);
+        white-space:pre-line;
+      ">
+        ${report}
+      </div>
+    `;
+
+  } else {
+
+    container.innerHTML = `
+      <div class="ans-header">⏳ Rapport nog niet beschikbaar</div>
+      <div style="font-size:13px;color:var(--txt2);">
+        Het rapport wordt momenteel gegenereerd door de beheerder.
+      </div>
+    `;
+  }
+}
 
 
 /* =========================================
@@ -1323,14 +1436,13 @@ function showPage(name, navEl) {
     // ✅ resultaten page
     if (name === 'resultaten') {
 
-      if (selectedResult) {
-        renderResultDetail();
-      }
+  if (companyResult) {
+    renderCampaignResultPage();
+    initCampaignRadar();
+  }
 
-      setTimeout(() => {
-        initRadar();
-      }, 50);
-    }
+}
+
 
     // ✅ eerdere resultaten
     if (name === 'eerdere') {
@@ -1347,117 +1459,110 @@ function showPage(name, navEl) {
 
 function renderAssessmentCard() {
 
-  const title =
-    document.getElementById(
-      "assessment-title"
-    );
+  const title = document.getElementById("assessment-title");
+  const desc = document.getElementById("assessment-desc");
+  const card = document.getElementById("assessment-card");
 
-  const desc =
-    document.getElementById(
-      "assessment-desc"
-    );
+  if (!title || !desc || !card) return;
 
-  const card =
-    document.getElementById(
-      "assessment-card"
-    );
-
-  if (
-    !title ||
-    !desc ||
-    !card
-  ) return;
-
+  // default styling
   card.style.opacity = "1";
   card.style.cursor = "pointer";
 
+  /* =========================
+     GEEN CAMPAIGN
+  ========================= */
   if (!activeCampaign) {
 
-    title.textContent =
-      "🔒 Geen assessment beschikbaar";
-
-    desc.textContent =
-      "Er staat momenteel geen assessment klaar.";
+    title.textContent = "🔒 Geen assessment beschikbaar";
+    desc.textContent = "Er staat momenteel geen assessment klaar.";
 
     card.style.opacity = ".7";
     card.style.cursor = "not-allowed";
 
     return;
-
   }
 
-  if (
-    activeCampaign.status ===
-    "NOT_STARTED"
-  ) {
+  /* =========================
+     NOT STARTED
+  ========================= */
+  if (activeCampaign.status === "NOT_STARTED") {
 
-    title.textContent =
-      "Start nieuw assessment";
-
-    desc.textContent =
-      "Begin een nieuwe maturity scan voor uw organisatie";
+    title.textContent = "Start nieuw assessment";
+    desc.textContent = "Begin een nieuwe maturity scan voor uw organisatie";
 
     return;
-
   }
 
-  if (
-    activeCampaign.status ===
-    "IN_PROGRESS"
-  ) {
+  /* =========================
+     IN PROGRESS
+  ========================= */
+  if (activeCampaign.status === "IN_PROGRESS") {
 
-    title.textContent =
-      "Verder met assessment";
+    title.textContent = "Verder met assessment";
 
     desc.textContent =
       `Verder met vraag ${
-        (
-          activeCampaign.current_question || 0
-        ) + 1
+        (activeCampaign.current_question || 0) + 1
       } van 51`;
 
     return;
-
   }
 
-  if (
-    activeCampaign.status ===
-    "WAITING_FOR_REPORT"
-  ) {
+  /* =========================
+     WAITING FOR REPORT
+  ========================= */
+  if (activeCampaign.status === "WAITING_FOR_REPORT") {
 
-    title.textContent =
-      "✅ Assessment voltooid";
+    const done = activeCampaign.completed_participants || 0;
+    const total = activeCampaign.total_participants || 0;
+
+    // 🔹 Case 1: nog niet iedereen klaar
+    if (done < total) {
+
+      title.textContent = "⏳ Assessment loopt nog";
+
+      desc.textContent =
+        `${done}/${total} deelnemers hebben het assessment afgerond.
+         Wachten op de overige deelnemers.`;
+
+      card.style.opacity = ".85";
+
+      return;
+    }
+
+    // 🔹 Case 2: iedereen klaar → wachten op rapport
+    if (done === total) {
+
+      title.textContent = "⏳ Rapport wordt voorbereid";
+
+      desc.textContent =
+        `Alle deelnemers zijn klaar (${done}/${total}).
+         De resultaten worden momenteel verwerkt door de beheerder.
+         Het rapport verschijnt hier zodra deze beschikbaar is.`;
+
+      card.style.opacity = ".9";
+
+      return;
+    }
+  }
+
+  /* =========================
+     RESULTS READY
+  ========================= */
+  if (activeCampaign.status === "RESULTS_READY") {
+
+    title.textContent = "✅ Rapport beschikbaar";
 
     desc.textContent =
-      `${activeCampaign.completed_participants}
-      van
-      ${activeCampaign.total_participants}
-      deelnemers voltooid`;
+      "Het maturity rapport is gereed en kan hieronder worden bekeken.";
 
-    card.style.opacity = ".8";
+    card.style.opacity = "1";
 
     return;
-
   }
-
-  if (
-    activeCampaign.status ===
-    "RESULTS_READY"
-  ) {
-
-    title.textContent =
-      "🔒 Assessment afgerond";
-
-    desc.textContent =
-      "Resultaten zijn hieronder beschikbaar.";
-
-    card.style.opacity = ".8";
-
-    return;
-
-  }
-
 }
+
 
 function handleAssessmentClick() {
 
@@ -2183,7 +2288,7 @@ function initRadar() {
   }
 
   const spider =
-    selectedResult.session.spider_scores || {};
+    companyResult.aggregated.spider_scores || {};
 
   const labels =
     Object.keys(spider);
