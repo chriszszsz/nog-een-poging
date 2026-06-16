@@ -374,9 +374,11 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
 
       </div>
 
-      <button class="btn btn-primary" onclick="openCampaignResult()">
-        Bekijk resultaten
-      </button>
+      <button class="btn btn-primary"
+  onclick="activeCampaign && openCampaignResult(activeCampaign.campaign_id)">
+  Bekijk resultaten
+</button>
+
 
     </div>
 
@@ -1099,7 +1101,11 @@ function renderResultsHistory(data) {
   const tbody =
   document.querySelector("#page-eerdere .table-card:first-of-type tbody");
 
-  tbody.innerHTML = "";
+// ✅ NIEUW
+if (!tbody) {
+  console.warn("tbody niet gevonden");
+  return;
+}
 
   // 🔥 extra check: is het een array?
   if (!Array.isArray(data)) {
