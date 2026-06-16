@@ -582,7 +582,7 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
   <!-- 👤 JOUW RESULTATEN -->
   <div class="table-card">
     <div class="table-title">Eerdere assessments</div>
-    <table>
+    <table id="results-table">
       <thead>
         <tr>
           <th>Datum</th>
@@ -1099,7 +1099,7 @@ function updateStats(data) {
 function renderResultsHistory(data) {
 
   const tbody =
-  document.querySelector("#page-eerdere .table-card:first-of-type tbody");
+  document.querySelector("#results-table tbody");
 
 // ✅ NIEUW
 if (!tbody) {
