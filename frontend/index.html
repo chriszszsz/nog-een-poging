@@ -1839,9 +1839,32 @@ async function volgendeVraag() {
 
     await saveAssessment();
 
-    showPage('resultaten');
+// haal nieuwste result op
+const res = await fetch(`${backend}/api/latest-result`, {
+  headers: { Authorization: `Bearer ${token}` }
+});
 
-    initRadar();
+const latest = await res.json();
+
+if (latest?.assessment_session_id) {
+
+  const detailRes = await fetch(
+    `${backend}/api/results/${latest.assessment_session_id}`,
+    {
+      headers: { Authorization: `Bearer ${token}` }
+    }
+  );
+
+  selectedResult = await detailRes.json();
+
+}
+
+showPage('resultaten');
+
+setTimeout(() => {
+  renderResultDetail();
+  initRadar();
+}, 50);
 
   }
 
