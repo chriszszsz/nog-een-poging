@@ -383,6 +383,8 @@
       };
 
       let assessments = [];
+      let previousView = null;
+let previousCampaignId = null;
       let selectedAssessment = [];
       let selectedCompany = null;
       let currentTab = 'overview';
@@ -813,7 +815,7 @@ async function refreshActiveView() {
         </td>
 
         <td class="px-6 py-4 text-sm">
-          <button onclick="viewAssessment(${item.id})" class="text-blue-600 font-medium">
+          <button onclick="viewAssessment(${item.id}, 'overview')" class="text-blue-600 font-medium">
             Bekijk
           </button>
         </td>
@@ -874,7 +876,11 @@ async function refreshActiveView() {
 
   }
 
-    async function viewAssessment(id) {
+    async function viewAssessment(id, from = 'overview', campaignId = null) {
+
+  // ✅ onthoud waar je vandaan komt
+  previousView = from;
+  previousCampaignId = campaignId;
 
   if (!id) {
     console.warn("❌ Geen ID");
@@ -908,20 +914,16 @@ async function refreshActiveView() {
 
     selectedAnswers = data.answers || [];
 
-    // ✅ CRUCIAAL (ontbrak!)
     renderAssessmentDetail();
 
     document.getElementById('dashboard-view').classList.add('hidden');
     document.getElementById('assessment-detail-screen').classList.remove('hidden');
 
   } catch (err) {
-
     console.error("❌ ERROR:", err);
-
-    alert("Kon assessment niet laden");
-
   }
 }
+
 
       function viewCompany(companyId) {
 
@@ -1082,7 +1084,7 @@ async function refreshActiveView() {
 </td>
 
                 <td class="p-4">
-                  <button onclick="viewAssessment(${a.assessment_session_id})" class="text-blue-600">
+                  <button onclick="viewAssessment(${a.assessment_session_id}, 'campaign', ${id})" class="text-blue-600">
                     Bekijk
                   </button>
                 </td>
@@ -1456,12 +1458,22 @@ async function refreshActiveView() {
 }
 
       function closeDetail() {
-        document.getElementById('dashboard-view').classList.remove('hidden');
-        document.getElementById('assessment-detail-screen').classList.add('hidden');
-        selectedAssessment = null;
-        selectedCompany = null;
-        refreshActiveView();
-      }
+
+  document.getElementById('assessment-detail-screen').classList.add('hidden');
+
+  // ✅ als we uit campaign komen → terug naar campaign
+  if (previousView === 'campaign' && previousCampaignId) {
+
+    viewCampaign(previousCampaignId);
+    return;
+  }
+
+  // ✅ anders → normale dashboard
+  document.getElementById('dashboard-view').classList.remove('hidden');
+
+  selectedAssessment = null;
+  selectedCompany = null;
+}
 
       function renderSpiderChart(scores, elementId = "spider-chart") {
 
