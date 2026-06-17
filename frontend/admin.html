@@ -213,11 +213,20 @@
         class="w-full border p-2 rounded"
       />
 
-      <!-- Bedrijf -->
-      <select
-        id="campaign-company"
-        class="w-full border p-2 rounded"
-      ></select>
+      <!-- ✅ NIEUWE SEARCHABLE COMPANY SELECT -->
+<div>
+  <input
+    id="company-search-input"
+    placeholder="Zoek bedrijf..."
+    class="w-full border p-2 rounded mb-2"
+    oninput="filterCompanies()"
+  />
+
+  <div
+    id="company-list"
+    class="border rounded max-h-40 overflow-y-auto"
+  ></div>
+</div>
 
       <!-- Deelnemers -->
       <div
@@ -1851,6 +1860,7 @@ function renderAnswers(answers) {
 
       let companies = [];
   let users = [];
+  let selectedCompanyId = null;
 
   async function fetchCompanies() {
 
@@ -1894,15 +1904,17 @@ function renderAnswers(answers) {
 
   function openCampaignModal() {
 
-    renderCompanies();
-    renderParticipants();
+  renderCompanies();
 
-    document
-      .getElementById("campaign-modal")
-      .classList
-      .remove("hidden");
+  renderParticipants(null); // ✅ eerst leeg
 
-  }
+  document
+    .getElementById("campaign-modal")
+    .classList
+    .remove("hidden");
+
+}
+``
 
   function closeCampaignModal() {
 
@@ -1915,40 +1927,123 @@ function renderAnswers(answers) {
 
   function renderCompanies() {
 
-    const select =
-      document.getElementById("campaign-company");
+  const list = document.getElementById("company-list");
+  if (!list) return;
 
-    if (!select) return; // ✅ voorkomt crash
+  list.innerHTML =
+    companies.map(company => `
+      <div
+        class="p-2 cursor-pointer hover:bg-slate-100"
+        onclick="selectCompany(${company.company_id}, '${company.company_name}')"
+      >
+        ${company.company_name}
+      </div>
+    `).join("");
 
-    select.innerHTML =
-      companies.map(company => `
-        <option value="${company.company_id}">
-          ${company.company_name}
-        </option>
+}
+
+function selectCompany(id, name) {
+
+  selectedCompanyId = id;
+
+  document.getElementById("company-search-input").value = name;
+  document.getElementById("company-list").innerHTML = "";
+
+  renderParticipants(id); // ✅ trigger filtering
+
+}
+
+function filterCompanies() {
+
+  const term =
+    document
+      .getElementById("company-search-input")
+      .value
+      .toLowerCase();
+
+  const list =
+    document.getElementById("company-list");
+
+  list.innerHTML =
+    companies
+      .filter(c =>
+        c.company_name.toLowerCase().includes(term)
+      )
+      .map(c => `
+        <div
+          class="p-2 cursor-pointer hover:bg-slate-100"
+          onclick="selectCompany(${c.company_id}, '${c.company_name}')"
+        >
+          ${c.company_name}
+        </div>
       `).join("");
+}
 
+  function renderParticipants(companyId) {
+
+  const container =
+    document.getElementById("participants-list");
+
+  if (!container) return;
+
+  // ✅ geen bedrijf gekozen
+  if (!companyId) {
+
+    container.innerHTML = `
+      <div class="text-sm text-slate-500">
+        Selecteer eerst een bedrijf
+      </div>
+    `;
+    return;
   }
 
+  // ✅ filter op bedrijf
+  const participants =
+    users.filter(user =>
+      user.role === "participant" &&
+      user.company_id == companyId
+    );
 
-  function renderParticipants() {
+  if (!participants.length) {
 
-    const container =
-      document.getElementById("participants-list");
-
-    if (!container) return; // ✅ ook hier
-
-    const participants =
-      users.filter(user => user.role === "participant");
-
-    container.innerHTML =
-      participants.map(user => `
-        <label class="flex items-center gap-3">
-          <input type="checkbox" value="${user.user_id}" class="participant-checkbox" />
-          <span>${user.first_name} ${user.last_name}</span>
-        </label>
-      `).join("");
-
+    container.innerHTML = `
+      <div class="text-sm text-slate-500">
+        Geen medewerkers gevonden
+      </div>
+    `;
+    return;
   }
+
+  container.innerHTML =
+    participants.map(user => `
+      <label class="flex items-start gap-3 border-b py-2">
+
+        <input
+          type="checkbox"
+          value="${user.user_id}"
+          class="participant-checkbox mt-1"
+        />
+
+        <div>
+
+          <div class="font-medium">
+            ${user.first_name} ${user.last_name}
+          </div>
+
+          <div class="text-xs text-slate-500">
+            ${user.role_description || "Geen functie"}
+          </div>
+
+          <div class="text-xs text-slate-400">
+            ${user.email}
+          </div>
+
+        </div>
+
+      </label>
+    `).join("");
+}
+
 
 
   async function createCampaign() {
@@ -1960,12 +2055,7 @@ function renderAnswers(answers) {
           "campaign-title"
         ).value;
 
-      const company_id =
-        Number(
-          document.getElementById(
-            "campaign-company"
-          ).value
-        );
+      const company_id = selectedCompanyId;
 
       const participant_ids =
         Array.from(
