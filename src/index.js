@@ -898,16 +898,32 @@ app.get("/api/campaigns/:id/details", async (req, res) => {
     ========================= */
 
     const campaignResult = await pool.query(`
-      SELECT
-        c.campaign_id,
-        c.title,
-        c.created_at,
-        c.report,
-        co.company_name
-      FROM assessment_campaigns c
-      JOIN companies co ON c.company_id = co.company_id
-      WHERE c.campaign_id = $1
-    `, [campaign_id]);
+  SELECT
+    c.campaign_id,
+    c.title,
+    c.created_at,
+    c.report,
+    co.company_name,
+
+    CASE
+      WHEN BOOL_OR(cp.status = 'IN_PROGRESS') THEN 'IN_PROGRESS'
+      WHEN BOOL_OR(cp.status = 'WAITING_FOR_REPORT') THEN 'WAITING_FOR_REPORT'
+      WHEN BOOL_OR(cp.status = 'RESULTS_READY') THEN 'RESULTS_READY'
+      ELSE 'NOT_STARTED'
+    END AS status
+
+  FROM assessment_campaigns c
+
+  JOIN companies co
+    ON c.company_id = co.company_id
+
+  LEFT JOIN campaign_participants cp
+    ON c.campaign_id = cp.campaign_id
+
+  WHERE c.campaign_id = $1
+
+  GROUP BY c.campaign_id, co.company_name
+`, [campaign_id]);
 
     if (campaignResult.rows.length === 0) {
       return res.status(404).json({ error: "Campaign niet gevonden" });
