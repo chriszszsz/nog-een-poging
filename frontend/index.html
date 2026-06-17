@@ -388,9 +388,9 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
     <div class="profile-divider"></div>
 
     <div class="profile-actions">
-      <div class="profile-action" onclick="logout()">
-        Uitloggen
-      </div>
+      <div class="profile-action" onclick="handleLogout(event)">
+  Uitloggen
+</div>
     </div>
 
   </div>
@@ -2639,16 +2639,20 @@ function toggleProfilePopup() {
 
 document.addEventListener("click", function(e) {
 
-  const avatar = document.getElementById("avatar");
-  const popup = document.getElementById("profile-popup");
+  const wrapper = document.querySelector(".profile-wrapper");
 
-  if (!avatar.contains(e.target) &&
-      !popup.contains(e.target)) {
-
-    popup.style.display = "none";
+  if (!wrapper.contains(e.target)) {
+    document.getElementById("profile-popup").style.display = "none";
   }
 
 });
+
+
+function handleLogout(e) {
+  e.stopPropagation();  
+  logout();
+}
+
 
 init();
 </script>
