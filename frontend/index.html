@@ -375,7 +375,7 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
       </div>
 
       <button class="btn btn-primary"
-  onclick="activeCampaign && openCampaignResult(activeCampaign.campaign_id)">
+  onclick="displayCampaign && openCampaignResult(displayCampaign.campaign_id)">
   Bekijk resultaten
 </button>
 
@@ -724,6 +724,7 @@ let myCampaigns = [];
 
 
 let activeCampaign = null;
+let displayCampaign = null;
 let companyResult = null;
 let selectedResult = null;
 
@@ -843,19 +844,22 @@ async function loadMyCampaigns() {
 
     if (myCampaigns.length > 0) {
 
-      activeCampaign =
-  myCampaigns
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .find(c => c.status === "RESULTS_READY") ||
+  // ✅ 1. USER ACTION (assessment kaart)
+  activeCampaign =
+    myCampaigns.find(c => c.status === "IN_PROGRESS") ||
+    myCampaigns.find(c => c.status === "NOT_STARTED");
 
-  myCampaigns.find(c => c.status === "WAITING_FOR_REPORT") ||
+  // ✅ 2. DASHBOARD (resultaten tonen)
+  displayCampaign =
+    myCampaigns
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .find(c => c.status === "RESULTS_READY") ||
 
-  myCampaigns.find(c => c.status === "IN_PROGRESS") ||
+    myCampaigns.find(c => c.status === "WAITING_FOR_REPORT") ||
 
-  myCampaigns.find(c => c.status === "NOT_STARTED");
+    activeCampaign; // fallback
 
-    }
-
+}
   } catch (err) {
 
     console.error(err);
@@ -870,10 +874,12 @@ async function loadCompanyResult() {
 
   try {
 
-    const response =
-      await fetch(
-        `${backend}/api/campaigns/${activeCampaign.campaign_id}/details`
-      );
+    if (!displayCampaign) return;
+
+const response =
+  await fetch(
+    `${backend}/api/campaigns/${displayCampaign.campaign_id}/details`
+  );
 
     const data =
       await response.json();
