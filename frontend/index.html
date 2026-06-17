@@ -263,6 +263,82 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
   border-top: 1px solid var(--border);
   margin: 20px 0;
 }
+
+.profile-wrapper {
+  position: relative;
+}
+
+.profile-popup {
+  position: absolute;
+  top: 50px;
+  right: 0;
+
+  width: 240px;
+  padding: 16px;
+
+  background: rgba(20, 26, 45, 0.95);
+  backdrop-filter: blur(20px);
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+
+  display: none;
+}
+
+.profile-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,#c0392b,#e74c3c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+}
+
+.profile-name {
+  font-weight: 600;
+  color: #fff;
+  font-size: 13px;
+}
+
+.profile-email {
+  font-size: 11px;
+  color: var(--txt2);
+}
+
+.profile-divider {
+  margin: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-action {
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--txt);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.profile-action:hover {
+  background: rgba(255,255,255,0.06);
+}
+
 </style>
 </head>
 <body>
@@ -290,7 +366,36 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
     <div class="gtb-settings">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </div>
-    <div class="gtb-avatar">WD</div>
+    <div class="profile-wrapper">
+
+  <!-- ✅ AVATAR -->
+  <div class="gtb-avatar" id="avatar" onclick="toggleProfilePopup()">
+    WD
+  </div>
+
+  <!-- ✅ POPUP -->
+  <div id="profile-popup" class="profile-popup">
+
+    <div class="profile-header">
+      <div class="profile-avatar" id="profile-initials">WD</div>
+
+      <div>
+        <div id="profile-name" class="profile-name"></div>
+        <div id="profile-email" class="profile-email"></div>
+      </div>
+    </div>
+
+    <div class="profile-divider"></div>
+
+    <div class="profile-actions">
+      <div class="profile-action" onclick="logout()">
+        Uitloggen
+      </div>
+    </div>
+
+  </div>
+
+</div>
   </div>
 </div>
 
@@ -2451,12 +2556,13 @@ function initRadar() {
 
 async function init() {
 
+  initUserUI(); 
+
   await loadMyCampaigns();
 
   renderAssessmentCard();
 
   await loadCompanyResult();
-
 }
 
 async function refreshData() {
@@ -2501,6 +2607,48 @@ async function loadCampaignTable() {
     `;
   });
 }
+
+function initUserUI() {
+
+  if (!user) return;
+
+  const first = user.first_name || "";
+  const last = user.last_name || "";
+
+  const initials =
+    (first.charAt(0) + last.charAt(0)).toUpperCase();
+
+  // avatar rechtsboven
+  document.getElementById("avatar").textContent = initials;
+
+  // popup
+  document.getElementById("profile-initials").textContent = initials;
+  document.getElementById("profile-name").textContent = `${first} ${last}`;
+  document.getElementById("profile-email").textContent = user.email;
+}
+
+function toggleProfilePopup() {
+
+  const popup = document.getElementById("profile-popup");
+
+  popup.style.display =
+    popup.style.display === "block"
+      ? "none"
+      : "block";
+}
+
+document.addEventListener("click", function(e) {
+
+  const avatar = document.getElementById("avatar");
+  const popup = document.getElementById("profile-popup");
+
+  if (!avatar.contains(e.target) &&
+      !popup.contains(e.target)) {
+
+    popup.style.display = "none";
+  }
+
+});
 
 init();
 </script>
