@@ -2649,9 +2649,19 @@ document.addEventListener("click", function(e) {
 
 
 function handleLogout(e) {
-  e.stopPropagation();  
-  logout();
+
+  e.stopPropagation();
+
+  if (!confirm("Weet je zeker dat je wilt uitloggen?")) {
+    return;
+  }
+
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  window.location.href = "./login.html";
 }
+
 
 
 init();
