@@ -1000,8 +1000,9 @@ async function loadMyCampaigns() {
 
   // ✅ 1. USER ACTION (assessment kaart)
   activeCampaign =
-    myCampaigns.find(c => c.status === "IN_PROGRESS") ||
-    myCampaigns.find(c => c.status === "NOT_STARTED");
+  myCampaigns.find(c => c.status === "IN_PROGRESS") ||
+  myCampaigns.find(c => c.status === "NOT_STARTED") ||
+  myCampaigns.find(c => c.status === "WAITING_FOR_REPORT");
 
   // ✅ 2. DASHBOARD (resultaten tonen)
   displayCampaign =
@@ -1562,7 +1563,7 @@ function renderCampaignResultPage() {
   if (report && report.length > 20) {
 
     container.innerHTML = `
-  <div class="ans-header">AI Adviesrapport</div>
+  <div class="ans-header">Adviesrapport</div>
   <div class="report-content">
     ${marked.parse(report)}
   </div>
