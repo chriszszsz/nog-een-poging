@@ -1194,62 +1194,51 @@ if (!tbody) {
   }
 
   // ✅ juiste rendering
-  data.forEach(r => {
+ tbody.innerHTML = data.map(r => {
 
-    const date =
-      r.assessment_date
-        ? new Date(r.assessment_date)
-            .toLocaleDateString(
-              "nl-NL",
-              {
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-              }
-            )
-        : "-";
+  const date =
+    r.assessment_date
+      ? new Date(r.assessment_date).toLocaleDateString("nl-NL", {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        })
+      : "-";
 
-    const assessment =
-      r.campaign_title || "-";
+  const assessment = r.campaign_title || "-";
 
-    const maturity =
-      r.average_score
-        ? Number(r.average_score).toFixed(1)
-        : "-";
+  const maturity =
+    r.average_score
+      ? Number(r.average_score).toFixed(1)
+      : "-";
 
+  const user =
+    r.first_name || r.last_name
+      ? `${r.first_name || ""} ${r.last_name || ""}`.trim()
+      : "-";
 
-    const user =
-      r.first_name && r.last_name
-        ? `${r.first_name} ${r.last_name}`
-        : "-";
+  const status =
+    r.status === "RESULTS_READY"
+      ? "Voltooid"
+      : "In behandeling";
 
-    const status =
-      r.status === "RESULTS_READY"
-        ? "Voltooid"
-        : "In behandeling";
+  return `
+    <tr>
+      <td>${date}</td>
+      <td>${assessment}</td>
+      <td>${maturity}</td>
+      <td>${user}</td>
+      <td>${status}</td>
+      <td>
+        <button class="btn-table"
+          onclick="openResult(${r.assessment_session_id})">
+          Bekijk →
+        </button>
+      </td>
+    </tr>
+  `;
 
-    const row =
-      `
-      <tr>
-        <td>${date}</td>
-        <td>${assessment}</td>
-        <td>${maturity}</td>
-        <td>${user}</td>
-        <td>${status}</td>
-        <td>
-          <button
-            class="btn-table"
-            onclick="openResult(${r.assessment_session_id})"
-          >
-            Bekijk →
-          </button>
-        </td>
-      </tr>
-      `;
-
-    tbody.innerHTML += row;
-
-  });
+}).join("");
 
 }
 
