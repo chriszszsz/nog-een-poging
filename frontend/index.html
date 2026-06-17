@@ -843,15 +843,16 @@ async function loadMyCampaigns() {
 
     if (myCampaigns.length > 0) {
 
-      activeCampaign = myCampaigns.find(c =>
-  c.status === "IN_PROGRESS"
-) || myCampaigns.find(c =>
-  c.status === "NOT_STARTED"
-) || myCampaigns.find(c =>
-  c.status === "WAITING_FOR_REPORT"
-) || myCampaigns.find(c =>
-  c.status === "RESULTS_READY"
-);
+      activeCampaign =
+  myCampaigns
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .find(c => c.status === "RESULTS_READY") ||
+
+  myCampaigns.find(c => c.status === "WAITING_FOR_REPORT") ||
+
+  myCampaigns.find(c => c.status === "IN_PROGRESS") ||
+
+  myCampaigns.find(c => c.status === "NOT_STARTED");
 
     }
 
