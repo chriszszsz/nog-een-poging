@@ -882,6 +882,13 @@ async function refreshActiveView() {
   previousView = from;
   previousCampaignId = campaignId;
 
+
+// ✅ 🔥 HIER TOEVOEGEN (belangrijk!)
+  if (from !== 'campaign') {
+    previousCampaignId = null;
+  }
+
+
   if (!id) {
     console.warn("❌ Geen ID");
     return;
@@ -1464,15 +1471,26 @@ async function refreshActiveView() {
   // ✅ als we uit campaign komen → terug naar campaign
   if (previousView === 'campaign' && previousCampaignId) {
 
-    viewCampaign(previousCampaignId);
-    return;
-  }
+  const campaignId = previousCampaignId;
+
+  // ✅ RESET eerst (CRUCIAAL!)
+  previousView = null;
+  previousCampaignId = null;
+
+  viewCampaign(campaignId);
+  return;
+}
 
   // ✅ anders → normale dashboard
   document.getElementById('dashboard-view').classList.remove('hidden');
 
-  selectedAssessment = null;
-  selectedCompany = null;
+selectedAssessment = null;
+selectedCompany = null;
+
+// ✅ reset state
+previousView = null;
+previousCampaignId = null;
+
 }
 
       function renderSpiderChart(scores, elementId = "spider-chart") {
