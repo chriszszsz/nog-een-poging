@@ -1109,17 +1109,12 @@ async function refreshActiveView() {
         <textarea
   id="reportEditor"
   class="w-full border rounded-lg p-4"
-  style="height:200px;"
-  oninput="renderReportPreview()"
+  style="height:300px;"
 >
   ${campaign.report || ""}
 </textarea>
 
 <!-- ✅ PREVIEW -->
-<div 
-  id="reportPreview"
-  class="mt-6 p-6 rounded-xl border bg-slate-50"
-></div>
 
         <div class="mt-4 flex gap-3">
 
@@ -1142,7 +1137,6 @@ async function refreshActiveView() {
     /* ✅ SPIDERCHART RENDER */
     renderSpiderChart(aggregated.spider_scores, "campaign-spider-chart");
     await refreshActiveView();
-    setTimeout(renderReportPreview, 50);
   }
 
       function renderCompanyDetail() {
@@ -2388,21 +2382,6 @@ async function sendReport(campaignId) {
   }
 }
 
-
-function renderReportPreview() {
-
-  const raw =
-    document.getElementById("reportEditor").value;
-
-  const preview =
-    document.getElementById("reportPreview");
-
-  if (!raw || !preview) return;
-
-  preview.innerHTML =
-    marked.parse(raw);
-
-}
 
     </script>
   </body>
