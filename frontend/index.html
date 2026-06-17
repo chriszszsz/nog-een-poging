@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Axians – Maturity Assessment</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -213,7 +214,55 @@ tbody td{padding:16px 28px;font-size:13px;color:var(--txt);vertical-align:middle
 
 
 .error-msg{margin-top:10px;font-size:12.5px;color:#ff6b6b;font-weight:500;}
+.report-content {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--txt2);
+}
 
+.report-content h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin: 24px 0 12px;
+}
+
+.report-content h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 22px 0 10px;
+}
+
+.report-content h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  margin: 18px 0 8px;
+}
+
+.report-content p {
+  margin-bottom: 12px;
+}
+
+.report-content ul {
+  margin: 10px 0 14px 20px;
+}
+
+.report-content li {
+  margin-bottom: 6px;
+}
+
+.report-content strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.report-content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 20px 0;
+}
 </style>
 </head>
 <body>
@@ -1415,23 +1464,18 @@ function renderCampaignResultPage() {
   if (report && report.length > 20) {
 
     container.innerHTML = `
-      <div class="ans-header">AI Adviesrapport</div>
-      <div style="
-        font-size:13px;
-        line-height:1.7;
-        color:var(--txt2);
-        white-space:pre-line;
-      ">
-        ${report}
-      </div>
-    `;
+  <div class="ans-header">AI Adviesrapport</div>
+  <div class="report-content">
+    ${marked.parse(report)}
+  </div>
+`;
 
   } else {
 
     container.innerHTML = `
-      <div class="ans-header">⏳ Rapport nog niet beschikbaar</div>
+      <div class="ans-header">Rapport nog niet beschikbaar</div>
       <div style="font-size:13px;color:var(--txt2);">
-        Het rapport wordt momenteel gegenereerd door de beheerder.
+        Het rapport wordt momenteel opgesteld.
       </div>
     `;
   }
@@ -1570,7 +1614,7 @@ function renderAssessmentCard() {
     // 🔹 Case 1: nog niet iedereen klaar
     if (done < total) {
 
-      title.textContent = "⏳ Assessment loopt nog";
+      title.textContent = "Assessment loopt nog";
 
       desc.textContent =
         `${done}/${total} deelnemers hebben het assessment afgerond.
@@ -1584,12 +1628,12 @@ function renderAssessmentCard() {
     // 🔹 Case 2: iedereen klaar → wachten op rapport
     if (done === total) {
 
-      title.textContent = "⏳ Rapport wordt voorbereid";
+      title.textContent = "Rapport wordt voorbereid";
 
       desc.textContent =
         `Alle deelnemers zijn klaar (${done}/${total}).
-         De resultaten worden momenteel verwerkt door de beheerder.
-         Het rapport verschijnt hier zodra deze beschikbaar is.`;
+         De resultaten worden momenteel verwerkt.
+         Het rapport verschijnt hieronder zodra deze beschikbaar is.`;
 
       card.style.opacity = ".9";
 
@@ -1602,7 +1646,7 @@ function renderAssessmentCard() {
   ========================= */
   if (activeCampaign.status === "RESULTS_READY") {
 
-    title.textContent = "✅ Rapport beschikbaar";
+    title.textContent = "Rapport beschikbaar";
 
     desc.textContent =
       "Het maturity rapport is gereed en kan hieronder worden bekeken.";

@@ -2100,7 +2100,7 @@ function filterCompanies() {
       }
 
       alert(
-        "Campaign aangemaakt ✅"
+        "Campaign aangemaakt"
       );
 
       closeCampaignModal();
@@ -2174,7 +2174,7 @@ function filterCompanies() {
         return;
       }
 
-      alert("Bedrijf aangemaakt ✅");
+      alert("Bedrijf aangemaakt");
 
       closeCompanyModal();
 
@@ -2230,7 +2230,7 @@ function filterCompanies() {
       return;
     }
 
-    alert("Medewerker aangemaakt ✅");
+    alert("Medewerker aangemaakt");
 
     closeUserModal();
 
@@ -2265,7 +2265,7 @@ function filterCompanies() {
       return;
     }
 
-    alert("Rapport opgeslagen ✅");
+    alert("Rapport opgeslagen");
     await viewCampaign(campaignId);
 
   } catch (err) {
@@ -2294,7 +2294,7 @@ async function sendReport(campaignId) {
       return;
     }
 
-    alert("Rapport verstuurd ✅");
+    alert("Rapport verstuurd");
 
     // ✅ opnieuw laden zodat status verandert
     await viewCampaign(campaignId);
