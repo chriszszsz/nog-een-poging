@@ -1409,21 +1409,28 @@ app.get(
 
       const result = await pool.query(`
         SELECT
-          s.assessment_session_id,
-          s.campaign_id,
+  s.assessment_session_id,
+  s.campaign_id,
 
-          s.average_score,
-          s.assessment_date,
-          s.status,
+  s.average_score,
+  s.assessment_date,
+  s.status,
 
-          c.title AS campaign_title
+  c.title AS campaign_title,
 
-        FROM assessment_sessions s
+  u.first_name,
+  u.last_name
 
-        JOIN assessment_campaigns c
-        ON s.campaign_id = c.campaign_id
+FROM assessment_sessions s
 
-        WHERE s.user_id = $1   -- ✅ KEY CHANGE
+JOIN assessment_campaigns c
+  ON s.campaign_id = c.campaign_id
+
+JOIN users u
+  ON s.user_id = u.user_id
+
+WHERE s.user_id = $1
+
 
         ORDER BY s.assessment_date DESC
       `, [req.user.user_id]);
