@@ -1482,7 +1482,7 @@ app.get(
 );
 
 /* =========================
-   AI tester
+   PROMPT TESTER
 ========================= */
 
 app.post("/api/test-ai", async (req, res) => {
@@ -1593,6 +1593,8 @@ Behandel iedere significante observatie volgens deze vaste volgorde:
 
 Beschrijf nooit alleen een scoreverschil. Ga altijd een niveau dieper.
 
+Voor de secties Organisatiediagnose, Analyse van Alignment en Verschillen tussen Perspectieven geldt: structureer iedere observatie expliciet volgens de vijf stappen WAT → WAAROM → DYNAMIEK → RISICO → ACTIE. Schrijf deze stappen uit in lopende tekst, niet als kopjes. Een observatie zonder verklaring van de onderliggende dynamiek is onvolledig.
+
 ---
 
 ## DIAGNOSTISCHE VERDIEPING
@@ -1670,7 +1672,13 @@ Maak risico's altijd concreet. Beschrijf impact in termen van:
 - Security-incidenten
 - Afhankelijkheid van individuen
 
-Schrijf nooit "verhoogd risico" zonder de concrete impact te benoemen.
+Verboden formuleringen in risico's en aanbevelingen:
+- "verhoogde kans op..."
+- "kwetsbaar voor..."
+- "verhoogde kwetsbaarheid"
+- "kan leiden tot risico's"
+
+Vervang altijd door een concrete beschrijving: wat gebeurt er concreet, wanneer, en met welk meetbaar of operationeel gevolg.
 
 ---
 
@@ -1682,6 +1690,10 @@ Gebruik nooit de volgende formuleringen:
 - "verschillen zichtbaar"
 - "ruimte voor verbetering"
 - "aandachtspunt"
+- "verhoogde kans op..."
+- "kwetsbaar voor..."
+- "verhoogde kwetsbaarheid"
+- "kan leiden tot risico's"
 
 Wees altijd expliciet, concreet en scherp.
 
@@ -1706,47 +1718,43 @@ Lever het rapport op in exact deze structuur. Wijk hier nooit van af.
 
 # 1. Executive Summary
 
-Maximaal 400 woorden. Synthese van de belangrijkste bevindingen, organisatiepatroon en topprioriteiten. Geen opsomming van scores — een leesbaar oordeel voor directie.
+Maximaal 400 woorden. Schrijf uitsluitend in alinea's — geen bulletlijsten. Geef een synthese van het overkoepelende organisatiepatroon, de belangrijkste bevindingen en wat deze gezamenlijk zeggen over de staat van de organisatie. Sluit af met een oordeel over de organisatie. Neem geen opsomming van prioriteiten of acties op — die staan in sectie 6.
 
 ---
 
 # 2. Organisatiediagnose
 
-Analyse van het organisatieprofiel zoals dat uit de data naar voren komt: governance-volwassenheid, eigenaarschap, besluitvormingspatronen en maturiteitsniveau. Onderbouw met data.
+Analyse van het organisatieprofiel zoals dat uit de data naar voren komt: governance-volwassenheid, eigenaarschap, besluitvormingspatronen en maturiteitsniveau. Structureer iedere observatie volgens WAT → WAAROM → DYNAMIEK → RISICO → ACTIE in lopende tekst. Onderbouw met data.
 
 ---
 
 # 3. Analyse van Alignment
 
-Analyse van de mate waarin strategie, governance, beleid en uitvoering op elkaar zijn afgestemd. Benoem expliciet waar formele inrichting afwijkt van dagelijkse praktijk.
+Analyse van de mate waarin strategie, governance, beleid en uitvoering op elkaar zijn afgestemd. Benoem expliciet waar formele inrichting afwijkt van dagelijkse praktijk. Structureer iedere observatie volgens WAT → WAAROM → DYNAMIEK → RISICO → ACTIE in lopende tekst.
 
 ---
 
 # 4. Verschillen tussen Perspectieven
 
-Analyse van perceptieverschillen tussen rollen. Verklaar de oorzaken en benoem de organisatorische betekenis van de afwijkingen.
+Analyse van perceptieverschillen tussen rollen. Verklaar de oorzaken en benoem de organisatorische betekenis van de afwijkingen. Beschrijf niet alleen dát percepties verschillen, maar waarom dit organisatorisch logisch of zorgelijk is. Structureer iedere observatie volgens WAT → WAAROM → DYNAMIEK → RISICO → ACTIE in lopende tekst.
 
 ---
 
 # 5. Kritische Risico's
 
-Risico's, geordend op impact. Per risico: oorzaak, concrete impact en relatie met andere domeinen.
+Maximaal vijf risico's, geordend op impact. Per risico: oorzaak, concrete operationele of meetbare impact, en relatie met andere domeinen. Gebruik geen abstracte impactomschrijvingen — beschrijf wat er concreet gebeurt, wanneer, en met welk gevolg.
 
 ---
 
 # 6. Aanbevelingen en Prioriteiten
 
-Aanbevelingen, geordend op urgentie. Per aanbeveling: aanleiding, gewenst resultaat en wie eigenaar is van de actie.
+Maximaal zes aanbevelingen, geordend op urgentie. Per aanbeveling: aanleiding vanuit de data, concreet gewenst resultaat, en wie eigenaar is van de actie. Benoem een specifieke rolhouder of functie als eigenaar — geen generieke termen zoals "het management".
 
 ---
 
 # 7. Conclusie
 
-Maximaal 200 woorden. Sluit het rapport af met een heldere, integrale conclusie 
-die de belangrijkste bevindingen samenbindt. Vat samen wat de data als geheel 
-over de organisatie zegt, welk overkoepelend patroon zichtbaar is, en wat de 
-meest logische vervolgstap is. Schrijf als afsluitende alinea van een 
-adviesrapport — geen nieuwe informatie, geen herhaling van losse punten.
+Maximaal 200 woorden. Schrijf één integrale conclusie die het overkoepelende organisatiepatroon benoemt dat uit alle secties naar voren komt — niet een herhaling van losse bevindingen. Benoem expliciet in welke ontwikkelfase de organisatie zich bevindt en wat de meest urgente systeemverandering is die nodig is. Sluit af met één concrete vervolgstap, niet een lijst.
 `
     },
     {
