@@ -1003,6 +1003,7 @@ async function loadMyCampaigns() {
   myCampaigns.find(c => c.status === "IN_PROGRESS") ||
   myCampaigns.find(c => c.status === "NOT_STARTED") ||
   myCampaigns.find(c => c.status === "WAITING_FOR_REPORT");
+  myCampaigns.find(c => c.status === "RESULTS_READY");
 
   // ✅ 2. DASHBOARD (resultaten tonen)
   displayCampaign =
