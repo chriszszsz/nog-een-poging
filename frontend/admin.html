@@ -882,11 +882,14 @@ async function refreshActiveView() {
 
   try {
 
-    const response = await fetch(url, {
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
-});
+    const response = await fetch(
+      `${defaultConfig.backend_url}/api/results/${id}`,   // ✅ HIER FIX
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
 
     if (!response.ok) throw new Error('Assessment niet gevonden');
 
@@ -895,7 +898,6 @@ async function refreshActiveView() {
     const fallback =
       assessments.find(a => String(a.id) === String(id));
 
-    // ✅ combineer beide bronnen
     selectedAssessment = {
       ...data.session,
       campaign_title: fallback?.campaign_title,
@@ -903,27 +905,16 @@ async function refreshActiveView() {
       last_name: fallback?.last_name
     };
 
-    selectedAnswers = data.answers || [];
+    selectedAnswers = data.answers || [];   // ✅ blijft zo
 
   } catch (error) {
-
     console.warn("Fallback naar lokale data");
 
     selectedAssessment =
       assessments.find(a => String(a.id) === String(id)) || null;
 
-    selectedAnswers = [];
-
+    selectedAnswers = []; // ← wordt alleen gebruikt als API echt faalt
   }
-
-  selectedCompany = null;
-
-  if (!selectedAssessment) return;
-
-  renderAssessmentDetail();
-
-  document.getElementById('dashboard-view').classList.add('hidden');
-  document.getElementById('assessment-detail-screen').classList.remove('hidden');
 }
 
       function viewCompany(companyId) {
@@ -1323,7 +1314,7 @@ async function refreshActiveView() {
             <td class="px-6 py-4 text-sm text-slate-600">${getMaturityLabel(item.average_score)}</td>
             <td class="px-6 py-4 text-sm text-slate-600">${new Date(item.assessment_date).toLocaleDateString('nl-NL')}</td>
             <td class="px-6 py-4 text-sm"><span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium ${getStatusBadge(item.status)}">${item.status}</span></td>
-            <td class="px-6 py-4 text-sm"><button onclick="viewAssessment('${item.id}')" class="text-blue-600 hover:text-blue-700 font-medium">Bekijk</button></td>
+            <td class="px-6 py-4 text-sm"><button onclick="viewAssessment(${item.assessment_session_id})" class="text-blue-600 hover:text-blue-700 font-medium">Bekijk</button></td>
           </tr>
         `).join('');
       }
