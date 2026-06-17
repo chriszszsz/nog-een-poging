@@ -31,8 +31,47 @@
         to { opacity: 1; transform: translateY(0); }
       }
       .file-card { animation: slideIn 0.2s ease-out; }
+      #reportPreview {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #334155;
+}
+
+#reportPreview h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 20px 0 10px;
+}
+
+#reportPreview h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 18px 0 8px;
+}
+
+#reportPreview h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 16px 0 6px;
+}
+
+#reportPreview p {
+  margin-bottom: 10px;
+}
+
+#reportPreview strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+#reportPreview hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 16px 0;
+}
     </style>
   </head>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <body class="h-full bg-slate-50 overflow-auto">
 
     <!-- ✅ HEADER -->
@@ -1031,8 +1070,19 @@ async function refreshActiveView() {
 
 
                 <td class="p-4">
-                  ${statusMapNL[a.status] || a.status}
-                </td>
+  <span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium
+    ${
+      a.status === 'RESULTS_READY'
+        ? 'bg-teal-100 text-teal-700'
+        : a.status === 'IN_PROGRESS'
+        ? 'bg-blue-100 text-blue-700'
+        : a.status === 'WAITING_FOR_REPORT'
+        ? 'bg-amber-100 text-amber-700'
+        : 'bg-slate-100 text-slate-700'
+    }">
+    ${statusMapNL[a.status] || a.status}
+  </span>
+</td>
 
                 <td class="p-4">
                   <button onclick="viewAssessment(${a.assessment_session_id})" class="text-blue-600">
@@ -1057,10 +1107,19 @@ async function refreshActiveView() {
         </h3>
 
         <textarea
-          id="reportEditor"
-          class="w-full border rounded-lg p-4"
-          style="height:300px;"
-        >${campaign.report || ""}</textarea>
+  id="reportEditor"
+  class="w-full border rounded-lg p-4"
+  style="height:200px;"
+  oninput="renderReportPreview()"
+>
+  ${campaign.report || ""}
+</textarea>
+
+<!-- ✅ PREVIEW -->
+<div 
+  id="reportPreview"
+  class="mt-6 p-6 rounded-xl border bg-slate-50"
+></div>
 
         <div class="mt-4 flex gap-3">
 
@@ -1083,6 +1142,7 @@ async function refreshActiveView() {
     /* ✅ SPIDERCHART RENDER */
     renderSpiderChart(aggregated.spider_scores, "campaign-spider-chart");
     await refreshActiveView();
+    setTimeout(renderReportPreview, 50);
   }
 
       function renderCompanyDetail() {
@@ -2280,32 +2340,67 @@ async function sendReport(campaignId) {
 
   try {
 
-    const response = await fetch(
+    // ✅ 1. EERST OPSLAAN
+    const report =
+      document.getElementById("reportEditor").value;
+
+    const saveResponse = await fetch(
+      `${defaultConfig.backend_url}/api/campaigns/${campaignId}/report`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ report })
+      }
+    );
+
+    if (!saveResponse.ok) {
+      alert("Opslaan mislukt");
+      return;
+    }
+
+    // ✅ 2. DAN VERSTUREN
+    const sendResponse = await fetch(
       `${defaultConfig.backend_url}/api/campaigns/${campaignId}/send`,
       {
         method: "POST"
       }
     );
 
-    const data = await response.json();
+    const data = await sendResponse.json();
 
-    if (!response.ok) {
+    if (!sendResponse.ok) {
       alert(data.error || "Versturen mislukt");
       return;
     }
 
     alert("Rapport verstuurd");
 
-    // ✅ opnieuw laden zodat status verandert
+    // ✅ 3. refresh
     await viewCampaign(campaignId);
 
   } catch (err) {
 
     console.error(err);
-
     alert("Serverfout");
 
   }
+}
+
+
+function renderReportPreview() {
+
+  const raw =
+    document.getElementById("reportEditor").value;
+
+  const preview =
+    document.getElementById("reportPreview");
+
+  if (!raw || !preview) return;
+
+  preview.innerHTML =
+    marked.parse(raw);
 
 }
 
