@@ -1593,7 +1593,7 @@ Behandel iedere significante observatie volgens deze vaste volgorde:
 
 Beschrijf nooit alleen een scoreverschil. Ga altijd een niveau dieper.
 
-Voor de secties Organisatiediagnose, Analyse van Alignment en Verschillen tussen Perspectieven geldt: structureer iedere observatie expliciet volgens de vijf stappen WAT → WAAROM → DYNAMIEK → RISICO → ACTIE. Schrijf deze stappen uit in lopende tekst, niet als kopjes. Een observatie zonder verklaring van de onderliggende dynamiek is onvolledig.
+Voor de secties Organisatiediagnose, Analyse van Alignment en Verschillen tussen Perspectieven geldt: structureer iedere observatie expliciet volgens de vijf stappen WAT → WAAROM → DYNAMIEK → RISICO → ACTIE. Schrijf deze stappen uit als geïntegreerde alinea's in lopende tekst, niet als kopjes. De ACTIE-stap is geen losse slotzin die begint met "Het management moet..." — verwerk deze als logische conclusie van de alinea in lopende tekst. Een observatie zonder verklaring van de onderliggende dynamiek is onvolledig.
 
 ---
 
@@ -1672,19 +1672,20 @@ Maak risico's altijd concreet. Beschrijf impact in termen van:
 - Security-incidenten
 - Afhankelijkheid van individuen
 
-Verboden formuleringen in risico's en aanbevelingen:
+Verboden formuleringen in het gehele rapport:
 - "verhoogde kans op..."
 - "kwetsbaar voor..."
 - "verhoogde kwetsbaarheid"
 - "kan leiden tot risico's"
+- "verhoogde risico's"
 
-Vervang altijd door een concrete beschrijving: wat gebeurt er concreet, wanneer, en met welk meetbaar of operationeel gevolg.
+Vervang altijd door een concrete beschrijving: wat gebeurt er concreet, wanneer, en met welk operationeel gevolg.
 
 ---
 
 ## VERBODEN TAALGEBRUIK
 
-Gebruik nooit de volgende formuleringen:
+De onderstaande formuleringen zijn verboden in het gehele rapport, zonder uitzondering en inclusief de Executive Summary en Conclusie:
 
 - "gemengd beeld"
 - "verschillen zichtbaar"
@@ -1694,6 +1695,7 @@ Gebruik nooit de volgende formuleringen:
 - "kwetsbaar voor..."
 - "verhoogde kwetsbaarheid"
 - "kan leiden tot risico's"
+- "verhoogde risico's"
 
 Wees altijd expliciet, concreet en scherp.
 
@@ -1710,6 +1712,22 @@ Wees altijd expliciet, concreet en scherp.
 
 ---
 
+## CONSISTENTE TOEPASSING VAN TAALREGELS
+
+De verboden formuleringen en de regels voor risico-concretisering gelden zonder uitzondering voor het gehele rapport — inclusief de Executive Summary en de Conclusie. Er zijn geen secties waarin abstracte impactomschrijvingen zijn toegestaan.
+
+De vijf analyseprincipes (WAT → WAAROM → DYNAMIEK → RISICO → ACTIE) worden uitgeschreven als geïntegreerde alinea's in lopende tekst. De ACTIE-stap is geen losse slotzin die begint met "Het management moet..." — verwerk deze als logische conclusie van de alinea.
+
+Sectie 4 (Verschillen tussen Perspectieven) werkt alle perceptieverschillen uit die de data toelaat. Elk verschil wordt verklaard vanuit de organisatorische context en benoemt wat het structureel betekent voor governance of uitvoering.
+
+---
+
+## VOLLEDIGHEID
+
+Lever een zo volledig mogelijk rapport. Beperk het aantal observaties, risico's en aanbevelingen niet kunstmatig. Werk alle relevante bevindingen uit de data volledig uit. Een beknopt rapport is geen doel — diepgang en volledigheid wel.
+
+---
+
 ## RAPPORTSTRUCTUUR
 
 Lever het rapport op in exact deze structuur. Wijk hier nooit van af.
@@ -1718,19 +1736,19 @@ Lever het rapport op in exact deze structuur. Wijk hier nooit van af.
 
 # 1. Executive Summary
 
-Maximaal 400 woorden. Schrijf uitsluitend in alinea's — geen bulletlijsten. Geef een synthese van het overkoepelende organisatiepatroon, de belangrijkste bevindingen en wat deze gezamenlijk zeggen over de staat van de organisatie. Sluit af met een oordeel over de organisatie. Neem geen opsomming van prioriteiten of acties op — die staan in sectie 6.
+Schrijf uitsluitend in alinea's — geen bulletlijsten. Geef een synthese van het overkoepelende organisatiepatroon, de belangrijkste bevindingen en wat deze gezamenlijk zeggen over de staat van de organisatie. Sluit af met een oordeel over de organisatie. Neem geen opsomming van prioriteiten of acties op — die staan in sectie 6.
 
 ---
 
 # 2. Organisatiediagnose
 
-Analyse van het organisatieprofiel zoals dat uit de data naar voren komt: governance-volwassenheid, eigenaarschap, besluitvormingspatronen en maturiteitsniveau. Structureer iedere observatie volgens WAT → WAAROM → DYNAMIEK → RISICO → ACTIE in lopende tekst. Onderbouw met data.
+Analyse van het organisatieprofiel zoals dat uit de data naar voren komt: governance-volwassenheid, eigenaarschap, besluitvormingspatronen en maturiteitsniveau. Structureer iedere observatie volgens WAT → WAAROM → DYNAMIEK → RISICO → ACTIE in lopende tekst. Onderbouw met data. Werk alle relevante patronen volledig uit.
 
 ---
 
 # 3. Analyse van Alignment
 
-Analyse van de mate waarin strategie, governance, beleid en uitvoering op elkaar zijn afgestemd. Benoem expliciet waar formele inrichting afwijkt van dagelijkse praktijk. Structureer iedere observatie volgens WAT → WAAROM → DYNAMIEK → RISICO → ACTIE in lopende tekst.
+Analyse van de mate waarin strategie, governance, beleid en uitvoering op elkaar zijn afgestemd. Benoem expliciet waar formele inrichting afwijkt van dagelijkse praktijk. Structureer iedere observatie volgens WAT → WAAROM → DYNAMIEK → RISICO → ACTIE in lopende tekst. Werk alle relevante misalignments volledig uit.
 
 ---
 
@@ -1738,23 +1756,25 @@ Analyse van de mate waarin strategie, governance, beleid en uitvoering op elkaar
 
 Analyse van perceptieverschillen tussen rollen. Verklaar de oorzaken en benoem de organisatorische betekenis van de afwijkingen. Beschrijf niet alleen dát percepties verschillen, maar waarom dit organisatorisch logisch of zorgelijk is. Structureer iedere observatie volgens WAT → WAAROM → DYNAMIEK → RISICO → ACTIE in lopende tekst.
 
+Werk alle perceptieverschillen die uit de data naar voren komen volledig uit. Het aantal uitgewerkte verschillen is afhankelijk van het aantal deelnemers en rollen in de data — er is geen minimum of maximum. Bij weinig deelnemers kunnen verschillen tussen individuen worden geanalyseerd; bij meer deelnemers worden patronen per rol of groep uitgewerkt. Analyseer altijd wat de data feitelijk toelaat.
+
 ---
 
 # 5. Kritische Risico's
 
-Maximaal vijf risico's, geordend op impact. Per risico: oorzaak, concrete operationele of meetbare impact, en relatie met andere domeinen. Gebruik geen abstracte impactomschrijvingen — beschrijf wat er concreet gebeurt, wanneer, en met welk gevolg.
+Geordend op impact. Per risico: oorzaak, concrete operationele impact, en relatie met andere domeinen. Gebruik geen abstracte impactomschrijvingen — beschrijf wat er concreet gebeurt en met welk operationeel gevolg. Werk alle relevante risico's uit de data volledig uit.
 
 ---
 
 # 6. Aanbevelingen en Prioriteiten
 
-Maximaal zes aanbevelingen, geordend op urgentie. Per aanbeveling: aanleiding vanuit de data, concreet gewenst resultaat, en wie eigenaar is van de actie. Benoem een specifieke rolhouder of functie als eigenaar — geen generieke termen zoals "het management".
+Geordend op urgentie. Per aanbeveling: aanleiding vanuit de data, concreet gewenst resultaat, en wie eigenaar is van de actie. Benoem een specifieke rolhouder of functie als eigenaar — geen generieke termen zoals "het management". Werk alle relevante aanbevelingen volledig uit.
 
 ---
 
 # 7. Conclusie
 
-Maximaal 200 woorden. Schrijf één integrale conclusie die het overkoepelende organisatiepatroon benoemt dat uit alle secties naar voren komt — niet een herhaling van losse bevindingen. Benoem expliciet in welke ontwikkelfase de organisatie zich bevindt en wat de meest urgente systeemverandering is die nodig is. Sluit af met één concrete vervolgstap, niet een lijst.
+Schrijf één integrale conclusie die het overkoepelende organisatiepatroon benoemt dat uit alle secties naar voren komt — niet een herhaling van losse bevindingen. Benoem expliciet in welke ontwikkelfase de organisatie zich bevindt en wat de meest urgente systeemverandering is die nodig is. Sluit af met één concrete vervolgstap, niet een lijst.
 `
     },
     {
