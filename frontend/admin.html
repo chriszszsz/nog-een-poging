@@ -813,7 +813,7 @@ async function refreshActiveView() {
         </td>
 
         <td class="px-6 py-4 text-sm">
-          <button onclick="viewAssessment(${item.assessment_session_id})" class="text-blue-600 font-medium">
+          <button onclick="viewAssessment(${item.id})" class="text-blue-600 font-medium">
             Bekijk
           </button>
         </td>
@@ -874,16 +874,17 @@ async function refreshActiveView() {
 
   }
 
-     async function viewAssessment(id) {
+    async function viewAssessment(id) {
 
-  const backend =
-    (window.elementSdk?.config?.backend_url || defaultConfig.backend_url)
-      .replace(/\/$/, '');
+  if (!id) {
+    console.warn("❌ Geen ID");
+    return;
+  }
 
   try {
 
     const response = await fetch(
-      `${defaultConfig.backend_url}/api/results/${id}`,   // ✅ HIER FIX
+      `${defaultConfig.backend_url}/api/results/${id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`
@@ -891,7 +892,7 @@ async function refreshActiveView() {
       }
     );
 
-    if (!response.ok) throw new Error('Assessment niet gevonden');
+    if (!response.ok) throw new Error("Niet gevonden");
 
     const data = await response.json();
 
@@ -905,15 +906,20 @@ async function refreshActiveView() {
       last_name: fallback?.last_name
     };
 
-    selectedAnswers = data.answers || [];   // ✅ blijft zo
+    selectedAnswers = data.answers || [];
 
-  } catch (error) {
-    console.warn("Fallback naar lokale data");
+    // ✅ CRUCIAAL (ontbrak!)
+    renderAssessmentDetail();
 
-    selectedAssessment =
-      assessments.find(a => String(a.id) === String(id)) || null;
+    document.getElementById('dashboard-view').classList.add('hidden');
+    document.getElementById('assessment-detail-screen').classList.remove('hidden');
 
-    selectedAnswers = []; // ← wordt alleen gebruikt als API echt faalt
+  } catch (err) {
+
+    console.error("❌ ERROR:", err);
+
+    alert("Kon assessment niet laden");
+
   }
 }
 
