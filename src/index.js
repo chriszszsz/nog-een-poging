@@ -1134,24 +1134,29 @@ app.post("/api/campaigns/:id/send", async (req, res) => {
 
     const campaign_id = req.params.id;
 
-    // ✅ Zet alle deelnemers op RESULTS_READY
+    console.log("📤 SEND REPORT:", campaign_id);
+
+    // ✅ deelnemers
     await pool.query(`
       UPDATE campaign_participants
       SET status = 'RESULTS_READY'
       WHERE campaign_id = $1
     `, [campaign_id]);
 
-    res.json({
-      success: true
-    });
+    // ✅ assessments (fix!)
+    await pool.query(`
+      UPDATE assessment_sessions
+      SET status = 'RESULTS_READY'
+      WHERE campaign_id = $1
+    `, [campaign_id]);
+
+    res.json({ success: true });
 
   } catch (err) {
 
     console.error("SEND REPORT ERROR:", err);
 
-    res.status(500).json({
-      error: err.message
-    });
+    res.status(500).json({ error: err.message });
 
   }
 
@@ -2199,8 +2204,10 @@ await pool.query(`
 
     // 6. Status update
     await pool.query(`
-      UPDATE campaign_participants
-      SET status = 'RESULTS_READY'
+      
+UPDATE campaign_participants
+SET status = 'WAITING_FOR_REPORT'
+
       WHERE campaign_id = $1
     `, [campaign_id]);
 
