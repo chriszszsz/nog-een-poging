@@ -1213,9 +1213,13 @@ if (!tbody) {
       : "-";
 
   const user =
-    r.first_name || r.last_name
-      ? `${r.first_name || ""} ${r.last_name || ""}`.trim()
-      : "-";
+  (r.first_name || r.last_name)
+    ? `${r.first_name || ""} ${r.last_name || ""}`.trim()
+    : r.created_by_name 
+      || r.user_name 
+      || r.created_by 
+      || "-";
+      console.log("RESULT ROW:", r);
 
   const status =
     r.status === "RESULTS_READY"
